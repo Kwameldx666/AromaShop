@@ -13,4 +13,4 @@ namespace Lab_TW.Models
         public List<NewInfo> News { get; set; }
     }
 
-}
+}//mk
