@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Aroma.BussinesLogic.Core.Levels
 {
-    internal class UserAPI
+    public class UserAPI
     {
         public RRespoceData ULASessionCheck (ULoginData data)
         {
