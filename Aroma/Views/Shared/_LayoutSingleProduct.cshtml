@@ -1,0 +1,40 @@
+﻿@using System.Web.Optimization;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Aroma Shop - Blog</title>
+    <link rel="icon" href="img/Fevicon.png" type="image/png">
+    @Styles.Render("~/Content/css")
+</head>
+<body>
+    <header class="header_area">
+        @Html.Partial("_Navbar")
+    </header>
+    <section class="blog-banner-area" id="blog">
+        @Html.Partial("_Banner")
+    </section>
+    <div class="product_image_area">
+        @RenderBody()
+    </div>
+    <section class="product_description_area">
+        @Html.Partial("_DescriptionArea")
+    </section>
+    <section class="related-product-area section-margin--small mt-0">
+        @Html.Partial("_RelatedProductArea")
+    </section>
+    <div class="footer-area">
+        @Html.Partial("_Footer")
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/skrollr")
+    @Scripts.Render("~/bundles/owlcarousel")
+    @Scripts.Render("~/bundles/niceselect")
+    @Scripts.Render("~/bundles/ajaxchimp")
+    @Scripts.Render("~/bundles/mailscrip")
+    @Scripts.Render("~/bundles/mainjs")
+</body>
+</html>
