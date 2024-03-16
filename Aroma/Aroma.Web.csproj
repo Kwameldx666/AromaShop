@@ -759,61 +759,25 @@
     <Content Include="vendors\themify-icons\SVG\zoom-out.svg" />
     <Content Include="vendors\themify-icons\themify-icons.css" />
     <Content Include="Web.config" />
-    <Content Include="Views\_ViewStart.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Shared\_Footer.cshtml" />
-    <Content Include="Views\Shared\_Navbar.cshtml" />
-    <Content Include="Views\Home\Blog.cshtml" />
-    <Content Include="Views\Shared\_LayoutBlog.cshtml" />
-    <Content Include="Views\Shared\_Banner.cshtml" />
-    <Content Include="Views\Shared\_Categories.cshtml" />
-    <Content Include="Views\Shared\_Content.cshtml" />
-    <Content Include="Views\Shared\_Instagram.cshtml" />
-    <Content Include="Views\Shared\_LayoutLogin.cshtml" />
-    <Content Include="Views\Home\cart.cshtml" />
-    <Content Include="Views\Shared\_LayoutCart.cshtml" />
-    <Content Include="Views\Shared\_LayoutCategory.cshtml" />
-    <Content Include="Views\Home\Category.cshtml" />
-    <Content Include="Views\Shared\_TopProduct.cshtml" />
-    <Content Include="Views\Shared\_Sibscribe.cshtml" />
-    <Content Include="Views\Shared\_LayoutCheckout.cshtml" />
-    <Content Include="Views\Home\Checkout.cshtml" />
-    <Content Include="Views\Home\confirmation.cshtml" />
-    <Content Include="Views\Shared\_layoutConf.cshtml" />
-    <Content Include="Views\Home\contact.cshtml" />
-    <Content Include="Views\Shared\_LayoutContact.cshtml" />
-    <Content Include="Views\Shared\MarginSmall.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\BlogController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\loginController.cs" />
+    <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\IndexViewModel.cs" />
     <Compile Include="Models\LoginData.cs" />
-    <Compile Include="Models\NewInfo.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\web.config" />
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.7.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.7.1.min.map" />
-    <Content Include="Views\Home\register.cshtml" />
-    <Content Include="Views\Shared\_LayoutRegister.cshtml" />
-    <Content Include="Views\Home\SingleBlog.cshtml" />
-    <Content Include="Views\Shared\_LayoutSingleBlog.cshtml" />
-    <Content Include="Views\Shared\_LayoutSingleProduct.cshtml" />
-    <Content Include="Views\Home\SingleProduct.cshtml" />
-    <Content Include="Views\Shared\_DescriptionArea.cshtml" />
-    <Content Include="Views\Shared\_RelatedProductArea.cshtml" />
-    <Content Include="Views\Shared\_LayoutTrackingOrder.cshtml" />
-    <Content Include="Views\Home\TrackingOrder.cshtml" />
     <Content Include="scss2\main.scss" />
     <Content Include="scss2\style.scss" />
     <Content Include="scss2\theme\_blog.scss" />
@@ -857,7 +821,45 @@
     <Content Include="vendors\themify-icons\fonts\themify.ttf" />
     <Content Include="vendors\themify-icons\fonts\themify.woff" />
     <Content Include="vendors\themify-icons\Themify IconFonts 5-23-2014.json" />
+    <Content Include="Views\Home\Blog.cshtml" />
+    <Content Include="Views\Home\cart.cshtml" />
+    <Content Include="Views\Home\Category.cshtml" />
+    <Content Include="Views\Home\Checkout.cshtml" />
+    <Content Include="Views\Home\confirmation.cshtml" />
+    <Content Include="Views\Home\contact.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\login.cshtml" />
+    <Content Include="Views\Home\register.cshtml" />
+    <Content Include="Views\Home\SingleBlog.cshtml" />
+    <Content Include="Views\Home\SingleProduct.cshtml" />
+    <Content Include="Views\Home\TrackingOrder.cshtml" />
+    <Content Include="Views\Shared\MarginSmall.cshtml" />
+    <Content Include="Views\Shared\_Banner.cshtml" />
+    <Content Include="Views\Shared\_Categories.cshtml" />
+    <Content Include="Views\Shared\_Content.cshtml" />
+    <Content Include="Views\Shared\_DescriptionArea.cshtml" />
+    <Content Include="Views\Shared\_Footer.cshtml" />
+    <Content Include="Views\Shared\_Instagram.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\_LayoutBlog.cshtml" />
+    <Content Include="Views\Shared\_LayoutCart.cshtml" />
+    <Content Include="Views\Shared\_LayoutCategory.cshtml" />
+    <Content Include="Views\Shared\_LayoutCheckout.cshtml" />
+    <Content Include="Views\Shared\_layoutConf.cshtml" />
+    <Content Include="Views\Shared\_LayoutContact.cshtml" />
+    <Content Include="Views\Shared\_LayoutLogin.cshtml" />
+    <Content Include="Views\Shared\_LayoutRegister.cshtml" />
+    <Content Include="Views\Shared\_LayoutSingleBlog.cshtml" />
+    <Content Include="Views\Shared\_LayoutSingleProduct.cshtml" />
+    <Content Include="Views\Shared\_LayoutTrackingOrder.cshtml" />
+    <Content Include="Views\Shared\_Navbar.cshtml" />
+    <Content Include="Views\Shared\_RelatedProductArea.cshtml" />
+    <Content Include="Views\Shared\_Sibscribe.cshtml" />
+    <Content Include="Views\Shared\_TopProduct.cshtml" />
+    <Content Include="Views\web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\_LayoutAddProduct.cshtml" />
+    <Content Include="Views\Home\AddProduct.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -868,7 +870,8 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Scripts\NewFolder1\" />
-    <Folder Include="Views\Login\" />
+    <Folder Include="Views\Blog\" />
+    <Folder Include="Views\Product\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aroma.BussinesLogic\Aroma.BussinesLogic.csproj">

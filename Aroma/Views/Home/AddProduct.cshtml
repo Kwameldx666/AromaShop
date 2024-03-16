@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "AddProduct";
+    Layout = "~/Views/Shared/_LayoutAddProduct.cshtml";
+}
+
+@model Lab_TW.Models.Product
+
+<head>
+    <meta charset="UTF-8">
+    <title>Добавление товара</title>
+</head>
+<body>
+    @using (Html.BeginForm("AddProduct", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <h1>Форма добавления товара</h1>
+
+        <div class="form-group">
+            <label for="productName">Название товара:</label>
+            @Html.TextBoxFor(model => model.Name, new { @class = "form-control", id = "productName", placeholder = "Введите название товара", required = "required" })
+        </div>
+
+        <div class="form-group">
+            <label for="productPrice">Цена товара:</label>
+            @Html.TextBoxFor(model => model.Price, new { @class = "form-control", id = "productPrice", type = "number", required = "required" })
+        </div>
+
+        <div class="form-group">
+            <label for="productDescription">Описание товара:</label>
+            @Html.TextAreaFor(model => model.Description, new { @class = "form-control", id = "productDescription", required = "required" })
+        </div>
+
+        //   <div class="form-group">
+     //       <label for="productCategory">Категория товара:</label>
+    ////        @Html.DropDownListFor(model => model.Category, new SelectList(ViewBag.Categories, "Value", "Text"), "Выберите категорию", new { @class = "form-control", id = "productCategory", required = "required" })
+    //    </div>
+
+        <div class="form-group">
+            <label for="productImage">Изображение товара:</label>
+            @Html.TextBoxFor(model => model.Image, new { @class = "form-control", id = "productImage", type = "file", accept = "image/*", required = "required" })
+        </div>
+
+        <input type="submit" value="Добавить товар" class="btn btn-primary">
+    }
+</body>

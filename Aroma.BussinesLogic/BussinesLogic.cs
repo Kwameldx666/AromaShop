@@ -14,5 +14,12 @@ namespace Aroma.BussinesLogic
         {
             return new SessionBL();
         }
+        public IProduct AddProductBL()
+        {
+            return new ProductBL();
+        }
+
+
+        
     }
 }

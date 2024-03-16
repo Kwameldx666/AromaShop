@@ -20,28 +20,28 @@ namespace Lab_TW.Controllers
                 Products = new List<Product>
         {
             // Здесь вы добавляете продукты, которые будут отображаться на странице
-             new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150, Image = "product1.png",ProductType ="Accessories" },
-             new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150, Image = "product2.png" ,ProductType ="Beauty" },
-             new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150, Image = "product3.png" ,ProductType ="Decor" },
-             new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150, Image = "product4.png" ,ProductType ="Accessories" },
-             new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150, Image = "product5.png",ProductType ="Accessories" },
-             new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150, Image = "product6.png",ProductType ="Accessories" },
-             new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150, Image = "product7.png" ,ProductType ="Accessories" },
-             new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150, Image = "product8.png", ProductType = "Accessories" }
+             new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150,ProductType ="Accessories" },
+             new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150 ,ProductType ="Beauty" },
+             new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150 ,ProductType ="Decor" },
+             new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150 ,ProductType ="Accessories" },
+             new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150,ProductType ="Accessories" },
+             new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150,ProductType ="Accessories" },
+             new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150 ,ProductType ="Accessories" },
+             new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150, ProductType = "Accessories" }
                          // Добавьте другие продукты по аналогии
         },
                 // Инициализация списка лучших продавцов
                 BestSellers = new List<Product>
         {
             // Здесь вы добавляете продукты, которые являются лучшими продавцами
-          new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150, Image = "product1.png",ProductType ="Accessories" },
-          new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150, Image = "product2.png" ,ProductType ="Beauty" },
-          new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150, Image = "product3.png" ,ProductType ="Decor" },
-          new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150, Image = "product4.png" ,ProductType ="Accessories" },
-          new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150, Image = "product5.png",ProductType ="Accessories" },
-          new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150, Image = "product6.png",ProductType ="Accessories" },
-          new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150, Image = "product7.png" ,ProductType ="Accessories" },
-          new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150, Image = "product8.png", ProductType = "Accessories" }
+          new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150,ProductType ="Accessories" },
+          new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150 ,ProductType ="Beauty" },
+          new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150 ,ProductType ="Decor" },
+          new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150 ,ProductType ="Accessories" },
+          new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150,ProductType ="Accessories" },
+          new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150,ProductType ="Accessories" },
+          new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150 ,ProductType ="Accessories" },
+          new Product { Id = 1, Name = "Quartz Belt Watch", Price = 150, ProductType = "Accessories" }
 
         },
                 News = new List<NewInfo>
@@ -111,8 +111,12 @@ namespace Lab_TW.Controllers
         {
             return View();
         }
-    
 
+        public ActionResult login()
+        {
+            return View();
+        }
 
+        public ActionResult AddProduct() { return View(); }
     }
 }

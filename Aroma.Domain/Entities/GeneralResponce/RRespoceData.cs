@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aroma.Domain.Entities.GeneralResponce
+namespace Aroma.Domain.Entities.GeneralResponse
 {
-    public class RRespoceData
+    public class RResponseData
     {
         public bool Status { get; set; }
-        public string   ResponceMessage { get; set; }
+        public string   ResponseMessage { get; set; }
 
     }
 }

@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CopilotDev.NET.Api, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\CopilotDev.NET.Api.1.1.0\lib\netstandard2.0\CopilotDev.NET.Api.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -45,7 +48,9 @@
     <Compile Include="Core\Levels\AdminAPI.cs" />
     <Compile Include="Core\Levels\ModeratorAPI.cs" />
     <Compile Include="Core\Levels\UserAPI.cs" />
+    <Compile Include="Interface\IProduct.cs" />
     <Compile Include="Interface\ISession.cs" />
+    <Compile Include="mainBL\ProductBL.cs" />
     <Compile Include="mainBL\SessionBL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -54,6 +59,9 @@
       <Project>{05d797c3-c66a-4190-8e71-b07c5881ce39}</Project>
       <Name>Aroma.Domain</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

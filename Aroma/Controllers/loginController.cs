@@ -1,6 +1,8 @@
 ﻿using Aroma.BussinesLogic;
+using Aroma.BussinesLogic.Core.Levels;
 using Aroma.BussinesLogic.Interface;
-using Aroma.Domain.Entities.GeneralResponce;
+
+using Aroma.Domain.Entities.GeneralResponse;
 using Aroma.Domain.Entities.User;
 using Lab_TW.Models;
 using System;
@@ -8,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using static Tensorflow.SummaryMetadata.Types;
 
 namespace Lab_TW.Controllers
 {
@@ -32,19 +35,28 @@ namespace Lab_TW.Controllers
             var uLoginData = new ULoginData
             {
                 IP = "",
+            
                 password = data.Password,
                 credential = data.Username,
                 FirstLoginTime = DateTime.Now
+                
             };
 
-            RRespoceData responce = _session.UserLoginAction(uLoginData);
-            if(responce!= null && responce.Status)
+            RResponseData response = _session.UserLoginAction(uLoginData);
+           
+            if (response != null && response.Status)
             {
-                //logig BD
-
+             
+                    return RedirectToAction("Index", "Home");
+                
+                
+              
+       
 
             }
-            return View();
+            return RedirectToAction("login", "home");
+
+
         }
     }
 }

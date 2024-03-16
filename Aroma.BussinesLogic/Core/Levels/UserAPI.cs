@@ -1,4 +1,4 @@
-﻿using Aroma.Domain.Entities.GeneralResponce;
+﻿using Aroma.Domain.Entities.GeneralResponse;
 using Aroma.Domain.Entities.User;
 using System;
 using System.Collections.Generic;
@@ -10,9 +10,15 @@ namespace Aroma.BussinesLogic.Core.Levels
 {
     public class UserAPI
     {
-        public RRespoceData ULASessionCheck (ULoginData data)
+
+        public RResponseData ULASessionCheck(ULoginData data)
         {
-            return new RRespoceData { Status = false };
+            if (data.credential == "login" && data.password == "password")
+            {
+                return new RResponseData { Status = true };
+            }
+            return new RResponseData { Status = false };
         }
     }
 }
+   
