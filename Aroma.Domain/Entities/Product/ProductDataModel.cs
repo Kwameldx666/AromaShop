@@ -8,7 +8,6 @@ namespace Aroma.Domain.Entities.Product
 {
     public class ProductDataModel
     {
-        public DBModel.Product AddSingleProduct { get; set; }
         public List<DBModel.Product> AddProducts { get; set; }
     }
 }

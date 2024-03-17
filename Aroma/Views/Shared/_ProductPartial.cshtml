@@ -1,0 +1,22 @@
+﻿@model Lab_TW.Models.Product
+
+<h1>Форма добавления товара</h1>
+
+<div class="form-group">
+    <label for="productName">Название товара:</label>
+    @using (Html.BeginForm("Index", "Product", FormMethod.Post, new { id = "products-form" }))
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            @Html.TextBoxFor(product => product[i].Name, new { @class = "form-control", id = "productName", placeholder = "Введите название товара", required = "required" })
+        }
+</div>
+
+<div class="form-group">
+    <label for="productPrice">Цена товара:</label>
+    @Html.TextBoxFor(product => product.Price, new { @class = "form-control", id = "productPrice", type = "number", required = "required" })
+</div>
+
+<div class="form-group">
+    <label for="productDescription">Описание товара:</label>
+    @Html.TextAreaFor(product => product.Description, new { @class = "form-control", id = "productDescription", required = "required" })
+</div>

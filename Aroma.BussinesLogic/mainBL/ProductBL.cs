@@ -18,12 +18,8 @@ namespace Aroma.BussinesLogic.mainBL
             return ActionAddMAnyProducts();
         }
 
-        public ProductDataModel AddSingleProduct()
-        {
-            return ActionAddSingleProduct();
-        }
 
-        public RResponseData AdminAddAction(Product product)
+        public RResponseData AdminAddAction(List<Product> product)
         {
             return AddAdminActionProduct(product);
         }

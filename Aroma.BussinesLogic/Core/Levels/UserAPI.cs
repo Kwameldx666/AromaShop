@@ -20,5 +20,5 @@ namespace Aroma.BussinesLogic.Core.Levels
             return new RResponseData { Status = false };
         }
     }
-}
+    }
    

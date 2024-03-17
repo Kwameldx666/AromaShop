@@ -1,44 +1,56 @@
-﻿@{
+﻿@model List<Lab_TW.Models.Product>
+
+@{
     ViewBag.Title = "AddProduct";
     Layout = "~/Views/Shared/_LayoutAddProduct.cshtml";
 }
 
-@model Lab_TW.Models.Product
-
 <head>
     <meta charset="UTF-8">
     <title>Добавление товара</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
+
 <body>
-    @using (Html.BeginForm("AddProduct", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    <h1>Форма добавления товара</h1>
+
+    @using (Html.BeginForm("AddProducts", "Product", FormMethod.Post, new { enctype = "multipart/form-data", id = "product-form" }))
     {
-        <h1>Форма добавления товара</h1>
-
-        <div class="form-group">
-            <label for="productName">Название товара:</label>
-            @Html.TextBoxFor(model => model.Name, new { @class = "form-control", id = "productName", placeholder = "Введите название товара", required = "required" })
+        <div id="products-container">
+            @if (Model != null && Model.Count > 0)
+            {
+                for (int i = 0; i < Model.Count; i++)
+                {
+                    <div class="form-group product-row">
+                        <label>Название товара:</label>
+                        @Html.TextBoxFor(model => model[i].Name, new { @class = "form-control productName", placeholder = "Введите название товара", required = "required" })
+                        <label>Цена товара:</label>
+                        @Html.TextBoxFor(model => model[i].Price, new { type = "number", @class = "form-control productPrice", required = "required" })
+                        <label>Описание товара:</label>
+                        @Html.TextBoxFor(model => model[i].Description, new { @class = "form-control productDescription", required = "required" })
+                    </div>
+                }
+            }
         </div>
 
-        <div class="form-group">
-            <label for="productPrice">Цена товара:</label>
-            @Html.TextBoxFor(model => model.Price, new { @class = "form-control", id = "productPrice", type = "number", required = "required" })
-        </div>
-
-        <div class="form-group">
-            <label for="productDescription">Описание товара:</label>
-            @Html.TextAreaFor(model => model.Description, new { @class = "form-control", id = "productDescription", required = "required" })
-        </div>
-
-        //   <div class="form-group">
-     //       <label for="productCategory">Категория товара:</label>
-    ////        @Html.DropDownListFor(model => model.Category, new SelectList(ViewBag.Categories, "Value", "Text"), "Выберите категорию", new { @class = "form-control", id = "productCategory", required = "required" })
-    //    </div>
-
-        <div class="form-group">
-            <label for="productImage">Изображение товара:</label>
-            @Html.TextBoxFor(model => model.Image, new { @class = "form-control", id = "productImage", type = "file", accept = "image/*", required = "required" })
-        </div>
-
-        <input type="submit" value="Добавить товар" class="btn btn-primary">
+        <button type="button" id="add-product-row" class="btn btn-default">Добавить еще товар</button>
+        <input type="submit" value="Добавить товары" class="btn btn-primary">
     }
+
+    <script>
+        $(document).ready(function () {
+            var productIndex = @Model.Count;
+
+            $('#add-product-row').click(function () {
+                var newProductRow = $('.product-row:first').clone();
+                newProductRow.find(':input').each(function () {
+                    var name = $(this).attr('name').replace(/\[\d+\]/, '[' + productIndex + ']');
+                    $(this).attr('name', name).val('');
+                });
+
+                $('#products-container').append(newProductRow);
+                productIndex++;
+            });
+        });
+    </script>
 </body>

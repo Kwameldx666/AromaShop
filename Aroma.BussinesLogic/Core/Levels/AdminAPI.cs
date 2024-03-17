@@ -18,16 +18,14 @@ namespace Aroma.BussinesLogic.Core.Levels
             return new ProductDataModel { AddProducts = products }; ;
         }
 
-        public ProductDataModel ActionAddSingleProduct()
-        {
-            var productik = new Product();
-            return new ProductDataModel { AddSingleProduct = productik };
-        }
+  
 
-        public RResponseData AddAdminActionProduct(Product product)
+        public RResponseData AddAdminActionProduct(List<Product> products)
         {
-            if (product == null) { return new RResponseData { Status = false }; }
+            if (products == null) { return new RResponseData { Status = false }; }
             return new RResponseData { Status = true };
         }
+
+        
     }
 }
