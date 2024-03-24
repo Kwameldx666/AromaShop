@@ -21,7 +21,8 @@ namespace Lab_TW.App_Start
                         "~/vendors/themify-icons/themify-icons.css",
                         "~/vendors/fontawesome/css/all.min.css",
                         "~/vendors/nice-select/nice-select.css",
-                        "~/vendors/nouislider/nouislider.min.css"));
+                        "~/vendors/nouislider/nouislider.min.css",
+                        "~/vendors/user/user.css"));
             bundles.Add(new ScriptBundle("~/bundles/jqueryform").Include(
                     "~/vendors/jquery.form.js"));
 
@@ -60,6 +61,9 @@ namespace Lab_TW.App_Start
             // Ваш основной JS файл
             bundles.Add(new ScriptBundle("~/bundles/mainjs").Include(
                       "~/js/main.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/user").Include(
+                     "~/vendors/user/select.min.js"));
 
             BundleTable.EnableOptimizations = true;
         }

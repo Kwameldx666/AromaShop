@@ -25,35 +25,40 @@ namespace Lab_TW.Controllers
             _product = bl.AddProductBL();
 
         }
-        [HttpGet]
-        public ActionResult AddProducts()
+
+        public ActionResult AddProduct()
         {
-            // Инициализируем модель с одним пустым продуктом для отображения на форме
-            var products = new List<Product> { new Product() };
-            return View(products);
+            // Инициализация списка продуктов. Если нет продуктов для отображения,
+            // передается пустой список, а не null.
+      
+
+            // Здесь может быть логика для заполнения списка продуктов,
+            // если в вашем приложении это предусмотрено.
+
+            return View(); // Передача списка в представление.
         }
+
         [HttpPost]
 
-        public ActionResult Index(List<Product> products)
-        {
-            if (products != null && products.Count > 0)
-            {
-                foreach (var product in products)
-                {
+        public ActionResult AddProducts(Product product)
+        {    
                     var AdminAddProduct = new Product
                     {
+                        
                         Price = product.Price,
-                        Id = product.Id,
+                       
                         Description = product.Description,
                         Name = product.Name,
                         Category = product.Category,
-                        Count = products.Count,
-                 
-                        // Убедитесь, что у вас есть соответствующие свойства в вашем классе Product
+                        ProductType = product.ProductType,
+                     
+
+
+                       
                     };
 
 
-                    RResponseData response = _product.AdminAddAction(products);
+                    RResponseData response = _product.AdminAddAction(product);
                     {
                         if (response != null && response.Status)
                         {
@@ -63,10 +68,6 @@ namespace Lab_TW.Controllers
                         else
                             return RedirectToAction("AddProduct", "Home");
                     }
-
-                }
-            }
-            return View(products);
         }
     }
 }

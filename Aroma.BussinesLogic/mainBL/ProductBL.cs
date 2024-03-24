@@ -19,7 +19,7 @@ namespace Aroma.BussinesLogic.mainBL
         }
 
 
-        public RResponseData AdminAddAction(List<Product> product)
+        public RResponseData AdminAddAction(Product product)
         {
             return AddAdminActionProduct(product);
         }

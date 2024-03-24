@@ -13,7 +13,7 @@ namespace Aroma.BussinesLogic.Interface
     {
         ProductDataModel AddManyProducts();
 
-        RResponseData AdminAddAction(List<Product> product);
+        RResponseData AdminAddAction(Product product);
 
     }
 }

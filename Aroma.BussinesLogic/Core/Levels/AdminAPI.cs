@@ -20,7 +20,7 @@ namespace Aroma.BussinesLogic.Core.Levels
 
   
 
-        public RResponseData AddAdminActionProduct(List<Product> products)
+        public RResponseData AddAdminActionProduct(Product products)
         {
             if (products == null) { return new RResponseData { Status = false }; }
             return new RResponseData { Status = true };
