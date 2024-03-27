@@ -24,17 +24,8 @@ namespace Lab_TW.Controllers
         {
             return View();
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-  //      public ActionResult Index(LoginViewModel login)
-   //     {
-     //       if (ModelState.IsValid)
-    //        {
+  
 
-    //        }
-
-    //        return View();
-   //     }
         public ActionResult cart()
         {
             return View();

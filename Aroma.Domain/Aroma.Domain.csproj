@@ -56,7 +56,9 @@
     <Compile Include="Entities\Product\DBModel\Product.cs" />
     <Compile Include="Entities\Product\DBModel\ProductDbTable.cs" />
     <Compile Include="Entities\Product\ProductDataModel.cs" />
+    <Compile Include="Entities\User\UDbTable.cs" />
     <Compile Include="Entities\User\ULoginData.cs" />
+    <Compile Include="Enums\Roles\UserRole.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -65,9 +67,7 @@
       <Name>Aroma.Helpers</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Enums\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
