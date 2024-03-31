@@ -32,16 +32,24 @@ namespace Lab_TW.Controllers
         public ActionResult login(LoginData data)
         {
 
+            /*    var uLoginData = new ULoginData
+                {
+                    IP = "",
+
+                    password = data.Password,
+                    credential = data.Username,
+                    FirstLoginTime = DateTime.Now
+
+                };*/
+
             var uLoginData = new ULoginData
             {
                 IP = "",
-            
-                password = data.Password,
-                credential = data.Username,
-                FirstLoginTime = DateTime.Now
-                
-            };
 
+                password = "passwprd",
+                credential = "data.Username",
+                FirstLoginTime = DateTime.Now
+            };
             RResponseData response = _session.UserLoginAction(uLoginData);
            
             if (response != null && response.Status)

@@ -1,5 +1,6 @@
 ﻿using Aroma.BussinesLogic.Core.Levels;
 using Aroma.BussinesLogic.Interface;
+using Aroma.Domain.Entities.GeneralResponce;
 using Aroma.Domain.Entities.GeneralResponse;
 using Aroma.Domain.Entities.User;
 using System;
@@ -18,6 +19,11 @@ namespace Aroma.BussinesLogic.mainBL
                 return ULASessionCheck(data);
         }
 
+
+        public URegisterResp UserRegisterAction (URegisterData uRegisterData)
+        {
+            return RRegisterUpService(uRegisterData);
+        }
        
         
     }

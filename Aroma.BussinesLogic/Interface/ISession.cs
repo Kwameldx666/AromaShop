@@ -1,4 +1,5 @@
 ﻿
+using Aroma.Domain.Entities.GeneralResponce;
 using Aroma.Domain.Entities.GeneralResponse;
 using Aroma.Domain.Entities.Product.DBModel;
 using Aroma.Domain.Entities.User;
@@ -12,8 +13,8 @@ namespace Aroma.BussinesLogic.Interface
 {
     public interface ISession
     {
+  
         RResponseData UserLoginAction(ULoginData data);
-
-      
+        URegisterResp UserRegisterAction(URegisterData uRegisterData);
     }
 }

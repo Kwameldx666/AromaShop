@@ -52,12 +52,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
-    <Compile Include="Entities\GeneralResponce\RRespoceData.cs" />
+    <Compile Include="Entities\GeneralResponse\RRespoceData.cs" />
+    <Compile Include="Entities\GeneralResponse\URegisterResp.cs" />
     <Compile Include="Entities\Product\DBModel\Product.cs" />
     <Compile Include="Entities\Product\DBModel\ProductDbTable.cs" />
     <Compile Include="Entities\Product\ProductDataModel.cs" />
     <Compile Include="Entities\User\UDbTable.cs" />
     <Compile Include="Entities\User\ULoginData.cs" />
+    <Compile Include="Entities\User\URegisterData.cs" />
     <Compile Include="Enums\Roles\UserRole.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
