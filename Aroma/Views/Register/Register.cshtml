@@ -28,19 +28,24 @@
                         @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                     </div>
                     <div class="col-md-12 form-group">
-                        @Html.PasswordFor(m => m.Password  , new { @class = "form-control", placeholder = "Password" })
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Password" })
                         @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
                     </div>
                     <div class="col-md-12 form-group">
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Confirm Password" })
-                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        @Html.PasswordFor(m => m.AcceptPassword, new { @class = "form-control", placeholder = "Confirm Password" })
+                        @Html.ValidationMessageFor(m => m.AcceptPassword, "", new { @class = "text-danger" })
                     </div>
+
+                    if (!string.IsNullOrEmpty(ViewBag.ErrorPassword))
+                    {
+                        <span class="text-danger">@ViewBag.ErrorPassword</span>
+                    }
                     @*<div class="col-md-12 form-group">
-                        <div class="creat_account">
-                            @Html.CheckBoxFor(m => m.RememberMe)
-                            <label for="@Html.IdFor(m => m.RememberMe)">Keep me logged in</label>
-                        </div>
-                    </div>*@
+                <div class="creat_account">
+                    @Html.CheckBoxFor(m => m.RememberMe)
+                    <label for="@Html.IdFor(m => m.RememberMe)">Keep me logged in</label>
+                </div>
+            </div>*@
                     <div class="col-md-12 form-group">
                         <button type="submit" class="button button-register w-100">Register</button>
                     </div>

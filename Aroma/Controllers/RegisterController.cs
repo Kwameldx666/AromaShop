@@ -39,6 +39,7 @@ namespace Lab_TW.Controllers
                 Email = RegData.Email,
                 IP = "0.0.0.0",
                 RegDate = DateTime.Now,
+                AcceptPassword = RegData.AcceptPassword
 
 
             };
@@ -54,7 +55,13 @@ namespace Lab_TW.Controllers
 
 
             }
-            return RedirectToAction("login", "home");
+            if (uRegisterResp.ResponseMessage != null)
+            {
+                string Error = "Пароли не совпадают. Повторите попытку";
+                ViewBag.ErrorPassword = Error;
+            }
+
+            return View("~/Views/Register/Register.cshtml");
 
 
         }
