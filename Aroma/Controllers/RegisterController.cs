@@ -29,20 +29,12 @@ namespace Lab_TW.Controllers
         }
         [HttpPost]
 
-        public ActionResult Register(RegisterData data)
+        public ActionResult Register(RegisterData RegData)
         {
-            var RegData = new RegisterData()
-            {
-                Name = "NameUser",
-                Password = "PasswordUser",
-                Email = "Mail@mail.ru",
 
-
-
-            };
             var uRegData = new URegisterData()
             {
-                Name = RegData.Name,
+                Name = RegData.Username,
                 Password = RegData.Password,
                 Email = RegData.Email,
                 IP = "0.0.0.0",
