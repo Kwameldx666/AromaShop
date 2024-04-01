@@ -42,22 +42,21 @@ namespace Lab_TW.Controllers
 
             };
 
-   
+
             RResponseData response = _session.UserLoginAction(uLoginData);
-           
+
             if (response != null && response.Status)
             {
-             
-                    return RedirectToAction("Index", "Home");
-                
-                
-              
-       
+                ViewBag.UserName = uLoginData.credential;
+                ViewBag.IsUserLoggedIn = true; // Статус аутентификации сохраняется между запросами
+                return View("~/Views/Home/Index.cshtml");
+
+
+
+
 
             }
             return RedirectToAction("login", "home");
-
-
         }
-    }
+        }
 }

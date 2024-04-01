@@ -57,8 +57,7 @@ namespace Lab_TW.Controllers
             }
             if (uRegisterResp.ResponseMessage != null)
             {
-                string Error = "Пароли не совпадают. Повторите попытку";
-                ViewBag.ErrorPassword = Error;
+                ViewBag.ErrorPassword = uRegisterResp.ResponseMessage;
             }
 
             return View("~/Views/Register/Register.cshtml");
