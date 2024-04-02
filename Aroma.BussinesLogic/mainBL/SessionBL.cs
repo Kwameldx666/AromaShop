@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Aroma.BussinesLogic.mainBL
 {
@@ -24,7 +25,12 @@ namespace Aroma.BussinesLogic.mainBL
         {
             return RRegisterUpService(uRegisterData);
         }
-       
-        
+
+        public HttpCookie GenCookie(string loginCredential)
+        {
+            return Cookie(loginCredential);
+        }
+
+
     }
 }

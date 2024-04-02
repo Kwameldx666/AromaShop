@@ -57,6 +57,7 @@
     <Compile Include="Entities\Product\DBModel\Product.cs" />
     <Compile Include="Entities\Product\DBModel\ProductDbTable.cs" />
     <Compile Include="Entities\Product\ProductDataModel.cs" />
+    <Compile Include="Entities\User\Session.cs" />
     <Compile Include="Entities\User\UDbTable.cs" />
     <Compile Include="Entities\User\ULoginData.cs" />
     <Compile Include="Entities\User\URegisterData.cs" />
@@ -73,6 +74,8 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Volo.Abp.AutoMapper.abppkg" />
+    <None Include="Volo.Abp.AutoMapper.abppkg.analyze.json" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

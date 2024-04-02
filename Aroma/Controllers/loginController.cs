@@ -16,7 +16,7 @@ namespace Lab_TW.Controllers
 {
     public class loginController : Controller
     {
-        internal ISession _session;
+        private readonly  ISession _session;
         public loginController() 
         {
             var logicBL = new BussinesLogic();
@@ -29,34 +29,46 @@ namespace Lab_TW.Controllers
             return View();
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult login(LoginData data)
         {
-
-            var uLoginData = new ULoginData
+            if (ModelState.IsValid)
             {
-                IP = "",
+            /*    Mapper.Initialize(cfg => cfg.CreateMap<LoginData, ULoginData>());
+                var data = Mapper.Map<ULoginData>(login);*/
+                var uLoginData = new ULoginData
+                {
+                    IP = Request.UserHostAddress,
 
-                password = data.Password,
-                credential = data.Username,
-                FirstLoginTime = DateTime.Now
+                    password = data.Password,
+                    credential = data.Username,
+                    FirstLoginTime = DateTime.Now
 
-            };
-
-
-            RResponseData response = _session.UserLoginAction(uLoginData);
-
-            if (response != null && response.Status)
-            {
-                ViewBag.UserName = uLoginData.credential;
-                ViewBag.IsUserLoggedIn = true; // Статус аутентификации сохраняется между запросами
-                return View("~/Views/Home/Index.cshtml");
+                };
 
 
+                RResponseData response = _session.UserLoginAction(uLoginData);
+
+                if (response != null && response.Status)
+                {
+                    ViewBag.UserName = uLoginData.credential;
+                    ViewBag.IsUserLoggedIn = true; // Статус аутентификации сохраняется между запросами
+                   
+                    
+                    
+                    HttpCookie cookie = _session.GenCookie(uLoginData.credential);
+                    ControllerContext.HttpContext.Response.Cookies.Add(cookie);
+                    return View("~/Views/Home/Index.cshtml");
 
 
 
+
+
+                }
+                return RedirectToAction("login", "home");
             }
-            return RedirectToAction("login", "home");
+            return View();
         }
-        }
+       
+    }
 }
