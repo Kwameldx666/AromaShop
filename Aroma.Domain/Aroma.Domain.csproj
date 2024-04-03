@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="Entities\GeneralResponse\ResponseAddProduct.cs" />
     <Compile Include="Entities\GeneralResponse\RRespoceData.cs" />
     <Compile Include="Entities\GeneralResponse\URegisterResp.cs" />
     <Compile Include="Entities\Product\DBModel\Product.cs" />

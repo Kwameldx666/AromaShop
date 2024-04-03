@@ -38,7 +38,7 @@ namespace Lab_TW.Controllers
                 Password = RegData.Password,
                 Email = RegData.Email,
                 IP = Request.UserHostAddress,
-            RegDate = DateTime.Now,
+                RegDate = DateTime.Now,
                 AcceptPassword = RegData.AcceptPassword
 
 

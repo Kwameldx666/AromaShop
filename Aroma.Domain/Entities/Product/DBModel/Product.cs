@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aroma.Domain.Entities.GeneralResponse;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,7 @@ namespace Aroma.Domain.Entities.Product.DBModel
         public decimal Price { get; set; }
         public string Category { get; set; }
         public string ProductType { get; set; }
+
+ 
     }
 }

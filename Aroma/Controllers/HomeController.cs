@@ -63,10 +63,6 @@ namespace Lab_TW.Controllers
             return View();
         }
 
-        public ActionResult login()
-        {
-            return View();
-        }
 
         public ActionResult AddProduct() { return View(); }
     }

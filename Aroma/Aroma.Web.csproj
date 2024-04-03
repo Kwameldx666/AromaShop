@@ -886,7 +886,7 @@
     <Content Include="Views\Home\confirmation.cshtml" />
     <Content Include="Views\Home\contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\login.cshtml" />
+    <Content Include="Views\Login\login.cshtml" />
     <Content Include="Views\Register\Register.cshtml" />
     <Content Include="Views\Home\SingleBlog.cshtml" />
     <Content Include="Views\Home\SingleProduct.cshtml" />
@@ -920,6 +920,8 @@
     <Content Include="Views\Home\AddProduct.cshtml" />
     <Content Include="Volo.Abp.AutoMapper.abppkg.analyze.json" />
     <Content Include="Volo.Abp.AutoMapper.abppkg" />
+    <Content Include="Views\Shared\_LayoutProductAdminPanel.cshtml" />
+    <Content Include="Views\Product\ProductsAdminPanel.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -931,7 +933,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Scripts\NewFolder1\" />
     <Folder Include="Views\Blog\" />
-    <Folder Include="Views\Product\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aroma.BussinesLogic\Aroma.BussinesLogic.csproj">

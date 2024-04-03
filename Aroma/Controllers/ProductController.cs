@@ -16,9 +16,13 @@ namespace Lab_TW.Controllers
     {
 
 
-
         internal IProduct _product;
-        internal ISession _session;
+
+        public ActionResult ProductsAdminPanel()
+        {
+            return View();
+        }
+
         public ProductController()
         {
             var bl = new BussinesLogic();
@@ -41,7 +45,8 @@ namespace Lab_TW.Controllers
         [HttpPost]
 
         public ActionResult AddProducts(Product product)
-        {    
+        {
+                     
                     var AdminAddProduct = new Product
                     {
                         
@@ -58,7 +63,7 @@ namespace Lab_TW.Controllers
                     };
 
 
-                    RResponseData response = _product.AdminAddAction(product);
+            ResponseAddProduct response = _product.AdminAddAction(product);
                     {
                         if (response != null && response.Status)
                         {
@@ -68,6 +73,7 @@ namespace Lab_TW.Controllers
                         else
                             return RedirectToAction("AddProduct", "Home");
                     }
+
         }
     }
 }

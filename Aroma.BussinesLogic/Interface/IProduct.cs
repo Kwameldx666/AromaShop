@@ -11,9 +11,9 @@ namespace Aroma.BussinesLogic.Interface
 {
     public interface IProduct
     {
-        ProductDataModel AddManyProducts();
+ 
 
-        RResponseData AdminAddAction(Product product);
+        ResponseAddProduct AdminAddAction(Product product);
 
     }
 }

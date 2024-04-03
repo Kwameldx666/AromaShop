@@ -1,0 +1,81 @@
+﻿@model List<Lab_TW.Models.Product>
+
+@{
+    ViewBag.Title = "ProductsAdminPanel";
+    Layout = "~/Views/Shared/_LayoutProductAdminPanel.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 100%;
+            padding: 20px;
+        }
+
+        .add-product-btn {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .product-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .product {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .product-name {
+            flex-grow: 1;
+        }
+
+        .action-btn {
+            margin-left: 10px;
+            padding: 5px 10px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .edit-btn {
+            background-color: #008CBA;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <button class="add-product-btn">Add Product</button>
+
+        <ul class="product-list">
+            <li class="product">
+                <span class="product-name">Product 1</span>
+                <button class="action-btn edit-btn">Edit</button>
+                <button class="action-btn">Delete</button>
+            </li>
+            <!-- Repeat for each product -->
+        </ul>
+    </div>
+
+</body>
+</html>

@@ -59,6 +59,7 @@
     <Compile Include="Core\Levels\AdminAPI.cs" />
     <Compile Include="Core\Levels\ModeratorAPI.cs" />
     <Compile Include="Core\Levels\UserAPI.cs" />
+    <Compile Include="DBModel\Seed\ProductContext.cs" />
     <Compile Include="DBModel\Seed\SessionContext.cs" />
     <Compile Include="DBModel\Seed\UserContext.cs" />
     <Compile Include="Interface\IProduct.cs" />
