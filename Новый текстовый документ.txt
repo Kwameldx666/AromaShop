@@ -1,0 +1,9 @@
+    @foreach (var product in Model)
+    {
+        <li class="product">
+            <span class="product-name">@product.Name</span>
+            <!-- Предположим, у вас есть маршруты для редактирования и удаления -->
+            <button class="action-btn edit-btn" onclick="location.href='@Url.Action("EditProduct", "Product", new { id = product.Id })'">Edit</button>
+            <button class="action-btn" onclick="location.href='@Url.Action("DeleteProduct", "Product", new { id = product.Id })'">Delete</button>
+        </li>
+    }

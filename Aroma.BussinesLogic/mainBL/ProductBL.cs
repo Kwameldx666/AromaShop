@@ -13,11 +13,18 @@ namespace Aroma.BussinesLogic.mainBL
 {
     public class ProductBL : AdminAPI, IProduct
     {
-  
+  public ResponseGetProducts AdminGetAction()
+        {
+            return GetAllProducts();
+        }
 
         public ResponseAddProduct AdminAddAction(Product products)
         {
             return AddAdminActionProduct(products);
+        }
+        public ResponseToEditProduct AdminUpdateAction(Product updateProduct)
+        {
+            return EditAdminActionProduct(updateProduct);
         }
 
     }

@@ -64,6 +64,6 @@ namespace Lab_TW.Controllers
         }
 
 
-        public ActionResult AddProduct() { return View(); }
+       
     }
 }

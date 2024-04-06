@@ -917,7 +917,7 @@
     <Content Include="Views\web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_LayoutAddProduct.cshtml" />
-    <Content Include="Views\Home\AddProduct.cshtml" />
+    <Content Include="Views\Product\AddProduct.cshtml" />
     <Content Include="Volo.Abp.AutoMapper.abppkg.analyze.json" />
     <Content Include="Volo.Abp.AutoMapper.abppkg" />
     <Content Include="Views\Shared\_LayoutProductAdminPanel.cshtml" />

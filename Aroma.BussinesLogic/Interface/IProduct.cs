@@ -11,9 +11,11 @@ namespace Aroma.BussinesLogic.Interface
 {
     public interface IProduct
     {
- 
 
+        ResponseGetProducts AdminGetAction();
         ResponseAddProduct AdminAddAction(Product product);
+        ResponseToEditProduct AdminUpdateAction(Product updateProduct);
+     
 
     }
 }
