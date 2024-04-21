@@ -1,0 +1,78 @@
+﻿@model Lab_TW.Models.Product
+@{
+    ViewBag.Title = "SingleProduct";
+    Layout = "~/Views/Shared/_LayoutSingleProduct.cshtml";
+}
+<div class="container">
+    <div class="row s_product_inner">
+        <div class="col-lg-6">
+            <div class="owl-carousel owl-theme s_Product_carousel">
+                <div class="single-prd-item">
+                    <img class="img-fluid" src="@Url.Content(Model.ImageUrl)" alt="">
+                </div>
+                <div class="single-prd-item">
+                    <img class="img-fluid" src="@Url.Content(Model.ImageUrl)" alt="">
+                </div>
+                <div class="single-prd-item">
+                    <img class="img-fluid" src="@Url.Content(Model.ImageUrl)" alt="">
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5 offset-lg-1">
+            <div class="s_product_text">
+                <h3>@Model.Name</h3>
+                <h2>$@Model.Price</h2>
+                <ul class="list">
+                    <li><a class="active" href="#"><span>Category</span> : @Model.Category</a></li>
+                    <li><a href="#"><span>Availibility</span> : In Stock @Model.Quantity</a></li>
+                </ul>
+                <p>
+                    @Model.Description
+                </p>
+                <div class="product_count">
+
+
+
+                    <form class="add-to-cart-form">
+                        <input type="hidden" name="productId" value="@Model.Id" />
+                        <button type="button" class="add-to-cart-btn">
+                            <i class="ti-shopping-cart"></i> Добавить в корзину
+                        </button>
+                    </form>
+                </div>
+                <div class="card_area d-flex align-items-center">
+                    <a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
+                    <a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ================ Subscribe section end ================= -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.add-to-cart-btn').click(function (e) {
+            e.preventDefault(); // Предотвращаем стандартное действие отправки формы
+
+            var productId = $(this).closest('form').find('input[name="productId"]').val();
+
+            console.log('Product ID:', productId); 
+
+            // Отправляем AJAX запрос на сервер
+            $.ajax({
+                url: '/Product/AddProductToCart', // Замените на URL вашего метода контроллера для добавления в корзину
+                method: 'POST',
+                data: { productId: productId, quantity: 1 },
+                success: function (response) {
+                    alert('Товар успешно добавлен в корзину!');
+                    // Можно выполнить дополнительные действия после успешного добавления
+                },
+                error: function () {
+                    alert('Ошибка при добавлении товара в корзину.');
+                }
+            });
+        });
+    });
+</script>

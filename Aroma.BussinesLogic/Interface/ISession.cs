@@ -14,7 +14,13 @@ namespace Aroma.BussinesLogic.Interface
     public interface ISession
     {
         HttpCookie GenCookie(string credential);
+        UserMinimal GetUserByCookie(string value);
         RResponseData UserLoginAction(ULoginData data);
         URegisterResp UserRegisterAction(URegisterData uRegisterData);
+        ResponseLogout UserLogout();
+
+        ResponseViewProfile ViewProfile(int userId);
+        ResponseToEditProfile ProfileUpdateAction(ULoginData updateProfile);
+        ResponseEditPassword EditUserPass(ULoginData user,string newPassword);
     }
 }

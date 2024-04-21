@@ -37,7 +37,7 @@ namespace Aroma.Domain.Entities.User
         public string LastIP { get; set; }
 
         public UserRole Level { get; set; }
-
-
+        public decimal Balance { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 }

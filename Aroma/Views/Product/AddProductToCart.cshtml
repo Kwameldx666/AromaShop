@@ -1,0 +1,23 @@
+﻿@model List<Lab_TW.Models.Product>
+@{
+    ViewBag.Title = "AddProductToCart";
+    Layout = "~/Views/Shared/_LayoutAddProductToCart.cshtml";
+}
+<h2>Корзина</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Наименование</th>
+            <th>Цена</th>
+        </tr>
+    </thead>
+    <tbody>
+    @*    @foreach (var product in Model)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>@product.Price.ToString("F2")</td>
+            </tr>
+        }*@
+    </tbody>
+</table>

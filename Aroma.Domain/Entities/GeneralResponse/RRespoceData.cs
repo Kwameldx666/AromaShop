@@ -11,5 +11,9 @@ namespace Aroma.Domain.Entities.GeneralResponse
         public bool Status { get; set; }
         public string   ResponseMessage { get; set; }
 
+        public bool AdminMod { get; set; }
+
+        public bool ModeratorMod { get; set; }
+
     }
 }

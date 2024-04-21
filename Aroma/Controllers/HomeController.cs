@@ -49,7 +49,10 @@ namespace Lab_TW.Controllers
             return View();
         }
 
-
+        public ActionResult register()
+        {
+            return View();
+        }
         public ActionResult SingleBlog()
         {
             return View();
@@ -63,7 +66,11 @@ namespace Lab_TW.Controllers
             return View();
         }
 
+        public ActionResult login()
+        {
+            return View();
+        }
 
-       
+        public ActionResult AddProduct() { return View(); }
     }
 }

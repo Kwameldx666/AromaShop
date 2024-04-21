@@ -12,16 +12,16 @@ using System.Web;
 
 namespace Aroma.BussinesLogic.mainBL
 {
-    public class SessionBL:UserAPI, ISession
+    public class SessionBL : UserAPI, ISession
     {
-        public RResponseData UserLoginAction (ULoginData data)
+        public RResponseData UserLoginAction(ULoginData data)
         {
-         
-                return ULASessionCheck(data);
+
+            return ULASessionCheck(data);
         }
 
 
-        public URegisterResp UserRegisterAction (URegisterData uRegisterData)
+        public URegisterResp UserRegisterAction(URegisterData uRegisterData)
         {
             return RRegisterUpService(uRegisterData);
         }
@@ -29,6 +29,31 @@ namespace Aroma.BussinesLogic.mainBL
         public HttpCookie GenCookie(string loginCredential)
         {
             return Cookie(loginCredential);
+        }
+
+        public UserMinimal GetUserByCookie(string apiCookieValue)
+        {
+            return UserCookie(apiCookieValue);
+        }
+
+        public ResponseLogout UserLogout()
+        {
+            return LogoutUser();
+        }
+
+        public ResponseViewProfile ViewProfile(int userId)
+        {
+            return ViewProfileAction(userId);
+        }
+
+        public ResponseToEditProfile ProfileUpdateAction(ULoginData updateProfile)
+        {
+            return EditProfileAction(updateProfile);
+        }
+
+        public ResponseEditPassword EditUserPass(ULoginData user, string newPassword)
+        {
+            return EditPassword(user,newPassword);
         }
 
 

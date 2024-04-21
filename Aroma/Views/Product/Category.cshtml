@@ -1,0 +1,296 @@
+﻿@model List<Lab_TW.Models.Product>
+@{
+    ViewBag.Title = "cart";
+    Layout = "~/Views/Shared/_LayoutCategory.cshtml";
+}
+<div class="container">
+    <div class="row">
+        <div class="col-xl-3 col-lg-4 col-md-5">
+            <div class="sidebar-categories">
+                <div class="head">Browse Categories</div>
+                <ul class="main-categories">
+                    <li class="common-filter">
+                        <form action="#">
+                            <ul>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="men" name="brand"><label for="men">Men<span> (3600)</span></label></li>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="women" name="brand"><label for="women">Women<span> (3600)</span></label></li>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="accessories" name="brand"><label for="accessories">Accessories<span> (3600)</span></label></li>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="footwear" name="brand"><label for="footwear">Footwear<span> (3600)</span></label></li>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="bayItem" name="brand"><label for="bayItem">Bay item<span> (3600)</span></label></li>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="electronics" name="brand"><label for="electronics">Electronics<span> (3600)</span></label></li>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="food" name="brand"><label for="food">Food<span> (3600)</span></label></li>
+                            </ul>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+            <div class="sidebar-filter">
+                <div class="top-filter-head">Product Filters</div>
+                <div class="common-filter">
+                    <div class="head">Brands</div>
+                    <form action="#">
+                        <ul>
+                            <li class="filter-list"><input class="pixel-radio" type="radio" id="apple" name="brand"><label for="apple">Apple<span>(29)</span></label></li>
+                            <li class="filter-list"><input class="pixel-radio" type="radio" id="asus" name="brand"><label for="asus">Asus<span>(29)</span></label></li>
+                            <li class="filter-list"><input class="pixel-radio" type="radio" id="gionee" name="brand"><label for="gionee">Gionee<span>(19)</span></label></li>
+                            <li class="filter-list"><input class="pixel-radio" type="radio" id="micromax" name="brand"><label for="micromax">Micromax<span>(19)</span></label></li>
+                            <li class="filter-list"><input class="pixel-radio" type="radio" id="samsung" name="brand"><label for="samsung">Samsung<span>(19)</span></label></li>
+                        </ul>
+                    </form>
+                </div>
+                <div class="common-filter">
+                    <div class="head">Color</div>
+                    <form action="#">
+                        <ul>
+                            <li class="filter-list"><input class="pixel-radio" type="radio" id="black" name="color"><label for="black">Black<span>(29)</span></label></li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="radio" id="balckleather" name="color"><label for="balckleather">
+                                    Black
+                                    Leather<span>(29)</span>
+                                </label>
+                            </li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="radio" id="blackred" name="color"><label for="blackred">
+                                    Black
+                                    with red<span>(19)</span>
+                                </label>
+                            </li>
+                            <li class="filter-list"><input class="pixel-radio" type="radio" id="gold" name="color"><label for="gold">Gold<span>(19)</span></label></li>
+                            <li class="filter-list"><input class="pixel-radio" type="radio" id="spacegrey" name="color"><label for="spacegrey">Spacegrey<span>(19)</span></label></li>
+                        </ul>
+                    </form>
+                </div>
+                <div class="common-filter">
+                    <div class="head">Price</div>
+                    <div class="price-range-area">
+                        <div id="price-range"></div>
+                        <div class="value-wrapper d-flex">
+                            <div class="price">Price:</div>
+                            <span>$</span>
+                            <div id="lower-value"></div>
+                            <div class="to">to</div>
+                            <span>$</span>
+                            <div id="upper-value"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-9 col-lg-8 col-md-7">
+            <!-- Start Filter Bar -->
+            <div class="filter-bar d-flex flex-wrap align-items-center">
+                <div class="sorting">
+                    <select>
+                        <option value="1">Default sorting</option>
+                        <option value="1">Default sorting</option>
+                        <option value="1">Default sorting</option>
+                    </select>
+                </div>
+                <div class="sorting mr-auto">
+                    <select>
+                        <option value="1">Show 12</option>
+                        <option value="1">Show 12</option>
+                        <option value="1">Show 12</option>
+                    </select>
+                </div>
+                <div>
+                    <div class="input-group filter-bar-search">
+                        <input type="text" placeholder="Search">
+                        <div class="input-group-append">
+                            <button type="button"><i class="ti-search"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Filter Bar -->
+            <!-- Start Best Seller -->
+            <section class="lattest-product-area pb-40 category-list">
+                <div class="row">
+                    @foreach (var product in Model)
+                    {
+                        <div class="col-md-6 col-lg-4 col-xl-3">
+                            <div class="card text-center card-product">
+                                <div class="card-product__img">
+                                    <img class="card-img" src="@Url.Content(product.ImageUrl)" alt="@product.Name">
+                                    <ul class="card-product__imgOverlay">
+                                        <li>
+                                            <form class="add-to-cart-form">
+                                                <input type="hidden" name="productId" value="@product.Id" />
+                                                <button type="button" class="add-to-cart-btn">
+                                                    <i class="ti-shopping-cart"></i> Добавить в корзину
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="card-body">
+                                    <p>@product.Category</p>
+                                    <h4 class="card-product__title">
+                                        <a href="@Url.Action("SingleProduct", "Product", new { productId = product.Id })">@product.Name</a>
+                                    </h4>
+                                    <p class="card-product__price">$@product.Price.ToString("F2")</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </section>
+            <!-- End Best Seller -->
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        // Обработчик изменения фильтров
+        $('input[type=radio]').change(function () {
+            applyFilters(); // Вызываем функцию применения фильтров при изменении выбора
+        });
+
+        // Функция применения выбранных фильтров и загрузки данных
+        function applyFilters() {
+            var category = $("input[name='category']:checked").val();
+            var brand = $("input[name='brand']:checked").val();
+            var color = $("input[name='color']:checked").val();
+
+            // Отправляем асинхронный POST запрос на сервер для загрузки отфильтрованных данных
+            $.ajax({
+                type: 'POST',
+                url: '/Product/FilterProducts',
+                data: { category: category, brand: brand, color: color },
+                success: function (response) {
+                    if (response && response.success) {
+                        // Обновляем содержимое товаров на странице
+                        updateProductList(response.products);
+                    } else {
+                        console.error('Не удалось загрузить отфильтрованные товары.');
+                        alert('Не удалось загрузить отфильтрованные товары.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Обработка ошибки запроса
+                    console.error('Произошла ошибка при загрузке отфильтрованных товаров:', error);
+                    alert('Произошла ошибка при загрузке отфильтрованных товаров.');
+                }
+            });
+        }
+
+        // Функция обновления списка товаров на странице
+        function updateProductList(products) {
+            var productContainer = $('.category-list .row');
+            productContainer.empty(); // Очищаем текущий список товаров
+
+            if (products && products.length > 0) {
+                // Добавляем новые товары в контейнер
+                products.forEach(function (product) {
+                    var html = '<div class="col-md-6 col-lg-4">
+                    ' +
+                    '<div class="card text-center card-product">
+                    ' +
+                    '<div class="card-product__img">
+                    ' +
+                    '<img class="card-img" src="' + product.imageUrl + '" alt="">' +
+                        '<ul class="card-product__imgOverlay">
+                    ' +
+                    '
+                        < li > <button><i class="ti-search"></i></button></li > ' +
+                    '
+                        < li > <button><i class="ti-shopping-cart"></i></button></li > ' +
+                    '
+                        < li > <button><i class="ti-heart"></i></button></li > ' +
+                    '
+            </ul > ' +
+                    '
+        </div > ' +
+                    '<div class="card-body">
+                    ' +
+                    '<p>' + product.category + '</p>' +
+                        '<h4 class="card-product__title"><a href="#">' + product.name + '</a></h4>' +
+                        '<p class="card-product__price">$' + product.price + '</p>' +
+                        '
+        </div > ' +
+                    '
+    </div > ' +
+                    '
+</div > ';
+
+                    productContainer.append(html);
+                });
+            } else {
+                // Если нет товаров, вы можете вывести сообщение или выполнить другие действия
+                productContainer.append('<p>No products found</p>');
+            }
+        }
+    });
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.add-to-cart-btn').click(function (e) {
+            e.preventDefault(); // Предотвращаем стандартное действие отправки формы
+
+            var productId = $(this).closest('form').find('input[name="productId"]').val();
+
+            // Отправляем AJAX запрос на сервер
+            $.ajax({
+                url: '/Product/AddProductToCart', // Замените на URL вашего метода контроллера для добавления в корзину
+                method: 'POST',
+                data: { productId: productId, quantity: 1 },
+                success: function (response) {
+                    alert('Товар успешно добавлен в корзину!');
+                    // Можно выполнить дополнительные действия после успешного добавления
+                },
+                error: function () {
+                    alert('Ошибка при добавлении товара в корзину.');
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        // Обработчик отправки формы фильтров
+        $('#productFiltersForm').submit(function (e) {
+            e.preventDefault(); // Предотвращаем стандартное поведение формы
+
+            // Получаем выбранные значения фильтров
+            var formData = $(this).serialize();
+
+            // Отправляем AJAX запрос на сервер для фильтрации продуктов
+            $.ajax({
+                type: 'POST',
+                url: '/Product/FilterProducts',
+                data: formData,
+                success: function (response) {
+                    if (response && response.success) {
+                        // Обновляем список продуктов на странице
+                        updateProductList(response.products);
+                    } else {
+                        console.error('Не удалось загрузить отфильтрованные товары.');
+                        alert('Не удалось загрузить отфильтрованные товары.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Произошла ошибка при загрузке отфильтрованных товаров:', error);
+                    alert('Произошла ошибка при загрузке отфильтрованных товаров.');
+                }
+            });
+        });
+
+        // Функция для обновления списка продуктов на странице
+        function updateProductList(products) {
+            var productList = $('#productList');
+            productList.empty(); // Очищаем текущий список продуктов
+
+            if (products && products.length > 0) {
+                // Добавляем новые продукты в контейнер
+                $.each(products, function (index, product) {
+                    productList.append(`<div>${product.Name} - ${product.Price}</div>`);
+                });
+            } else {
+                productList.append('<p>Нет продуктов для отображения.</p>');
+            }
+        }
+    });
+</script>

@@ -14,9 +14,9 @@ namespace Aroma.BussinesLogic.Core.Levels
     {
 
 
-  
 
-        public ResponseAddProduct AddAdminActionProduct(Product products)
+
+        internal ResponseAddProduct AddAdminActionProduct(Product products)
         {
             if (products == null) 
             {
@@ -31,7 +31,9 @@ namespace Aroma.BussinesLogic.Core.Levels
                 ProductType = products.ProductType,
                 Category = products.Category,
                 Description = products.Description,
-                Id = products.Id
+                Id = products.Id,
+                ImageUrl = products.ImageUrl,
+                QuantityProd = products.Quantity,
             };
             using(var db = new ProductContext())
             {
@@ -41,7 +43,7 @@ namespace Aroma.BussinesLogic.Core.Levels
             return new ResponseAddProduct { Status = true };
         }
 
-        public ResponseGetProducts GetAllProducts()
+        internal ResponseGetProducts GetAllProducts()
         {
             try
             {
@@ -59,7 +61,9 @@ namespace Aroma.BussinesLogic.Core.Levels
                             Price = p.Price,
                             ProductType = p.ProductType,
                             Category = p.Category,
-                            Description = p.Description
+                            Description = p.Description,
+                            ImageUrl = p.ImageUrl,
+                            Quantity = p.QuantityProd,
                         }).ToList()
                     };
                 }
@@ -69,9 +73,40 @@ namespace Aroma.BussinesLogic.Core.Levels
                 // В случае ошибки возвращаем статус false и сообщение об ошибке
                 return new ResponseGetProducts { Status = false, Message = ex.Message };
             }
+           
         }
 
-        public ResponseToEditProduct EditAdminActionProduct(Product product)
+        internal ResponseToDeleteProduct DeleteProductAction(Product productToDelete)
+        {
+            if (productToDelete == null || productToDelete.Id == 0)
+            {
+                return new ResponseToDeleteProduct { Status = false, MessageError = "Product to delete is not specified correctly." };
+            }
+
+            try
+            {
+                using (var db = new ProductContext())
+                {
+                    var product =  db.Products.Find(productToDelete.Id); // Ищем товар асинхронно
+                    if (product == null)
+                    {
+                        return new ResponseToDeleteProduct { Status = false, MessageError = "Product not found." };
+                    }
+
+                    db.Products.Remove(product);
+                    db.SaveChanges();// Асинхронно сохраняем изменения в базе данных
+
+                    return new ResponseToDeleteProduct { Status = true, MessageError = "Product successfully deleted." };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ResponseToDeleteProduct { Status = false, MessageError = $"Error deleting product: {ex.Message}" };
+            }
+        }
+
+
+        internal ResponseToEditProduct EditAdminActionProduct(Product product)
         {
             if (product == null )
             {
@@ -87,10 +122,10 @@ namespace Aroma.BussinesLogic.Core.Levels
                     var existingProduct = db.Products.Find(product.Id);
                     while (existingProduct == null)
                     {
-                        product.Id++;
+                   
                         existingProduct = db.Products.Find(product.Id);
                        
-                        if (product.Id > 100)
+               
                         return new ResponseToEditProduct { Status = false, MessageError = "Продукт не найден." };
                     }
 
@@ -98,8 +133,10 @@ namespace Aroma.BussinesLogic.Core.Levels
                     existingProduct.Name = product.Name;
                     existingProduct.Price = product.Price;
                     existingProduct.ProductType = product.ProductType;
+                    existingProduct.ImageUrl = product.ImageUrl;
                     existingProduct.Category = product.Category;
                     existingProduct.Description = product.Description;
+                    existingProduct.QuantityProd = product.Quantity;
 
                     // Сохранение изменений
                     db.SaveChanges();

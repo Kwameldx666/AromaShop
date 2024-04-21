@@ -65,60 +65,52 @@
         $(document).ready(function () {
             $('.edit-btn').click(function (e) {
                 e.preventDefault();
+
                 var $row = $(this).closest('tr');
                 var $tds = $row.find('td').not(':last');
-                var id = $row.data('id'); // Убедитесь, что в вашем HTML есть атрибут data-id для строки
+                var id = $row.data('id');
 
                 if ($(this).text() === 'Edit') {
-                    $.each($tds, function () {
-                        var txt = $(this).text();
-                        $(this).html($('<input>', { value: txt, type: 'text' }));
+                    // Режим редактирования
+                    $tds.each(function () {
+                        var $input = $('<input>', { value: $(this).text() });
+                        $(this).html($input);
                     });
                     $(this).text('Save');
                 } else {
-                    var updatedValues = $tds.find('input').map(function () {
-                        return $(this).val();
+                    // Режим сохранения
+                    var updatedValues = $tds.map(function () {
+                        return $(this).find('input').val();
                     }).get();
 
-                    // Подготавливаем данные для отправки
                     var productData = {
                         Id: id,
                         Name: updatedValues[0],
                         Description: updatedValues[1],
-                        Price: updatedValues[2],
-                        ProductType: updatedValues[3] // Убедитесь, что порядок значений соответствует вашим столбцам
+                        Price: parseFloat(updatedValues[2]), // Преобразуем цену в число
+                        ProductType: updatedValues[3],
+                        Quantity: parseInt(updatedValues[4]) // Преобразуем количество в число
                     };
 
-                    // AJAX-запрос для отправки обновленных данных на сервер
                     $.ajax({
-                        url: '/Product/UpdateProduct', // Убедитесь, что URL соответствует вашему методу в контроллере
+                        url: '/Product/UpdateProduct',
                         type: 'POST',
                         contentType: 'application/json',
                         data: JSON.stringify(productData),
-                        success: function (response) {
-                            if (response.success) {
-                                // Здесь обработка успешного обновления
-                                alert('Продукт успешно обновлен');
-                            } else {
-                                // Обработка ошибок обновления
-                                alert('Ошибка обновления продукта');
-                            }
+                        success: function () {
+                            // После успешного сохранения, обновляем текст ячеек
+                            $tds.each(function (index) {
+                                $(this).text(updatedValues[index]);
+                            });
+                            $('.edit-btn').text('Edit');
                         },
                         error: function () {
-                            // Обработка ошибок связи с сервером
-                            alert('Ошибка связи с сервером');
+                            alert('Ошибка при сохранении данных');
                         }
                     });
-
-                    $.each($tds, function (i, el) {
-                        var input = $(this).find('input');
-                        $(this).text(input.val());
-                    });
-                    $(this).text('Edit');
                 }
             });
         });
-
     </script>
 </head>
 <body>
@@ -135,19 +127,23 @@
                     <th>Description</th>
                     <th>Price</th>
                     <th>Product Type</th>
+                    <th>Quantity</th>
                     <th>Actions</th>
+
                 </tr>
             </thead>
             <tbody>
                 @foreach (var product in Model)
                 {
-                    <tr>
+                    <tr data-id="@product.Id">
+                        <!-- Добавьте атрибут data-id здесь -->
                         <td>@product.Name</td>
                         <td>@product.Description</td>
-                        <td>@product.Price</td>
+                        <td>@product.Price.ToString("0.00")</td>
                         <td>@product.ProductType</td>
+                        <td>@product.Quantity</td>
                         <td>
-                            <a class="action-btn edit-btn" href="#">Edit</a> <!-- Изменил на # для предотвращения перехода -->
+                            <button type="button" class="action-btn edit-btn">Edit</button>
                             @using (Html.BeginForm("DeleteProduct", "Product", new { id = product.Id }, FormMethod.Post))
                             {
                                 @Html.AntiForgeryToken()
@@ -157,6 +153,7 @@
                     </tr>
                 }
             </tbody>
+
         </table>
     </div>
 </body>

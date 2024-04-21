@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Aroma.BussinesLogic.Interface
 {
@@ -15,7 +16,8 @@ namespace Aroma.BussinesLogic.Interface
         ResponseGetProducts AdminGetAction();
         ResponseAddProduct AdminAddAction(Product product);
         ResponseToEditProduct AdminUpdateAction(Product updateProduct);
-     
 
+        ResponseToDeleteProduct  AdminDeleteAction(Product productDelete);
+      
     }
 }

@@ -1,0 +1,74 @@
+﻿@model List<Lab_TW.Models.OrderPr>
+@{
+    ViewBag.Title = "Cart";
+    Layout = "~/Views/Shared/_LayoutCart.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Orders List</title>
+    <style>
+        /* Стили для таблицы */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+        /* Стили для сообщения об отсутствии заказов */
+        .no-orders {
+            font-style: italic;
+            color: #666666;
+        }
+    </style>
+</head>
+<body>
+    <h2>Orders List</h2>
+
+    @if (Model != null && Model.Any())
+    {
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Product ID</th>
+                    <th>Total Price</th>
+                    <th>Order Date</th>
+                    <th>Quantity Ordered</th>
+                    <th>Total Amount</th>
+                    <th>User ID</th>
+                    <th>Product Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>@order.OrderId</td>
+                        <td>@order.ProductId</td>
+                        <td>@order.TotalPrice</td>
+                        <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+                        <td>@order.QuantityOrder</td>
+                        <td>@order.TotalAmount</td>
+                        <td>@order.UserId</td>
+                        <td>@order.ProductType</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="no-orders">No orders available.</p>
+    }
+</body>
+</html>

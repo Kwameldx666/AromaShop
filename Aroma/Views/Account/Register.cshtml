@@ -1,10 +1,10 @@
-﻿
+﻿@model Lab_TW.Models.RegisterData
 @{
     ViewBag.Title = "Register";
     Layout = "~/Views/Shared/_LayoutRegister.cshtml";
 }
 
-@model Lab_TW.Models.RegisterData
+
 
 <div class="container">
     <div class="row">
@@ -15,7 +15,7 @@
             <div class="login_form_inner register_form_inner">
                 <h3>Create an account</h3>
 
-                @using (Html.BeginForm("Register", "Register", FormMethod.Post, new { id = "register_form", @class = "row login_form" }))
+                @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { id = "register_form", @class = "row login_form" }))
                 {
                     @Html.AntiForgeryToken()
 
@@ -41,11 +41,11 @@
                         <span class="text-danger">@ViewBag.ErrorPassword</span>
                     }
                     @*<div class="col-md-12 form-group">
-                <div class="creat_account">
-                    @Html.CheckBoxFor(m => m.RememberMe)
-                    <label for="@Html.IdFor(m => m.RememberMe)">Keep me logged in</label>
-                </div>
-            </div>*@
+                            <div class="creat_account">
+                                @Html.CheckBoxFor(m => m.RememberMe)
+                                <label for="@Html.IdFor(m => m.RememberMe)">Keep me logged in</label>
+                            </div>
+                        </div>*@
                     <div class="col-md-12 form-group">
                         <button type="submit" class="button button-register w-100">Register</button>
                     </div>

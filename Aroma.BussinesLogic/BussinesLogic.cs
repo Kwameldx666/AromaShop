@@ -19,7 +19,9 @@ namespace Aroma.BussinesLogic
             return new ProductBL();
         }
 
-
-        
+        public IOrderService OrderServBL()
+        {
+            return new OrderBL();
+        }
     }
 }

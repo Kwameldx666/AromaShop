@@ -1,0 +1,107 @@
+﻿@model  Lab_TW.Models.LoginData
+
+
+@{
+    ViewBag.Title = "UProfile";
+    Layout = "~/Views/Shared/_LayoutProfile.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль пользователя</title>
+    <!-- Подключаем Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title text-center">Профиль пользователя</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <img src="https://via.placeholder.com/150" class="rounded-circle" alt="Profile Picture">
+                        </div>
+                        <h5 class="card-title">@Model.Username</h5>
+                        <p class="card-text"><strong>Email:</strong> @Model.Email</p>
+                        <p class="card-text"><strong>Balance:</strong> @Model.Balance</p>
+
+                    </div>
+                    <div class="card-footer text-muted text-center">
+                        <!-- Кнопка для открытия модального окна -->
+                        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal">Редактировать профиль</a>
+                        <a href="#" class="btn btn-secondary" data-toggle="modal" data-target="#changePasswordModal">Изменить пароль</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для редактирования профиля -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">Редактировать профиль</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Форма редактирования -->
+                    <form action="@Url.Action("EditProfile", "Account")" method="post">
+                        <div class="form-group">
+                            <label for="userName">Имя пользователя</label>
+                            <input type="text" class="form-control" id="userName" name="Username" value="@Model.Username">
+                        </div>
+                        <div class="form-group">
+                            <label for="userEmail">Email</label>
+                            <input type="email" class="form-control" id="userEmail" name="Email" value="@Model.Email">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                            <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<!-- Модальное окно для изменения пароля -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changePasswordModalLabel">Изменить пароль</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Форма изменения пароля -->
+                <form action="@Url.Action("ChangePassword", "Account")" method="post">
+                    <div class="form-group">
+                        <label for="newPassword">Новый пароль</label>
+                        <input type="password" class="form-control" id="newPassword" name="NewPassword">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Подтвердите пароль</label>
+                        <input type="password" class="form-control" id="confirmPassword" name="ConfirmPassword">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        <button type="submit" class="btn btn-primary">Сохранить пароль</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

@@ -8,17 +8,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Aroma.BussinesLogic.mainBL
 {
     public class ProductBL : AdminAPI, IProduct
     {
-  public ResponseGetProducts AdminGetAction()
+        public ResponseGetProducts AdminGetAction()
         {
             return GetAllProducts();
         }
 
-        public ResponseAddProduct AdminAddAction(Product products)
+        public ResponseAddProduct AdminAddAction(Product products )
         {
             return AddAdminActionProduct(products);
         }
@@ -27,5 +28,12 @@ namespace Aroma.BussinesLogic.mainBL
             return EditAdminActionProduct(updateProduct);
         }
 
+        public ResponseToDeleteProduct AdminDeleteAction(Product productDelete)
+        {
+            return  DeleteProductAction(productDelete);
+        }
+
+
+      
     }
 }

@@ -1,0 +1,180 @@
+﻿@model List<Lab_TW.Models.OrderPr>
+@{
+    ViewBag.Title = "Order Confirm";
+    Layout = "~/Views/Shared/_LayoutOrderConfirm.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm or Modify Order</title>
+    <!-- Подключаем Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h2>Order Details</h2>
+
+        @if (Model != null && Model.Any())
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Total Price</th>
+                        <th>Product Type</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td>@order.Product.Name</td>
+                            <td>
+                                <!-- Форма для изменения количества товара -->
+                                <form id="updateQuantityForm_@order.ProductId">
+                                    <input type="hidden" name="productId" value="@order.ProductId" />
+                                    <input type="number" name="quantity" value="@order.QuantityOrder" min="1" />
+                                    <button type="button" class="btn btn-primary update-quantity-btn" data-product-id="@order.ProductId">Update Quantity</button>
+                                </form>
+                            </td>
+                            <td>@order.TotalPrice.ToString("C")</td>
+                            <td>@order.ProductType</td>
+                            <td>
+                                <!-- Кнопка для удаления товара -->
+
+                                <input type="hidden" name="productId" value="@order.ProductId" />
+
+
+                                <button type="button" class="delete-btn" data-product-id="@order.ProductId">Remove</button>
+
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- Кнопка подтверждения заказа внизу страницы -->
+            <form id="orderForm">
+                 <button type="submit" class="btn btn-primary float-right">Confirm Order</button>
+            </form>
+
+
+            <!-- Блок для подсчета общей суммы товаров -->
+            <div class="mt-4">
+                <h4>Total Amount:</h4>
+                <p>@Model.Sum(o => o.TotalAmount).ToString("C")</p>
+            </div>
+        }
+        else
+        {
+            <p>No orders available.</p>
+        }
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Обработчик отправки формы
+            $(document).on('click', '.btn.btn-primary.float-right', function (e) {
+                e.preventDefault(); // Предотвратить стандартное действие кнопки
+                // Отправляем AJAX-запрос на сервер
+                $.ajax({
+                    type: 'POST', // Метод HTTP-запроса
+                    url: '/Order/ConfirmPurchase', // URL для отправки запроса
+                    data: $(this).serialize(), // Сериализуем данные формы для отправки
+                    success: function (response) {
+                        if (response.status) {
+                        
+                            alert('Вы успешно купили товар!');
+                        } else {
+                            alert('Вы успешно купили товар!');
+                        }
+                    },
+                    error: function () {
+                        alert('Произошла ошибка при отправке запроса.');
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- Подключаем jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Обработчик события нажатия на кнопку обновления количества товара
+            $('.update-quantity-btn').click(function () {
+                var productId = $(this).closest('form').find('input[name="productId"]').val();
+                var quantity = $(this).closest('form').find('input[name="quantity"]').val();
+
+                // Отправляем AJAX запрос на сервер для обновления количества товара
+                $.ajax({
+                    url: '/Order/UpdateQuantity',
+                    method: 'POST',
+                    data: {
+                        productId: productId,
+                        quantityOrder: quantity
+                    },
+                    success: function (response) {
+                        // Обновляем данные на странице после успешного обновления
+                        if (response.status) {
+                            alert('Quantity updated successfully!');
+                            // Можно выполнить дополнительные действия после успешного обновления
+                        } else {
+                            alert('Failed to update quantity.');
+                        }
+                    },
+                    error: function () {
+                        alert('Error occurred while updating quantity.');
+                    }
+                });
+            });
+        });
+    </script>
+    <!-- Подключение jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Подключение jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Обработчик события нажатия на кнопку удаления товара
+            $(document).on('click', '.delete-btn', function (e) {
+                e.preventDefault(); // Предотвратить стандартное действие кнопки
+
+                var productId = $(this).data('product-id'); // Получаем ID товара из атрибута data-product-id
+
+                // Отправляем AJAX запрос на сервер для удаления товара
+                $.ajax({
+                    url: '/Order/DeleteOrder', // Укажите URL вашего метода контроллера для удаления заказа
+                    type: 'POST',
+                    data: { productId: productId }, // Передаем параметр productId
+                    success: function (response) {
+                        if (response.success) {
+                            // Успешно удалено, выполните дополнительные действия по необходимости
+                            alert('Order removed successfully!');
+                        } else {
+                            // Возникла ошибка при удалении
+                            alert('Failed to remove order.');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Ошибка AJAX запроса
+                        alert('Error occurred while removing order: ' + error);
+                    }
+                });
+            });
+        });
+    </script>
+
+
+    <!-- Подключаем Bootstrap JS (необходим для работы некоторых компонентов) -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

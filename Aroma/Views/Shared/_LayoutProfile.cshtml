@@ -1,0 +1,33 @@
+﻿@using System.Web.Optimization;﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Aroma Shop - Blog</title>
+    @Styles.Render("~/Content/css")
+</head>
+<body>
+    <header class="header_area">
+        @Html.Partial("_Navbar")
+    </header>
+
+
+    <section class="blog_area">
+        @RenderBody()
+    </section>
+
+
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/skrollr")
+    @Scripts.Render("~/bundles/owlcarousel")
+    @Scripts.Render("~/bundles/niceselect")
+    @Scripts.Render("~/bundles/ajaxchimp")
+    @Scripts.Render("~/bundles/mailscrip")
+    @Scripts.Render("~/bundles/mainjs")
+    @Scripts.Render("~/bundles/user")
+</body>
+</html>
