@@ -1,4 +1,8 @@
-﻿using Lab_TW.Models;
+﻿using Aroma.BussinesLogic;
+using Aroma.BussinesLogic.Interface;
+using Aroma.Domain.Entities.GeneralResponse;
+using Lab_TW.Extension;
+using Lab_TW.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +12,52 @@ using System.Web.Security;
 
 namespace Lab_TW.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
+        private readonly IProduct _product;
         // GET: Home
+        public HomeController()
+        {
+            var bl = new BussinesLogic();
+            _product = bl.AddProductBL();
+        }
         public ActionResult Index()
         {
-        
-            return View();
+            SessionStatus();
+            if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            ViewBag.IsUserLoggedIn = true;
+            var user = System.Web.HttpContext.Current.GetMySessionObject();
+
+            ResponseGetProducts response = _product.AdminGetAction();
+
+            var viewModelProducts = response.Products.Select(p => new Lab_TW.Models.Product
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                Category = p.Category,
+                ProductType = p.ProductType,
+                Description = p.Description,
+                ImageUrl = p.ImageUrl,
+                Quantity = p.Quantity,
+            }).ToList();
+            if (response.Status)
+            {
+                // Если запрос прошёл успешно, отображаем список продуктов
+                return View(viewModelProducts);
+            }
+            else
+            {
+                // Если при запросе возникла ошибка, отображаем сообщение об ошибке
+                ViewBag.ErrorMessage = response.Message;
+                return View("Error");
+            }
+
+ 
+
         }
 
 
@@ -24,7 +67,7 @@ namespace Lab_TW.Controllers
         {
             return View();
         }
-  
+
 
         public ActionResult cart()
         {
@@ -49,10 +92,7 @@ namespace Lab_TW.Controllers
             return View();
         }
 
-        public ActionResult register()
-        {
-            return View();
-        }
+
         public ActionResult SingleBlog()
         {
             return View();
@@ -66,11 +106,7 @@ namespace Lab_TW.Controllers
             return View();
         }
 
-        public ActionResult login()
-        {
-            return View();
-        }
 
-        public ActionResult AddProduct() { return View(); }
+       
     }
 }

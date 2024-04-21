@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace Lab_TW.Controllers
 {
+
     public class BlogController : Controller
     {
         // GET: Blog

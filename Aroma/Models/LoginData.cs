@@ -11,6 +11,9 @@ namespace Lab_TW.Models
         public string Password { get; set; }
         public string RememberMe { get; set; }
 
+        public string Email {  get; set; }
 
+        public int Id { get; set; }
+        public decimal Balance { get; set; }
     }
 }

@@ -15,10 +15,12 @@ namespace Lab_TW
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
-                name: "Default",
-                url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
-            );
+     name: "Default",
+     url: "{controller}/{action}/{id}",
+     defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional },
+     namespaces: new[] { "Lab_TW.Controllers" } // Укажите пространство имен, где находится Lab_TW.Controllers.HomeController
+ );
+
         }
     }
 

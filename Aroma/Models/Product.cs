@@ -15,7 +15,9 @@ namespace Lab_TW.Models
         public string ProductType { get; set; }
         public string Category {get; set; }
 
+        public string ImageUrl { get; set; }
 
+        public int Quantity { get; set; }
 
 
     }
