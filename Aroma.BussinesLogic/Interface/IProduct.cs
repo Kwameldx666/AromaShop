@@ -18,6 +18,6 @@ namespace Aroma.BussinesLogic.Interface
         ResponseToEditProduct AdminUpdateAction(Product updateProduct);
 
         ResponseToDeleteProduct  AdminDeleteAction(Product productDelete);
-      
+        ResponseFilterProducts GetFilteredProducts(string category, string brand, decimal lowerPrice, decimal upperPrice);
     }
 }

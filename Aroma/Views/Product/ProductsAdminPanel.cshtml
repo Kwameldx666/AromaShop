@@ -89,7 +89,8 @@
                         Description: updatedValues[1],
                         Price: parseFloat(updatedValues[2]), // Преобразуем цену в число
                         ProductType: updatedValues[3],
-                        Quantity: parseInt(updatedValues[4]) // Преобразуем количество в число
+                        Category: updatedValues[4],
+                        Quantity: parseInt(updatedValues[5]) // Преобразуем количество в число
                     };
 
                     $.ajax({
@@ -126,7 +127,8 @@
                     <th>Name</th>
                     <th>Description</th>
                     <th>Price</th>
-                    <th>Product Type</th>
+                    <th>Brtand</th>
+                    <th>Category</th>
                     <th>Quantity</th>
                     <th>Actions</th>
 
@@ -141,6 +143,7 @@
                         <td>@product.Description</td>
                         <td>@product.Price.ToString("0.00")</td>
                         <td>@product.ProductType</td>
+                        <td>@product.Category</td>
                         <td>@product.Quantity</td>
                         <td>
                             <button type="button" class="action-btn edit-btn">Edit</button>

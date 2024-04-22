@@ -357,7 +357,7 @@
             $.ajax({
                 url: '/Product/AddProductToCart', // Замените на URL вашего метода контроллера для добавления в корзину
                 method: 'POST',
-                data: { productId: productId },
+                data: { productId: productId, quantity: 1 },
                 success: function (response) {
                     alert('Товар успешно добавлен в корзину!');
                     // Можно выполнить дополнительные действия после успешного добавления

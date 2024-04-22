@@ -49,9 +49,6 @@ namespace Aroma.BussinesLogic.mainBL
             return ViewProductInfoAction(userId, productId);
         }
 
-        public ResponseFilterProducts GetFilteredProducts(string category, string brand, string color)
-        {
-            return GetFilteredProductsAction(category, brand, color);
-        }
+     
     }
 }

@@ -315,48 +315,7 @@ namespace Aroma.BussinesLogic.Core.Levels
             return response;
         }
 
-        public ResponseFilterProducts GetFilteredProductsAction(string category, string brand, string color)
-        {
-            try
-            {
-                using (var db = new ProductContext())
-                {
-                    // Используем LINQ для фильтрации продуктов по заданным критериям
-                    var filteredProducts = db.Products.Where(p =>
-                        (string.IsNullOrEmpty(category) || p.Category.ToLower() == category.ToLower()) &&
-                        (string.IsNullOrEmpty(brand) || p.ProductType.ToLower() == brand.ToLower())).ToList();
-
-                    if (filteredProducts != null && filteredProducts.Any())
-                    {
-                        // Если найдены отфильтрованные продукты, возвращаем успешный результат
-                        return new ResponseFilterProducts
-                        {
-                            Success = true,
-                            FilteredProducts = filteredProducts
-                        };
-                    }
-                    else
-                    {
-                        // Если не найдено ни одного продукта по заданным критериям, возвращаем успешный результат с пустым списком
-                        return new ResponseFilterProducts
-                        {
-                            Success = true,
-                            FilteredProducts = new List<ProductDbTable>()
-                        };
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                // Обработка ошибки при выполнении запроса фильтрации
-                Console.WriteLine($"Error occurred during product filtering: {ex.Message}");
-                return new ResponseFilterProducts
-                {
-                    Success = false,
-                    ErrorMessage = "An error occurred while filtering products."
-                };
-            }
-        }
+       
 
         internal ResponseAddOrder purchaseProduct(int userId, int productId, int quantity)
         {

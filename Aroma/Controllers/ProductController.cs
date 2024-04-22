@@ -21,6 +21,8 @@ using AutoMapper;
 using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 using System.Threading.Tasks;
 using Lab_TW.Extension;
+using System.Web.Helpers;
+using Tensorflow;
 
 namespace Lab_TW.Controllers
 {
@@ -62,27 +64,33 @@ namespace Lab_TW.Controllers
 
         }
         [HttpPost]
-        public ActionResult FilterProducts(string category, string brand, string color)
+        public  JsonResult  FilterProducts(string category, string brand, decimal lowerPrice, decimal upperPrice)
         {
             // Получаем все продукты из базы данных или другого источника данных
-            ResponseGetProducts response = _product.AdminGetAction();
+            ResponseFilterProducts response = _product.GetFilteredProducts(category, brand,lowerPrice,upperPrice);
 
-            if (!response.Status)
+            var viewModelProducts = response.FilteredProducts.Select(p => new Lab_TW.Models.Product
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                Category = p.Category,
+                ProductType = p.ProductType,
+                Description = p.Description,
+                ImageUrl = p.ImageUrl,
+
+            }).ToList();
+            if (!response.Success)
             {
                 // Если произошла ошибка при получении продуктов
-                ViewBag.ErrorMessage = response.Message;
-                return View("Error");
+                ViewBag.ErrorMessage = response.ErrorMessage;
+                return Json(new { success = false, errorMessage = response.ErrorMessage });
             }
 
-            // Фильтруем продукты по выбранным критериям
-            var filteredProducts = response.Products.Where(p =>
-                (category == null || p.Category == category) &&
-                (brand == null || p.ProductType == brand) 
 
-            ).ToList();
 
             // Возвращаем отфильтрованные продукты в виде JSON
-            return Json(new { success = true, products = filteredProducts });
+            return Json(new { success = true, filteredProducts = response.FilteredProducts });
         }
     
     public ProductController()

@@ -14,7 +14,7 @@ namespace Aroma.BussinesLogic.Core.Levels
     {
 
 
-
+ 
 
         internal ResponseAddProduct AddAdminActionProduct(Product products)
         {
@@ -75,7 +75,55 @@ namespace Aroma.BussinesLogic.Core.Levels
             }
            
         }
+        public ResponseFilterProducts GetFilteredProductsAction(string category, string productType, decimal lowerPrice, decimal upperPrice)
+        {
+            try
+            {
+                List<ProductDbTable> filteredProductsList = new List<ProductDbTable>(); // Создаем список для сохранения отфильтрованных продуктов
 
+                using (var db = new ProductContext())
+                {
+                 
+                    var filteredProducts = db.Products.Where(p =>
+                (string.IsNullOrEmpty(category) || p.Category.ToLower() == category.ToLower()) &&
+                (string.IsNullOrEmpty(productType) || p.ProductType.ToLower() == productType.ToLower()) &&
+                (lowerPrice <= p.Price && p.Price <= upperPrice)).ToList(); // Добавляем фильтрацию по цене
+
+
+                    filteredProductsList.AddRange(filteredProducts); // Добавляем отфильтрованные продукты в список
+
+                    if (filteredProductsList.Any())
+                    {
+                        // Если найдены отфильтрованные продукты, возвращаем успешный результат
+                        return new ResponseFilterProducts
+                        {
+                            Success = true,
+                            FilteredProducts = filteredProductsList
+                        };
+                    }
+                    else
+                    {
+                        // Если не найдено ни одного продукта по заданным критериям, возвращаем успешный результат с пустым списком
+                        return new ResponseFilterProducts
+                        {
+                            Success = true,
+                            FilteredProducts = new List<ProductDbTable>()
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Обработка исключений, если они возникают
+                return new ResponseFilterProducts
+                {
+                    Success = false,
+                    ErrorMessage = ex.Message
+                };
+            }
+        }
+
+           
         internal ResponseToDeleteProduct DeleteProductAction(Product productToDelete)
         {
             if (productToDelete == null || productToDelete.Id == 0)
