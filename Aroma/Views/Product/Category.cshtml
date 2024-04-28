@@ -68,21 +68,7 @@
                         <option value="nameDesc">Название (Z-A)</option>
                     </select>
                 </div>
-                <div class="sorting mr-auto">
-                    <select>
-                        <option value="1">Show 5</option>
-                        <option value="1">Show 10</option>
-                        <option value="1">Show 15</option>
-                    </select>
-                </div>
-                <div>
-                    <div class="input-group filter-bar-search">
-                        <input type="text" placeholder="Search">
-                        <div class="input-group-append">
-                            <button type="button"><i class="ti-search"></i></button>
-                        </div>
-                    </div>
-                </div>
+       
             </div>
             <!-- End Filter Bar -->
             <!-- Start Best Seller -->
@@ -124,32 +110,36 @@
 <script>
     $(document).ready(function () {
         // Обработчик изменения категории
-        $('input[name="category"]').change(function () {
-            filterProducts();
-        });
+        $('input[name="category"]').change(filterProducts);
 
         // Обработчик изменения бренда
-        $('input[name="brand"]').change(function () {
-            filterProducts();
-        });
+        $('input[name="brand"]').change(filterProducts);
 
+        // Обработчик изменения цены
         $('#lower-value, #upper-value').on('input', filterProducts);
 
+        // Обработчик изменения сортировки
+        $('#sortingSelect').change(filterProducts);
 
         // Функция для отправки AJAX-запроса на контроллер
         function filterProducts() {
-
-            var category = $('input[name="category"]:checked').next('label').text(); // Получаем текст метки выбранной категории
-
-            var brand = $('input[name="brand"]:checked').next('label').text(); // Получаем текст метки выбранного бренда
-            var lowerPrice = parseFloat($('#lower-value').html()); // Получаем нижнюю границу цены
-            var upperPrice = parseFloat($('#upper-value').html()); // Получаем верхнюю границу цены
+            var category = $('input[name="category"]:checked').next('label').text();
+            var brand = $('input[name="brand"]:checked').next('label').text();
+            var lowerPrice = parseFloat($('#lower-value').text());
+            var upperPrice = parseFloat($('#upper-value').text());
+            var sorting = $('#sortingSelect').val();
 
             $.ajax({
                 url: '@Url.Action("FilterProducts", "Product")',
                 type: 'POST',
-                data: { category: category, brand: brand, lowerPrice: lowerPrice, upperPrice: upperPrice }, // Добавляем информацию о диапазоне цены
-                success: function (response) {
+                data: {
+                    category: category,
+                    brand: brand,
+                    lowerPrice: lowerPrice,
+                    upperPrice: upperPrice,
+                    sorting: sorting
+                },
+                       success: function (response) {
                     if (response.success) {
                         // Удаляем текущие элементы списка продуктов
                         $('.category-list .row').empty();
@@ -195,17 +185,13 @@
 
     });
 </script>
-
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
 <script>
     $(document).ready(function () {
-        $('.add-to-cart-btn').click(function (e) {
+        // Делегирование событий для обработки клика на кнопке добавления в корзину
+        $('.category-list').on('click', '.add-to-cart-btn', function (e) {
             e.preventDefault(); // Предотвращаем стандартное действие отправки формы
 
-            var productId = $(this).closest('form').find('input[name="productId"]').val();
+            var productId = $(this).closest('.card-product').find('input[name="productId"]').val();
 
             // Отправляем AJAX запрос на сервер
             $.ajax({
@@ -221,7 +207,6 @@
                 }
             });
         });
-    })
-            };
-</script>
+    });
 
+</script>

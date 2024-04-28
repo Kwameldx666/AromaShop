@@ -7,13 +7,13 @@ namespace Aroma.BussinesLogic.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.4.4")]
-    public sealed partial class Name : IMigrationMetadata
+    public sealed partial class Newsso : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Name));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Newsso));
         
         string IMigrationMetadata.Id
         {
-            get { return "202404211707293_Name"; }
+            get { return "202404271531517_Newsso"; }
         }
         
         string IMigrationMetadata.Source

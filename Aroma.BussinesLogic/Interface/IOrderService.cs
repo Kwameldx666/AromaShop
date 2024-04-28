@@ -10,13 +10,14 @@ namespace Aroma.BussinesLogic.Interface
 {
     public interface IOrderService
     {
-
+        ResponseGetOrders AddFeedback(int productId,int userId);
         Task<ResponseGetOrders> ConfirmPurchaseUserAction(int userId);
         Task<ResponseGetOrders> DeleteOrderAction(int userId, int productId);
         ResponseUpdateQuantityOrders EditQuntity(int userId, int productId, int quantityOrder);
         ResponseAddOrder PurchaseProduct(int userId, int productId, int quantity);
         Task<ResponseGetProducts> SearchProducts(string searchTerm);
-        ResponseGetOrders ViewOrdersAction();
+        ResponseGetOrders ViewOrdersAction(int userId, int productId, int rating, string review);
+        ResponseGetOrders ViewOrdersAction(int userId);
         ResponseGetOrders ViewOrdersUserAction(int userId);
         ResponseViewProduct ViewProductInfo(int userId, int productId);
 

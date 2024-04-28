@@ -32,8 +32,9 @@ namespace Lab_TW.Controllers
 
         public ActionResult Logout()
         {
+            StatusSessionCheck();
             // Вызываем метод выхода из системы
-            var logoutResponse = _session.UserLogout();
+            ResponseLogout logoutResponse = _session.UserLogout();
 
             if (logoutResponse.Status)
             {
@@ -69,11 +70,12 @@ namespace Lab_TW.Controllers
         // GET: login
         public ActionResult login()
         {
+            StatusSessionCheck();
             return View();
         }
         public ActionResult EditProfile(LoginData data)
         {
-
+            StatusSessionCheck();
 
             int UserId = (int)Convert.ToUInt32(Session["UserId"]);
             /*    GetUserId();*/
@@ -110,6 +112,7 @@ namespace Lab_TW.Controllers
         [HttpPost]
         public ActionResult ChangePassword(LoginData user,string newPassword, string confirmPassword)
         {
+            StatusSessionCheck();
             // Логика обновления пароля
             int UserId = (int)Convert.ToUInt32(Session["UserId"]);
             if (newPassword == confirmPassword)
@@ -138,17 +141,21 @@ namespace Lab_TW.Controllers
         [HttpGet]
         public ActionResult UProfile()
         {
-            SessionStatus();
+            StatusSessionCheck();
 
 
             int UserId = (int)Convert.ToUInt32(Session["UserId"]);
             if (UserId == 0)
             {
                 GetUserId();
-                 UserId = (int)Convert.ToUInt32(Session["UserId"]);
+                if (UserId == -1)
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+                UserId = (int)Convert.ToUInt32(Session["UserId"]);
             }
-           
-          
+
+
             // Используем сервис для получения данных о пользователе по идентификатору
             ResponseViewProfile userProfile = _session.ViewProfile(UserId);
 
@@ -188,18 +195,6 @@ namespace Lab_TW.Controllers
                     
                     
                 };
-                
-
-                /*  var Data = new ULoginData
-                  {
-                      IP = Request.UserHostAddress,
-
-                      password = data.Password,
-                      credential = data.Username,
-                      FirstLoginTime = DateTime.Now,
-
-                  };
-    */
 
                 RResponseData response = _session.UserLoginAction(Data);
 
@@ -209,14 +204,9 @@ namespace Lab_TW.Controllers
                     ControllerContext.HttpContext.Response.Cookies.Add(cookie);
           
                     ViewBag.UserName = Data.credential;
-                    var IsUserLoggedIn = true; // Статус аутентификации сохраняется между запросами   
-                    var admin = response.AdminMod;
-                    var moderator = response.ModeratorMod;
-                   
-                        Session["admin"] = admin.ToString(); // Сохраняем роль в сессии
-                    Session["moderator"] = moderator.ToString(); // Сохраняем роль в сессии
-                    Session["IsUserLoggedIn"] = IsUserLoggedIn.ToString(); // Сохраняем роль в сессии
 
+        
+                    Session["IsUserLoggedIn"] = System.Web.HttpContext.Current.Session["LoginStatus"];
 
                     if (response.AdminMod || response.ModeratorMod)
                     {

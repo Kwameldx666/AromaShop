@@ -15,6 +15,8 @@ using AutoMapper;
 
 using Aroma.Domain.Entities.Product.DBModel;
 using Aroma.BussinesLogic.mainBL;
+using Aroma.Domain.Enums.OrdersStatus;
+using Microsoft.Ajax.Utilities;
 
 namespace Aroma.BussinesLogic.Core.Levels
 {
@@ -250,7 +252,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                     {
                         Username = loginCredential,
                         CookieString = apiCookie.Value,
-                        ExpireTime = DateTime.Now.AddMinutes(60)
+                        ExpireTime = DateTime.Now.AddMinutes(160)
                     });
                     db.SaveChanges();
                 }
@@ -324,15 +326,17 @@ namespace Aroma.BussinesLogic.Core.Levels
                 using (var db = new UserContext())
                 {
                     var user = db.Users.FirstOrDefault(u => u.Id == userId);
-                    var product = db.Products.FirstOrDefault(p => p.Id == productId);
-
-                    if (user == null || product == null)
+                    var product = db.Products.FirstOrDefault(p => p.Id == productId );
+                    var orders = db.Orders.FirstOrDefault(o => o.orderStatus != Domain.Enums.OrdersStatus.OrderStatus.Successful);
+                    if (user == null || product == null )
                     {
                         return new ResponseAddOrder { Success = false, MessageError = "User or product not found" };
                     }
 
                     // Проверяем, есть ли у пользователя уже заказ с этим товаром
+                    // Проверяем, есть ли у пользователя уже заказ с этим товаром
                     var existingOrder = db.Orders.FirstOrDefault(o => o.UserId == userId && o.ProductId == productId);
+
 
                     if (existingOrder != null)
                     {
@@ -340,6 +344,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                         existingOrder.QuantityOrder += quantity;
                         existingOrder.TotalPrice = product.Price * existingOrder.QuantityOrder;
                         db.Entry(existingOrder).State = EntityState.Modified;
+                        existingOrder.orderStatus = Domain.Enums.OrdersStatus.OrderStatus.Pending;
                         db.SaveChanges();
 
                         return new ResponseAddOrder { Success = true, Order = existingOrder };
@@ -356,7 +361,9 @@ namespace Aroma.BussinesLogic.Core.Levels
                             TotalPrice = totalPrice,
                             OrderDate = DateTime.UtcNow,
                             ProductType = product.ProductType,
-                            TotalAmount = totalPrice
+                            TotalAmount = totalPrice,
+                            orderStatus = Domain.Enums.OrdersStatus.OrderStatus.Pending,
+
                         };
 
                         db.Orders.Add(order);
@@ -461,7 +468,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                 {
                     // Находим заказ пользователя с заданным userId и productId
                     var order = db.Orders
-                                   .FirstOrDefault(o => o.UserId == userId && o.ProductId == productId);
+                                   .FirstOrDefault(o => o.UserId == userId && o.ProductId == productId && o.orderStatus == OrderStatus.Pending);
 
                     if (order != null)
                     {
@@ -503,23 +510,38 @@ namespace Aroma.BussinesLogic.Core.Levels
 
                         // Обновляем баланс пользователя
                         var userBalance = await db.Users.FirstOrDefaultAsync(u => u.Id == userId);
-                        if (userBalance != null)
+                        if (userBalance != null && userBalance.Balance >= totalAmountOfOrders)
                         {
                             userBalance.Balance -= totalAmountOfOrders;
                         }
+                        else
+                        {
+                            return new ResponseGetOrders { Status = false, Message = "Insufficient balance" };
+                        }
 
-                        // Удаляем товары (заказанные товары)
+                 
                         foreach (var order in userOrders)
                         {
                             // Находим все товары, связанные с текущим заказом
                             var orderItems = await db.Orders.Where(oi => oi.OrderId == order.OrderId).ToListAsync();
+                            order.orderStatus = Domain.Enums.OrdersStatus.OrderStatus.Successful;
+                            foreach (var orderItem in orderItems)
+                            {
+                                // Обновляем количество товаров на складе
+                                var product = await db.Products.FirstOrDefaultAsync(p => p.Id == orderItem.ProductId);
+                                if (product != null)
+                                {
+                                    product.QuantityProd -= orderItem.QuantityOrder;
+                                }
+                            }
 
-                            // Удаляем все товары из базы данных
-                            db.Orders.RemoveRange(orderItems);
+
+
+                            await db.SaveChangesAsync();
                         }
 
                         // Удаляем все заказы пользователя из контекста
-                        db.Orders.RemoveRange(userOrders);
+                       
 
                         // Сохраняем изменения в базе данных
                         await db.SaveChangesAsync();
@@ -540,6 +562,7 @@ namespace Aroma.BussinesLogic.Core.Levels
             }
         }
 
+
         internal async Task<ResponseGetOrders> DeleteOrder(int userId, int productId)
         {
             try
@@ -548,7 +571,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                 {
                     // Находим заказ пользователя с заданным userId и productId
                     var order = await db.Orders
-                                        .FirstOrDefaultAsync(o => o.UserId == userId && o.ProductId == productId);
+                                        .FirstOrDefaultAsync(o => o.UserId == userId && o.ProductId == productId && o.orderStatus == OrderStatus.Pending);
 
                     if (order != null)
                     {
@@ -574,35 +597,183 @@ namespace Aroma.BussinesLogic.Core.Levels
             }
         }
 
-
-        internal ResponseGetOrders GetOrders()
+        public ResponseGetOrders AddFeedbackAction(int productId, int userId)
         {
             try
             {
                 using (var db = new OrderContext())
                 {
-                    var orders = db.Orders.ToList(); // Получаем все продукты из БД
-                    return new ResponseGetOrders
+                    // Получаем заказы пользователя для указанного товара
+                    var order = db.Orders
+                        .Include(o => o.Product) // Включаем связанную информацию о товаре
+                        .Include(o => o.UDbTable) // Включаем связанную информацию о пользователе
+                        .FirstOrDefault(o => o.UserId == userId && o.ProductId == productId && o.orderStatus == OrderStatus.Successful);
+
+                    if (order != null)
                     {
-                        Status = true,
-                        Orders = orders.Select(p => new Order
+                        return new ResponseGetOrders
                         {
-                            OrderId = p.OrderId,
-                            Product = p.Product,
-                            ProductId = p.ProductId,
-                            TotalPrice = p.TotalPrice,
-                            OrderDate = p.OrderDate,
-                            UDbTable = p.UDbTable,
-                            QuantityOrder = p.QuantityOrder,
-                            TotalAmount = p.TotalAmount,
-                            UserId = p.UserId,
-                            ProductType = p.ProductType
+                            Status = true,
+                            Price = order.Product.Price,
+                            Category = order.Product.Category,
+                            Description = order.Product.Description,
+                            ProductId = order.ProductId,
+                            Name = order.Product.Name,
+                        };
+                    }
+                    else
+                    {
+                        return new ResponseGetOrders { Status = false, Message = "Order not found for the specified user and product." };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // В случае ошибки возвращаем статус false и сообщение об ошибке
+                return new ResponseGetOrders { Status = false, Message = ex.Message };
+            }
+        }
+
+
+        internal ResponseGetOrders GetOrders(int userId)
+        {
+            try
+            {
+                using (var db = new OrderContext())
+                {
+                    var orders = db.Orders.Where(o => o.UserId == userId && o.orderStatus == OrderStatus.Successful).ToList();
+
+
+                    if (orders  != null)
+                    {
+                        return new ResponseGetOrders
+                        {
+                            Status = true,
+
+                            Orders = orders.Select(p => new Order
+
+                            {
+                                OrderId = p.OrderId,
+                                Product = p.Product,
+                                ProductId = p.ProductId,
+                                TotalPrice = p.TotalPrice,
+                                OrderDate = p.OrderDate,
+                                UDbTable = p.UDbTable,
+                                QuantityOrder = p.QuantityOrder,
+                                TotalAmount = p.TotalAmount,
+                                UserId = p.UserId,
+                                ProductType = p.ProductType,
+                                Feedback = p.Feedback,
+                                AverageRating = p.AverageRating,
+                                Reting = p.Reting,
+                                
 
 
 
+
+                            }).ToList()
+                        };
+                    }
+                    return new ResponseGetOrders { Status = false };
+                }
+            }
+            catch (Exception ex)
+            {
+                // В случае ошибки возвращаем статус false и сообщение об ошибке
+                return new ResponseGetOrders { Status = false, Message = ex.Message };
+            }
+        }
+
+
+        internal ResponseGetOrders GetOrders(int userId, int productId, int rating, string review)
+        {
+            try
+            {
+                using (var db = new OrderContext())
+                {
+                    var product = db.Orders.FirstOrDefault(o => o.ProductId == productId && o.UserId == userId && o.orderStatus == OrderStatus.Successful);
+
+                    if (product != null)
+                    {
+                        // Обновляем свойства продукта
+                        product.Feedback = review;
+                        product.Reting = rating;
+                    }
+
+                    var orders = db.Orders
+      .Where(o => o.ProductId == productId &&
+                  o.orderStatus == OrderStatus.Successful &&
+                  o.Reting != null) // Учитываем только заказы с оценкой, не равной null
+      .ToList();
+
+                    // Создаем список оценок из успешных заказов
+                    var ratings = orders.Where(o => o.ProductId == productId).Select(o => o.Reting).ToList();
+
+                    // Проверяем, была ли данная оценка ранее выбрана для данного продукта
+                    var existingOrder = orders.FirstOrDefault(o => o.Reting == rating);
+                    if (existingOrder != null)
+                    {
+                        // Если оценка была выбрана ранее, удаляем ее из списка оценок
+                        ratings.Remove(rating);
+                    }
+
+                    // Добавляем новую оценку к списку
+                    ratings.Add(rating);
+
+                    // Рассчитываем среднюю оценку
+                    var averageRating = ratings.Sum() / ratings.Count;
+
+                    // Обновляем среднюю оценку продукта
+                    var productsToUpdate = db.Orders.Where(p => p.ProductId == productId).ToList();
+                    if (productsToUpdate != null)
+                    {
+                        foreach (var productToUpdate in productsToUpdate)
+                        {
+                            productToUpdate.AverageRating = averageRating;
+                        }
+
+                    }
+                    else
+                    {
+                        // Если это первая оценка продукта, устанавливаем среднюю оценку как первую полученную оценку
+                        var productToUpdates = db.Orders.FirstOrDefault(p => p.ProductId == productId);
+                        if (productToUpdates != null)
+                        {
+                            productToUpdates.AverageRating = rating;
+
+                        }
+                    }
+
+                    db.SaveChanges();
+
+                    var Orders = db.Orders.Where(o => o.UserId == userId && o.orderStatus == OrderStatus.Successful).ToList();
+
+                    if (Orders != null)
+                    {
+                        return new ResponseGetOrders
+                        {
+                            Status = true,
+                            Orders = Orders.Select(p => new Order
+                            {
+                                OrderId = p.OrderId,
+                                Product = p.Product,
+                                ProductId = p.ProductId,
+                                TotalPrice = p.TotalPrice,
+                                OrderDate = p.OrderDate,
+                                UDbTable = p.UDbTable,
+                                QuantityOrder = p.QuantityOrder,
+                                TotalAmount = p.TotalAmount,
+                                UserId = p.UserId,
+                                ProductType = p.ProductType,
+                                Feedback = p.Feedback,
+                                Reting = p.Reting,
+                                orderStatus = p.orderStatus,
+                                AverageRating = p.AverageRating // Используем среднюю оценку продукта
 
                         }).ToList()
-                    };
+                        };
+                    }
+                    return new ResponseGetOrders { Status = false };
                 }
             }
             catch (Exception ex)
@@ -619,26 +790,27 @@ namespace Aroma.BussinesLogic.Core.Levels
                 using (var db = new OrderContext())
                 {
                     // Получаем все заказы данного пользователя с указанным productId
-                    var orders = db.Orders
-                                    .Where(o => o.UserId == userId )
-                                    .ToList();
+                    var orders = db.Orders.Where(o => o.UserId == userId && o.orderStatus == OrderStatus.Pending).ToList();
 
                     // Создаем список для хранения обработанных заказов
                     var processedOrders = new List<Order>();
 
                     foreach (var order in orders)
                     {
-                        // Добавляем заказ в список обработанных заказов
-                        processedOrders.Add(new Order
-                        {
-                            ProductId = order.ProductId,
-                            Product = order.Product,
-                            QuantityOrder = order.QuantityOrder,
-                            TotalAmount = order.TotalAmount,
-                            ProductType = order.ProductType,
-                            TotalPrice = order.TotalPrice,
-                            // Другие необходимые свойства заказа, которые нужно сохранить
-                        }); ;
+                       
+                            // Добавляем заказ в список обработанных заказов
+                            processedOrders.Add(new Order
+                            {
+                                ProductId = order.ProductId,
+                                Product = order.Product,
+                                QuantityOrder = order.QuantityOrder,
+                                TotalAmount = order.TotalAmount,
+                                ProductType = order.ProductType,
+                                TotalPrice = order.TotalPrice,
+                                // Другие необходимые свойства заказа, которые нужно сохранить
+                            })
+                                ; ;
+                        
                     }
 
                     // Возвращаем успешный результат с обработанными заказами

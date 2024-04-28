@@ -35,7 +35,7 @@ namespace Lab_TW.Controllers
         [AdminAndModerator]
         public ActionResult ProductsAdminPanel()
         {
-
+            StatusSessionCheck();
 
             // Вызов метода из бизнес-логики для получения всех продуктов;
             ResponseGetProducts response = _product.AdminGetAction();
@@ -64,10 +64,10 @@ namespace Lab_TW.Controllers
 
         }
         [HttpPost]
-        public  JsonResult  FilterProducts(string category, string brand, decimal lowerPrice, decimal upperPrice)
+        public  JsonResult  FilterProducts(string category, string brand, decimal lowerPrice, decimal upperPrice, string sorting)
         {
             // Получаем все продукты из базы данных или другого источника данных
-            ResponseFilterProducts response = _product.GetFilteredProducts(category, brand,lowerPrice,upperPrice);
+            ResponseFilterProducts response = _product.GetFilteredProducts(category, brand,lowerPrice,upperPrice,sorting);
 
             var viewModelProducts = response.FilteredProducts.Select(p => new Lab_TW.Models.Product
             {
@@ -131,11 +131,7 @@ namespace Lab_TW.Controllers
         [AdminAndModerator]
         public ActionResult AddProduct()
         {
-            SessionStatus();
-            if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            StatusSessionCheck();
 
             return View(); // Передача списка в представление.
         }
@@ -184,7 +180,7 @@ namespace Lab_TW.Controllers
         private IOrderService _orderService;
 
         public ActionResult AddProductToCart()
-        {
+        {StatusSessionCheck();
             return View();
         }
 
@@ -208,6 +204,7 @@ namespace Lab_TW.Controllers
         [HttpGet]
         public ActionResult SingleProduct(int? productId)
         {
+            StatusSessionCheck();
             // Если productId не был передан как параметр, попробуйте получить его из маршрута
             if (productId == null)
             {
@@ -274,18 +271,22 @@ namespace Lab_TW.Controllers
                 [HttpPost]
         public JsonResult AddProductToCart(int productId ,int quantity)
         {
+            StatusSessionCheck();
             try
             {
-                // Получаем идентификатор пользователя из сессии
-                int userId = (int)Convert.ToUInt32(Session["UserId"]);
-                if (userId == 0)
+                int UserId = (int)Convert.ToUInt32(Session["UserId"]);
+                if (UserId == 0)
                 {
                     GetUserId();
-                    userId = (int)Convert.ToUInt32(Session["UserId"]);
+                  /*  if (UserId == -1)
+                    {
+                        return RedirectToAction("Login", "Account");
+                    }*/
+                    UserId = (int)Convert.ToUInt32(Session["UserId"]);
                 }
 
                 // Логика добавления товара в корзину
-                ResponseAddOrder resp = _orderService.PurchaseProduct(userId, productId, quantity);
+                ResponseAddOrder resp = _orderService.PurchaseProduct(UserId, productId, quantity);
                 if (resp.Success)
                     // Переадресация обратно к списку товаров или на другую страницу
                     return Json(new { success = true });
@@ -318,7 +319,7 @@ namespace Lab_TW.Controllers
             else
                 return Json(new { status = false }); // Ошибка при удалении
         }
-        public async Task<JsonResult> ConfirmPurchase()
+        public async Task<ActionResult> ConfirmPurchase()
         {
             int userId = (int)Convert.ToUInt32(Session["UserId"]);
             if (userId == 0)
@@ -343,14 +344,16 @@ namespace Lab_TW.Controllers
                 ProductType = p.ProductType
 
             }).ToList();
-                if (response.Status)
-                {
-                    return Json(new { success = true });
-                }
-                else
-                    return Json(new { status = false });
+            if (response.Status)
+            {
+                return RedirectToAction("Cart", "Product");
+            }
+            else
+            {
+                return Json(new { status = false });
+            }
 
-        
+
 
         }
         public ActionResult OrderConfirm()
@@ -398,11 +401,7 @@ namespace Lab_TW.Controllers
     
         public ActionResult Category()
         {
-            SessionStatus();
-            if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            StatusSessionCheck();
             ViewBag.IsUserLoggedIn = true;
             var user = System.Web.HttpContext.Current.GetMySessionObject();
 
@@ -460,12 +459,18 @@ namespace Lab_TW.Controllers
 
             return Json(new { status = response.Status, message = response.Message });
         }
-        public ActionResult Cart()
+        [HttpPost]
+        public ActionResult Cart(int productId,int rating,string review)
         {
-
+            int userId = (int)Convert.ToUInt32(Session["UserId"]);
+            if (userId == 0)
+            {
+                GetUserId();
+                userId = (int)Convert.ToUInt32(Session["UserId"]);
+            }
             {
                 // Вызов метода из бизнес-логики для получения всех продуктов
-                ResponseGetOrders response = _orderService.ViewOrdersAction();
+                ResponseGetOrders response = _orderService.ViewOrdersAction(userId,productId,rating,review);
                 var viewModelOrders = response.Orders.Select(p => new Lab_TW.Models.OrderPr
                 {
                     OrderId = p.OrderId,
@@ -477,7 +482,11 @@ namespace Lab_TW.Controllers
                     QuantityOrder = p.QuantityOrder,
                     TotalAmount = p.TotalAmount,
                     UserId = p.UserId,
-                    ProductType = p.ProductType
+                    ProductType = p.ProductType,
+                    Feedback = p.Feedback,
+                    Rating = p.Reting,
+                    AverageRating = p.AverageRating
+
                 }).ToList();
                 if (response.Status)
                 {
@@ -494,6 +503,80 @@ namespace Lab_TW.Controllers
             }
 
 
+        }
+        public ActionResult Cart()
+        {
+            int userId = (int)Convert.ToUInt32(Session["UserId"]);
+            if (userId == 0)
+            {
+                GetUserId();
+                userId = (int)Convert.ToUInt32(Session["UserId"]);
+            }
+            {
+                // Вызов метода из бизнес-логики для получения всех продуктов
+                ResponseGetOrders response = _orderService.ViewOrdersAction(userId);
+                var viewModelOrders = response.Orders.Select(p => new Lab_TW.Models.OrderPr
+                {
+                    OrderId = p.OrderId,
+                    Product = p.Product,
+                    ProductId = p.ProductId,
+                    TotalPrice = p.TotalPrice,
+                    OrderDate = p.OrderDate,
+                    UDbTable = p.UDbTable,
+                    QuantityOrder = p.QuantityOrder,
+                    TotalAmount = p.TotalAmount,
+                    UserId = p.UserId,
+                    ProductType = p.ProductType,
+                    Feedback = p.Feedback,
+                    Rating = p.Reting,
+                    AverageRating = p.AverageRating,
+                    Price = p.Product.Price
+                }).ToList();
+                if (response.Status)
+                {
+                    // Если запрос прошёл успешно, отображаем список продуктов
+                    return View(viewModelOrders);
+                }
+                else
+                {
+                    // Если при запросе возникла ошибка, отображаем сообщение об ошибке
+                    ViewBag.ErrorMessage = response.Message;
+                    return View("Error");
+                }
+
+            }
+
+
+        }
+        public ActionResult AddReview()
+        {
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult AddReview(int productId)
+        {
+            int userId = (int)Convert.ToUInt32(Session["UserId"]);
+            if (userId == 0)
+            {
+                GetUserId();
+                userId = (int)Convert.ToUInt32(Session["UserId"]);
+            }
+
+            ResponseGetOrders response = _orderService.AddFeedback(productId, userId);
+
+            Models.Product product = new Models.Product
+            {
+                Price = response.Price,
+                Category = response.Category,
+                Description = response.Description,
+                Name = response.Name,
+                ImageUrl = response.ImageUrl,
+                Quantity = response.Quantity,
+                Id = response.ProductId,
+            };
+            return View(product);
         }
         [AdminAndModerator]
         [HttpPost]

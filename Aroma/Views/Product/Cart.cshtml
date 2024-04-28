@@ -1,70 +1,99 @@
-﻿@model List<Lab_TW.Models.OrderPr>
-@{
-    ViewBag.Title = "Cart";
-    Layout = "~/Views/Shared/_LayoutCart.cshtml";
-}
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <title>Orders List</title>
     <style>
-        /* Стили для таблицы */
+        /* Основные стили таблицы */
         table {
             width: 100%;
             border-collapse: collapse;
         }
 
         th, td {
-            border: 1px solid #dddddd;
-            text-align: left;
             padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
         }
 
-        th {
-            background-color: #f2f2f2;
+        /* Стили для звёзд */
+        .stars {
+            display: inline-block;
         }
-        /* Стили для сообщения об отсутствии заказов */
-        .no-orders {
-            font-style: italic;
-            color: #666666;
+
+            .stars .fa {
+                color: gold;
+            }
+
+        /* Стили для средней оценки */
+        .average-rating .fa {
+            color: darkgrey;
         }
     </style>
+    <!-- Включение библиотеки Font Awesome для использования звёзд -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <h2>Orders List</h2>
 
-    @if (Model != null )
+    @if (Model != null)
     {
         <table>
             <thead>
                 <tr>
-                    <th>Order ID</th>
-                    <th>Product ID</th>
+                    <th>Order name</th>
+                    <th>Product description</th>
                     <th>Total Price</th>
                     <th>Order Date</th>
                     <th>Quantity Ordered</th>
-                    <th>Total Amount</th>
-                    <th>User ID</th>
-                    <th>Product Type</th>
+                    <th>Brand</th>
+                    <th>Category</th>
+                    <th>Product price (1)</th>
+                    <th>Leave Review</th>
+                    <th>My Review</th>
+                    <th>Average Review</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var order in Model)
                 {
                     <tr>
-                        <td>@order.OrderId</td>
-                        <td>@order.ProductId</td>
+                        <td>@order.Product.Name</td>
+                        <td>@order.Product.Description</td>
                         <td>@order.TotalPrice</td>
                         <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
                         <td>@order.QuantityOrder</td>
-                        <td>@order.TotalAmount</td>
-                        <td>@order.UserId</td>
                         <td>@order.ProductType</td>
+                        <td>@order.Product.Category</td>
+                        <td>@order.Product.Price</td>
+                        <td>
+                            <form action="@(Url.Action("AddReview", "Product"))" method="post">
+                                <input type="hidden" name="productId" value="@order.Product.Id" />
+                                <button type="submit">Leave Review</button>
+                            </form>
+                        </td>
+                        <td>
+                            <!-- Отображение звёзд вместо числового рейтинга -->
+                            <div class="stars">
+                                @for (int i = 0; i < order.Rating; i++)
+                                {
+                                    <span class="fa fa-star"></span>
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            <!-- Отображение средней оценки в виде звёздочки -->
+                            <div class="average-rating">
+                                @for (int i = 0; i < order.AverageRating; i++)
+                                {
+                                    <span class="fa fa-star"></span>
+                                }
+                            </div>
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
+
     }
     else
     {

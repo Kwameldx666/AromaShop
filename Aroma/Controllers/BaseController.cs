@@ -18,17 +18,24 @@ namespace Lab_TW.Controllers
             _session = bl.GetSessionBL();
         }
 
- 
+
         public int GetUserId()
         {
             var cook = Request.Cookies["X-KEY"]?.Value;
 
             var user = _session.GetUserByCookie(cook);
-            var userId = user.Id;
+            if (user != null)
+            {
+                var userId = user.Id;
 
-            Session["UserId"] = userId; // где userId - это идентификатор пользователя
-            return userId;
+                Session["UserId"] = userId; // где userId - это идентификатор пользователя
+                return userId;
+            }
+
+            // Возвращаем специальное значение, чтобы показать, что пользователь не был найден
+            return -1;
         }
+
         public void SessionStatus()
         {
             var apiCookie = Request.Cookies["X-KEY"];
@@ -39,6 +46,10 @@ namespace Lab_TW.Controllers
                 {
                     System.Web.HttpContext.Current.SetMySessionObject(profile);
                     System.Web.HttpContext.Current.Session["LoginStatus"] = "login";
+                    string permissions = profile.Level.ToString(); 
+          
+
+                    System.Web.HttpContext.Current.Session["Permission"] = permissions;
                 }
                 else
                 {
@@ -60,6 +71,17 @@ namespace Lab_TW.Controllers
             {
                 System.Web.HttpContext.Current.Session["LoginStatus"] = "logout";
             }
+        }
+
+        public ActionResult StatusSessionCheck()
+        {
+            SessionStatus();
+            Session["IsUserLoggedIn"] = System.Web.HttpContext.Current.Session["LoginStatus"];
+            if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            return null;
         }
     }
 }

@@ -1,0 +1,113 @@
+﻿@model Lab_TW.Models.Product
+@{
+    ViewBag.Title = "AddReview";
+    Layout = "~/Views/Shared/_LayoutAddReview.cshtml";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write a Review</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        select,
+        textarea,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background-color: #0056b3;
+            }
+
+        .product-info {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Write a Review</h1>
+    <div class="product-info">
+        <h2>Product Information</h2>
+        <p><strong>Name:</strong> @Model.Name</p>
+        <p><strong>Description:</strong> @Model.Description</p>
+        <p><strong>Price:</strong> $@Model.Price</p>
+        <!-- Здесь может быть любая другая информация о товаре -->
+    </div>
+    <form action="@Url.Action("Cart", "Product")" method="post">
+        <input type="hidden" name="productId" value="@Model.Id" />
+        <!-- Форма для отправки отзыва на сервер -->
+        <label for="rating">Rating:</label>
+        <select id="rating" name="rating" required>
+            <option value="">Select Rating</option>
+            <option value="1">★</option>
+            <option value="2">★★</option>
+            <option value="3">★★★</option>
+            <option value="4">★★★★</option>
+            <option value="5">★★★★★</option>
+        </select>
+
+        <label for="review">Your Review:</label>
+        <textarea id="review" name="review" rows="4" cols="50" required></textarea>
+
+        <!-- Скрытое поле для передачи рейтинга -->
+        <input type="hidden" id="ratingValue" name="ratingValue" value="" />
+
+        <button type="submit" onclick="setRatingValue()">Submit review</button>
+    </form>
+
+    <script>
+    // JavaScript функция для установки значения рейтинга в скрытое поле перед отправкой формы
+    function setRatingValue() {
+        var ratingSelect = document.getElementById("rating");
+        var ratingValueField = document.getElementById("ratingValue");
+        ratingValueField.value = ratingSelect.value;
+    }
+    </script>
+
+</body>
+</html>
+

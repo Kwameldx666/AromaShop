@@ -1,9 +1,13 @@
 ﻿using Aroma.BussinesLogic.DBModel.Seed;
+using Aroma.BussinesLogic.mainBL;
 using Aroma.Domain.Entities.GeneralResponse;
 using Aroma.Domain.Entities.Product;
 using Aroma.Domain.Entities.Product.DBModel;
+using Aroma.Domain.Entities.Support;
+using Aroma.Domain.Entities.User;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,8 +17,49 @@ namespace Aroma.BussinesLogic.Core.Levels
     public class AdminAPI
     {
 
+        internal ResponseSupport MessageToSupportAction(int userId,USupportForm supportForms)
+        {
+            var message = supportForms.message;
+            try
+            {
+                using (var db = new SupportContext())
+                {
+                    var user = db.Users.FirstOrDefault(u => u.Id == userId);
+                    
+                    if (user == null || message == null)
+                    {
+                        return new ResponseSupport { Status = false, StatusMessage = "User or product not found" };
+                    }
 
- 
+                  
+                      
+                        var supportForm = new USupportForm
+                        {
+                            SupportUserId = userId,
+                            name = supportForms.name,
+                            email = supportForms.email,
+                            message = supportForms.message,
+                            subject = supportForms.subject,
+                            MessageTime = supportForms.MessageTime,
+                         
+
+                        };
+
+                        db.SupportMesages.Add(supportForm);
+                        db.SaveChanges();
+
+                        return new ResponseSupport { Status = true };
+                    }
+
+
+                
+            }
+            catch (Exception ex)
+            {
+                return new ResponseSupport { Status = false ,StatusMessage = ex.Message};
+            }
+        }
+
 
         internal ResponseAddProduct AddAdminActionProduct(Product products)
         {
@@ -75,7 +120,7 @@ namespace Aroma.BussinesLogic.Core.Levels
             }
            
         }
-        public ResponseFilterProducts GetFilteredProductsAction(string category, string productType, decimal lowerPrice, decimal upperPrice)
+        public ResponseFilterProducts GetFilteredProductsAction(string category, string productType, decimal lowerPrice, decimal upperPrice, string sorting)
         {
             try
             {
@@ -83,14 +128,33 @@ namespace Aroma.BussinesLogic.Core.Levels
 
                 using (var db = new ProductContext())
                 {
-                 
                     var filteredProducts = db.Products.Where(p =>
-                (string.IsNullOrEmpty(category) || p.Category.ToLower() == category.ToLower()) &&
-                (string.IsNullOrEmpty(productType) || p.ProductType.ToLower() == productType.ToLower()) &&
-                (lowerPrice <= p.Price && p.Price <= upperPrice)).ToList(); // Добавляем фильтрацию по цене
-
+                        (string.IsNullOrEmpty(category) || p.Category.ToLower() == category.ToLower()) &&
+                        (string.IsNullOrEmpty(productType) || p.ProductType.ToLower() == productType.ToLower()) &&
+                        (lowerPrice <= p.Price && p.Price <= upperPrice)).ToList(); // Добавляем фильтрацию по цене
 
                     filteredProductsList.AddRange(filteredProducts); // Добавляем отфильтрованные продукты в список
+
+                    // Применяем сортировку
+                    switch (sorting)
+                    {
+                        case "priceAsc":
+                            filteredProductsList = filteredProductsList.OrderBy(p => p.Price).ToList();
+                            break;
+                        case "priceDesc":
+                            filteredProductsList = filteredProductsList.OrderByDescending(p => p.Price).ToList();
+                            break;
+                        case "nameAsc":
+                            filteredProductsList = filteredProductsList.OrderBy(p => p.Name).ToList();
+                            break;
+                        case "nameDesc":
+                            filteredProductsList = filteredProductsList.OrderByDescending(p => p.Name).ToList();
+                            break;
+                        default:
+                            // Сортировка по умолчанию (можете указать свой вариант)
+                            filteredProductsList = filteredProductsList.OrderBy(p => p.Name).ToList();
+                            break;
+                    }
 
                     if (filteredProductsList.Any())
                     {
@@ -123,7 +187,7 @@ namespace Aroma.BussinesLogic.Core.Levels
             }
         }
 
-           
+
         internal ResponseToDeleteProduct DeleteProductAction(Product productToDelete)
         {
             if (productToDelete == null || productToDelete.Id == 0)

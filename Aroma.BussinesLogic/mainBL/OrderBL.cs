@@ -17,9 +17,14 @@ namespace Aroma.BussinesLogic.mainBL
             return purchaseProduct(userId, productId, quantity);
         }
 
-         public ResponseGetOrders ViewOrdersAction()
+         public ResponseGetOrders ViewOrdersAction(int userId)
         {
-            return GetOrders();
+            return GetOrders(userId);
+        }
+
+        public ResponseGetOrders ViewOrdersAction(int userId, int productId, int rating, string review)
+        {
+            return GetOrders(userId, productId, rating, review );
         }
 
         public ResponseGetOrders ViewOrdersUserAction(int userId)
@@ -49,6 +54,10 @@ namespace Aroma.BussinesLogic.mainBL
             return ViewProductInfoAction(userId, productId);
         }
 
-     
+        public ResponseGetOrders AddFeedback(int productId,int userId)
+        {
+            return AddFeedbackAction(productId,userId);
+        }
+
     }
 }

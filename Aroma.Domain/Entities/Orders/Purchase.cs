@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection.Emit;
+using Aroma.Domain.Enums.OrdersStatus;
 
 namespace Aroma.Domain.Entities.Orders
 {
@@ -26,6 +28,8 @@ namespace Aroma.Domain.Entities.Orders
         public DateTime PurchaseDate { get; set; }
 
         public int Quantity { get; set; }
+
+        public  OrderStatus orderStatus { get;set; }
     }
 
 }

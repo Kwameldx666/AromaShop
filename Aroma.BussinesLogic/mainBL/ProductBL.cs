@@ -34,9 +34,9 @@ namespace Aroma.BussinesLogic.mainBL
         }
 
 
-        public ResponseFilterProducts GetFilteredProducts(string category, string brand, decimal lowerPrice, decimal upperPrice)
+        public ResponseFilterProducts GetFilteredProducts(string category, string brand, decimal lowerPrice, decimal upperPrice, string sorting)
         {
-            return  GetFilteredProductsAction(category, brand , lowerPrice,upperPrice);
+            return  GetFilteredProductsAction(category, brand , lowerPrice,upperPrice, sorting);
         }
     }
 }

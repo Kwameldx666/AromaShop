@@ -3,7 +3,7 @@
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Name : DbMigration
+    public partial class Newsso : DbMigration
     {
         public override void Up()
         {
@@ -19,6 +19,7 @@
                         OrderDate = c.DateTime(nullable: false),
                         TotalPrice = c.Decimal(nullable: false, precision: 18, scale: 2),
                         ProductType = c.String(),
+                        orderStatus = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.OrderId)
                 .ForeignKey("dbo.ProductDbTables", t => t.ProductId, cascadeDelete: true)

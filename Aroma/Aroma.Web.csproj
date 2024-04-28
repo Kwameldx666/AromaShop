@@ -874,11 +874,10 @@
     <Compile Include="Controllers\BlogController.cs" />
     <Compile Include="Controllers\Error.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\loginController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\ProductAddContoller.cs" />
     <Compile Include="Controllers\ProductController.cs" />
-    <Compile Include="Controllers\RegisterController.cs" />
+    <Compile Include="Controllers\SupportController.cs" />
     <Compile Include="Extension\HttpContextExtesion.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -889,6 +888,7 @@
     <Compile Include="Models\OrderPr.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\RegisterData.cs" />
+    <Compile Include="Models\SupportForm.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -942,11 +942,10 @@
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\UProfile.cshtml" />
     <Content Include="Views\Error\Error404.cshtml" />
-    <Content Include="Views\Home\Analysis.cshtml" />
     <Content Include="Views\Home\Blog.cshtml" />
     <Content Include="Views\Home\Checkout.cshtml" />
     <Content Include="Views\Home\confirmation.cshtml" />
-    <Content Include="Views\Home\contact.cshtml" />
+    <Content Include="Views\Support\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\SingleBlog.cshtml" />
     <Content Include="Views\Home\TrackingOrder.cshtml" />
@@ -989,6 +988,8 @@
     <Content Include="Views\Shared\_TopProduct.cshtml" />
     <Content Include="Views\web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Product\AddReview.cshtml" />
+    <Content Include="Views\Shared\_LayoutAddReview.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -92,7 +92,7 @@
                         
                             alert('Вы успешно купили товар!');
                         } else {
-                            alert('Вы успешно купили товар!');
+                            alert('Недостаточно средств ');
                         }
                     },
                     error: function () {
@@ -123,10 +123,10 @@
                     success: function (response) {
                         // Обновляем данные на странице после успешного обновления
                         if (response.status) {
-                            alert('Quantity updated successfully!');
+                            alert('Успех');
                             // Можно выполнить дополнительные действия после успешного обновления
                         } else {
-                            alert('Failed to update quantity.');
+                            alert('Ошибка');
                         }
                     },
                     error: function () {

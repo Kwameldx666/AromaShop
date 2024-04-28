@@ -1,6 +1,9 @@
 ﻿using Aroma.BussinesLogic;
 using Aroma.BussinesLogic.Interface;
 using Aroma.Domain.Entities.GeneralResponse;
+using Aroma.Domain.Entities.Support;
+using Aroma.Domain.Entities.User;
+using AutoMapper;
 using Lab_TW.Extension;
 using Lab_TW.Models;
 using System;
@@ -15,19 +18,18 @@ namespace Lab_TW.Controllers
     public class HomeController : BaseController
     {
         private readonly IProduct _product;
+
         // GET: Home
         public HomeController()
         {
             var bl = new BussinesLogic();
             _product = bl.AddProductBL();
+
         }
+
         public ActionResult Index()
         {
-            SessionStatus();
-            if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
-            {
-                return RedirectToAction("Login", "Account");
-            }
+            StatusSessionCheck();
             ViewBag.IsUserLoggedIn = true;
             var user = System.Web.HttpContext.Current.GetMySessionObject();
 
@@ -65,44 +67,48 @@ namespace Lab_TW.Controllers
 
         public ActionResult Blog()
         {
+            StatusSessionCheck();
             return View();
         }
 
 
         public ActionResult cart()
         {
+            StatusSessionCheck();
             return View();
         }
 
         public ActionResult category()
         {
+            StatusSessionCheck();
             return View();
         }
         public ActionResult checkout()
         {
+            StatusSessionCheck();
             return View();
         }
         public ActionResult confirmation()
         {
+            StatusSessionCheck();
             return View();
         }
-
-        public ActionResult contact()
-        {
-            return View();
-        }
+ 
 
 
         public ActionResult SingleBlog()
         {
+            StatusSessionCheck();
             return View();
         }
         public ActionResult SingleProduct()
         {
+            StatusSessionCheck();
             return View();
         }
         public ActionResult TrackingOrder()
         {
+            StatusSessionCheck();
             return View();
         }
 

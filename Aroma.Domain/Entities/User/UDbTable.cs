@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Aroma.Domain.Entities.Support;
 
 namespace Aroma.Domain.Entities.User
 {
@@ -39,5 +40,7 @@ namespace Aroma.Domain.Entities.User
         public UserRole Level { get; set; }
         public decimal Balance { get; set; }
         public ICollection<Order> Orders { get; set; }
+
+        public ICollection<USupportForm> SupportMesages { get; set; }
     }
 }

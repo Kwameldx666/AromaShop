@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aroma.Domain.Enums.OrdersStatus;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,12 @@ namespace Aroma.Domain.Entities.Product.DBModel
 
         public int QuantityProd { get; set; }
 
+        public string Feedback { get; set; }
+
+        public int Reting { get; set; }
+
+        public decimal AverageRating { get; set; }
+        public OrderStatus orderStatus { get; set; }
     }
 
 }

@@ -10,6 +10,11 @@ namespace Aroma.BussinesLogic
 {
     public class BussinesLogic
     {
+        public ISupport GetSupport()
+        {
+            return new SupportBL();
+        }
+
         public ISession GetSessionBL()
         {
             return new SessionBL();

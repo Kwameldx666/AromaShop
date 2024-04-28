@@ -101,6 +101,7 @@
     <Compile Include="Entities\GeneralResponse\ResponseGetOrders.cs" />
     <Compile Include="Entities\GeneralResponse\ResponseGetProducts.cs" />
     <Compile Include="Entities\GeneralResponse\ResponseLogout.cs" />
+    <Compile Include="Entities\GeneralResponse\ResponseSupport.cs" />
     <Compile Include="Entities\GeneralResponse\ResponseToDeleteProduct.cs" />
     <Compile Include="Entities\GeneralResponse\ResponseToEditProduct.cs" />
     <Compile Include="Entities\GeneralResponse\ResponseToEditProfile.cs" />
@@ -113,12 +114,14 @@
     <Compile Include="Entities\Product\DBModel\Product.cs" />
     <Compile Include="Entities\Product\DBModel\ProductDbTable.cs" />
     <Compile Include="Entities\Orders\Order.cs" />
+    <Compile Include="Entities\Support\USupportForm.cs" />
     <Compile Include="Entities\User\Session.cs" />
     <Compile Include="Entities\User\UDbTable.cs" />
     <Compile Include="Entities\User\ULoginData.cs" />
     <Compile Include="Entities\User\URegisterData.cs" />
     <Compile Include="Entities\User\UserMinimal.cs" />
     <Compile Include="Entities\User\UserProfile.cs" />
+    <Compile Include="Enums\OrdersStatus\OrderStatus.cs" />
     <Compile Include="Enums\Roles\UserRole.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

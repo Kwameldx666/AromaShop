@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aroma.BussinesLogic.Core.Levels
+namespace Aroma.Domain.Enums.OrdersStatus
 {
-    internal class ModeratorAPI
+    public enum  OrderStatus
     {
+        Unsuccessful,
+        Pending,
+        Successful,
+     
     }
 }

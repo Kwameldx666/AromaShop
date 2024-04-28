@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Aroma.Domain.Entities.Support;
 
 namespace Aroma.Domain.Entities.User
 {
@@ -28,7 +29,7 @@ namespace Aroma.Domain.Entities.User
 
 
         public string LastIP { get; set; }
-
+        public ICollection<USupportForm> SupportMesages { get; set; }
         public UserRole Level { get; set; }
     }
 }

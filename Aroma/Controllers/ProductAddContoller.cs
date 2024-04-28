@@ -50,8 +50,20 @@ namespace Lab_TW.Controllers
         {
 
             {
+
+                int UserId = (int)Convert.ToUInt32(Session["UserId"]);
+                if (UserId == 0)
+                {
+                    GetUserId();
+                    if (UserId == -1)
+                    {
+                        return RedirectToAction("Login", "Account");
+                    }
+                    UserId = (int)Convert.ToUInt32(Session["UserId"]);
+                }
+
                 // Вызов метода из бизнес-логики для получения всех продуктов
-                ResponseGetOrders response = _orderService.ViewOrdersAction();
+                ResponseGetOrders response = _orderService.ViewOrdersAction(UserId);
                 var viewModelOrders = response.Orders.Select(p => new Lab_TW.Models.OrderPr
                 {
                     OrderId = p.OrderId,

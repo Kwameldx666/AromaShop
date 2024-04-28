@@ -16,6 +16,7 @@ namespace Aroma.Domain.Entities.GeneralResponse
         public string Message { get; set; } // Сообщение, например, об ошибке
 
         public List<Product.DBModel.Product> Products;
+
         private List<ProductDbTable> searchResults;
 
         public List<ProductDbTable> ProductsV2;

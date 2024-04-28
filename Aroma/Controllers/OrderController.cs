@@ -78,7 +78,7 @@ namespace Lab_TW.Controllers
             }).ToList();
             if (response.Status)
             {
-                return Json(new { success = true });
+                return Json(new { status = true });
             }
             else
                 return Json(new { status = false });

@@ -34,23 +34,24 @@
                             <li class="nav-item"><a class="nav-link" href="@Url.Action("SingleBlog", "Home")">Blog Details</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="@Url.Action("contact", "Home")">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("Contact", "Support")">Contact</a></li>
                     <li class="nav-item submenu dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                             <img src="~/img/user.png" alt="User" class="user-icon" />
                         </a>
                         <ul class="dropdown-menu">
                             @{
-                                bool isAdmin = Convert.ToBoolean(Session["admin"]);
-                                bool isModerator = Convert.ToBoolean(Session["moderator"]);
-                                bool isUserLoggedIn = Convert.ToBoolean(Session["IsUserLoggedIn"]);
+
+                                bool permission = ((string)Session["Permission"] == "Admin");
+                                bool isUserLoggedIn = ((string)Session["LoginStatus"] == "login");
                             }
 
                             @if (isUserLoggedIn)
                             {
                                 <li class="nav-item"><a class="nav-link" href="@Url.Action("UProfile", "Account")">Profile</a></li>
                                 <li class="nav-item"><a class="nav-link" href="@Url.Action("Logout", "Account")">Logout</a></li>
-                                if (isAdmin || isModerator)
+                                <li class="nav-item"><a class="nav-link" href="@Url.Action("Cart", "Product")">Купленные продукты</a></li>
+                                if (permission)
                                 {
                                     <li class="nav-item"><a class="nav-link" href="@Url.Action("ProductsAdminPanel", "Product")">Admin Panel</a></li>
                                 }
