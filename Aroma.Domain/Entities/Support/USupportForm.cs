@@ -1,4 +1,5 @@
 ﻿using Aroma.Domain.Entities.User;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -16,7 +17,7 @@ namespace Aroma.Domain.Entities.Support
 
         [ForeignKey("SupportUser")]
         public int SupportUserId { get; set; }
-
+        [JsonIgnore]
         public virtual UDbTable SupportUser { get; set; } // Свойство для связи с пользователем
 
         public string name { get; set; }

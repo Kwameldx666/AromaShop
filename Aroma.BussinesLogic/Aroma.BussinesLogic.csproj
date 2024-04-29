@@ -150,6 +150,10 @@
     <Compile Include="Migrations\202404281004213_ReviewProducts.Designer.cs">
       <DependentUpon>202404281004213_ReviewProducts.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202404291027209_pls.cs" />
+    <Compile Include="Migrations\202404291027209_pls.Designer.cs">
+      <DependentUpon>202404291027209_pls.cs</DependentUpon>
+    </Compile>
     <Compile Include="Scripts\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -258,6 +262,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202404281004213_ReviewProducts.resx">
       <DependentUpon>202404281004213_ReviewProducts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202404291027209_pls.resx">
+      <DependentUpon>202404291027209_pls.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

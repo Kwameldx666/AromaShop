@@ -16,5 +16,10 @@ namespace Aroma.BussinesLogic.mainBL
         {
             return MessageToSupportAction(userId,supportForm);
         }
+
+        public ResponseSupport GetViewPort()
+        {
+            return GetViewPortAction();
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Aroma.Domain.Entities.Support;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,7 @@ namespace Aroma.Domain.Entities.GeneralResponse
     {
         public bool Status {  get; set; }
         public string StatusMessage { get; set; }
+
+        public List<USupportForm> SupportMesages { get; set; }
     }
 }

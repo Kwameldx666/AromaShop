@@ -26,9 +26,9 @@ namespace Aroma.BussinesLogic.mainBL
             return RRegisterUpService(uRegisterData);
         }
 
-        public HttpCookie GenCookie(string loginCredential)
+        public HttpCookie GenCookie(string loginCredential, bool rememberMe)
         {
-            return Cookie(loginCredential);
+            return Cookie(loginCredential, rememberMe);
         }
 
         public UserMinimal GetUserByCookie(string apiCookieValue)

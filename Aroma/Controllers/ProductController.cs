@@ -140,43 +140,42 @@ namespace Lab_TW.Controllers
 
         public ActionResult AddProducts(Models.Product product, HttpPostedFileBase ImageFile)
         {
-            // Здесь логика для сохранения загруженного файла и генерации URL
-            if (ImageFile != null && ImageFile.ContentLength > 0)
+            if (ModelState.IsValid)
             {
-                var uploadPath = Server.MapPath("~/img/product"); // Путь к директории для сохранения файла
-                var fileName = Path.GetFileName(ImageFile.FileName); // Получение имени файла
-                var filePath = Path.Combine(uploadPath, fileName); // Создание полного пути к файлу
+                // Проверка на наличие и тип файла
+                if (ImageFile != null && ImageFile.ContentLength > 0 && ImageFile.ContentType.StartsWith("image"))
+                {
+                    var uploadPath = Server.MapPath("~/img/product");
+                    var fileName = Path.GetFileName(ImageFile.FileName);
+                    var filePath = Path.Combine(uploadPath, fileName);
+                    ImageFile.SaveAs(filePath);
 
-                // Сохранение файла на сервер
-                ImageFile.SaveAs(filePath);
+                    product.ImageUrl = Url.Content(Path.Combine("~/img/product", fileName));
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Please upload a valid image file.");
+                    return View("~/Views/Home/AddProduct.cshtml", product);
+                }
 
-                // Присвоение URL к свойству ImageUrl
-                product.ImageUrl = Url.Content(Path.Combine("~/img/product", fileName));
+                Mapper.Initialize(cfg => cfg.CreateMap<Models.Product, Aroma.Domain.Entities.Product.DBModel.Product>());
+                var AdminAddProduct = Mapper.Map<Aroma.Domain.Entities.Product.DBModel.Product>(product);
+
+                ResponseAddProduct response = _product.AdminAddAction(AdminAddProduct);
+                if (response != null && response.Status)
+                {
+                    return RedirectToAction("ProductsAdminPanel", "Product");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Failed to add the product. Please try again.");
+                    return View("~/Views/Home/AddProduct.cshtml", product);
+                }
             }
 
-
-            Mapper.Initialize(cfg => cfg.CreateMap<Models.Product, Aroma.Domain.Entities.Product.DBModel.Product>());
-            var AdminAddProduct = Mapper.Map<Aroma.Domain.Entities.Product.DBModel.Product>(product); // Исправлено здесь
-
-
-
-
-            // Вызов метода бизнес-логики для добавления продукта
-            ResponseAddProduct response = _product.AdminAddAction(AdminAddProduct);
-            if (response != null && response.Status)
-            {
-                // Если продукт успешно добавлен, перенаправляем на страницу управления продуктами
-                return RedirectToAction("ProductsAdminPanel", "Product");
-            }
-            else
-            {
-                // В случае ошибки возвращаемся на страницу добавления продукта
-                return RedirectToAction("AddProduct", "Home");
-            }
-
-
-
+            return View("~/Views/Home/AddProduct.cshtml", product);
         }
+
         private IOrderService _orderService;
 
         public ActionResult AddProductToCart()

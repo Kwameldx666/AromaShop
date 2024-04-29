@@ -9,7 +9,7 @@ namespace Lab_TW.Models
     {
         public string Username { get; set; }
         public string Password { get; set; }
-        public string RememberMe { get; set; }
+        public bool RememberMe { get; set; }
 
         public string Email {  get; set; }
 

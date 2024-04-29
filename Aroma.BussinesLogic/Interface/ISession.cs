@@ -13,7 +13,7 @@ namespace Aroma.BussinesLogic.Interface
 {
     public interface ISession
     {
-        HttpCookie GenCookie(string credential);
+        HttpCookie GenCookie(string credential, bool rememberMe);
         UserMinimal GetUserByCookie(string value);
         RResponseData UserLoginAction(ULoginData data);
         URegisterResp UserRegisterAction(URegisterData uRegisterData);

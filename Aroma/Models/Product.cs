@@ -23,6 +23,8 @@ namespace Lab_TW.Models
         public int Rating { get;set; }
 
         public string Feedback { get; set; }
+        
+        public decimal Discount { get; set; }
 
 
     }

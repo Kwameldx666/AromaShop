@@ -8,6 +8,7 @@ using Aroma.Domain.Entities.User;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Metadata.Edm;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,39 @@ namespace Aroma.BussinesLogic.Core.Levels
 {
     public class AdminAPI
     {
+        internal ResponseSupport GetViewPortAction()
+        {
+            try
+            {
+                using (var db = new SupportContext())
+                {
+                    var ViewPorts = db.SupportMesages.ToList();
+                    return new ResponseSupport()
+                    {
+                        Status = true,
+                        SupportMesages = ViewPorts.Select(s => new USupportForm
+                        {
+                            message = s.message,
+                            name = s.name,
+                            subject = s.subject,
+                            SupportUser = s.SupportUser,
+                            email = s.email,
+                            MessageTime = s.MessageTime
+                        }).ToList() // Явное преобразование в список
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // Возвращаем объект ResponseSupport с ошибкой
+                return new ResponseSupport()
+                {
+                    Status = false,
+             
+                };
+            }
+        }
+
 
         internal ResponseSupport MessageToSupportAction(int userId,USupportForm supportForms)
         {
@@ -63,30 +97,37 @@ namespace Aroma.BussinesLogic.Core.Levels
 
         internal ResponseAddProduct AddAdminActionProduct(Product products)
         {
-            if (products == null) 
+            if (products == null)
             {
                 string Error = "Error to add product";
-                return new ResponseAddProduct { Status = false ,MessageError = Error};
+                return new ResponseAddProduct { Status = false, MessageError = Error };
             }
+
+            // Рассчитываем цену товара с учетом скидки
+            decimal priceWithDiscount = products.Price - (products.Price * products.Discount / 100);
 
             var product = new ProductDbTable()
             {
                 Name = products.Name,
-                Price = products.Price,
+                Price = priceWithDiscount, // Используем цену с учетом скидки
                 ProductType = products.ProductType,
                 Category = products.Category,
                 Description = products.Description,
                 Id = products.Id,
                 ImageUrl = products.ImageUrl,
                 QuantityProd = products.Quantity,
+                Discount = products.Discount,
             };
-            using(var db = new ProductContext())
+
+            using (var db = new ProductContext())
             {
                 db.Products.Add(product);
                 db.SaveChanges();
             }
+
             return new ResponseAddProduct { Status = true };
         }
+
 
         internal ResponseGetProducts GetAllProducts()
         {
@@ -109,6 +150,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                             Description = p.Description,
                             ImageUrl = p.ImageUrl,
                             Quantity = p.QuantityProd,
+                            Discount = p.Discount,
                         }).ToList()
                     };
                 }

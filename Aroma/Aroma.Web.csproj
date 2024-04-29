@@ -938,7 +938,6 @@
     <Content Include="vendors\themify-icons\fonts\themify.ttf" />
     <Content Include="vendors\themify-icons\fonts\themify.woff" />
     <Content Include="vendors\themify-icons\Themify IconFonts 5-23-2014.json" />
-    <Content Include="Views\Account\login.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\UProfile.cshtml" />
     <Content Include="Views\Error\Error404.cshtml" />
@@ -990,6 +989,9 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Product\AddReview.cshtml" />
     <Content Include="Views\Shared\_LayoutAddReview.cshtml" />
+    <Content Include="Views\Support\ViewPort.cshtml" />
+    <Content Include="Views\Shared\_LayoutViewPort.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

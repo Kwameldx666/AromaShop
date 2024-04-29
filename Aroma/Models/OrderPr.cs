@@ -23,6 +23,6 @@ namespace Lab_TW.Models
         public string Feedback { get; internal set; }
         public int Rating { get; internal set; }
         public decimal AverageRating { get; internal set; }
-        public int Price { get; internal set; }
+        public decimal Price { get; internal set; }
     }
 }

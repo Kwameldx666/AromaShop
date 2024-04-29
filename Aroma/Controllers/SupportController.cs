@@ -10,6 +10,7 @@ using AutoMapper;
 using Lab_TW.Models;
 using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 using System.Web.Mvc;
+using Lab_TW.Atributes;
 
 namespace Lab_TW.Controllers
 {
@@ -55,6 +56,24 @@ namespace Lab_TW.Controllers
 
 
             return View();
+        }
+        [AdminAndModerator]
+
+        public ActionResult ViewPort()
+        {
+            
+            ResponseSupport responseSupport = _support.GetViewPort();
+
+            if (responseSupport.Status)
+            {
+
+                return View(responseSupport.SupportMesages);
+            }
+            else
+            {
+                // Если возникла ошибка, возвращаем представление с сообщением об ошибке
+                return View("Error");
+            }
         }
     }
 }

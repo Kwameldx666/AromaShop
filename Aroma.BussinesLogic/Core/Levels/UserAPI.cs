@@ -95,41 +95,31 @@ namespace Aroma.BussinesLogic.Core.Levels
         }
         internal RResponseData ULASessionCheck(ULoginData data)
 
-        {
 
+        {
             using (var db = new UserContext())
             {
                 // Поиск пользователя в базе данных по имени пользователя
-                var user = db.Users.FirstOrDefault(u => u.Username == data.credential);
-                if (user == null)
-                {
-                    user = db.Users.FirstOrDefault(u => u.Email == data.credential);
-
-                }
+                var user = db.Users.FirstOrDefault(u => u.Username == data.credential || u.Email == data.credential);
 
                 string pass = LoginHelper.HashGen(data.password);
                 if (user != null && user.Password == pass)
                 {
-                    if (user.Level == UserRole.Admin)
+                    switch (user.Level)
                     {
-                        return new RResponseData { Status = true, AdminMod = true };
+                        case UserRole.Admin:
+                            return new RResponseData { Status = true, AdminMod = true };
+                        case UserRole.Moderator:
+                            return new RResponseData { Status = true, ModeratorMod = true };
+                        case UserRole.None:
+                            return new RResponseData { Status = false, ResponseMessage = "Your account is banned" };
+                        default:
+                            return new RResponseData { Status = true }; // Аутентификация успешна
                     }
-
-                    if (user.Level == UserRole.Moderator)
-                    {
-                        return new RResponseData { Status = true, ModeratorMod = true };
-                    }
-
-                    if (user.Level == UserRole.None)
-                    {
-                        return new RResponseData { Status = false, ResponseMessage = "You have banned" };
-                    }
-                    // Аутентификация успешна
-                    return new RResponseData { Status = true };
                 }
 
                 // Если пользователь не найден или пароль не совпадает
-                return new RResponseData { Status = false };
+                return new RResponseData { Status = false, ResponseMessage = "Неверные учетные данные" };
             }
         }
 
@@ -180,6 +170,7 @@ namespace Aroma.BussinesLogic.Core.Levels
 
         internal URegisterResp RRegisterUpService(URegisterData data)
         {
+            // Создаем новую запись пользователя с данными из входного объекта
             var User = new UDbTable
             {
                 Username = data.Name,
@@ -189,34 +180,45 @@ namespace Aroma.BussinesLogic.Core.Levels
                 LastLogin = data.RegDate,
                 Level = UserRole.User,
                 Balance = data.Balance
-
-
             };
 
-
-
-
+            // Проверяем, совпадают ли пароли
             if (User.Password != data.AcceptPassword)
             {
                 string errorPassword = "Пароли не совпадают";
                 return new URegisterResp { Status = false, ResponseMessage = errorPassword };
+             
+            }
+            if (User.Email == null || User.Username == null)
+            {
+                return new URegisterResp { Status = false, ResponseMessage = "Заполните все поля" };
             }
 
-
+            // Хешируем пароль для безопасного хранения в базе данных
             User.Password = LoginHelper.HashGen(User.Password);
-
 
             using (var db = new UserContext())
             {
+                // Проверяем, существует ли пользователь с таким же именем
+                var UserName = db.Users.FirstOrDefault(u => u.Username == data.Name);
+                if (UserName != null)
+                {
+                    // Если пользователь существует, возвращаем сообщение об ошибке
+                    return new URegisterResp { Status = false, ResponseMessage = "Пользователь с таким именем уже существует" };
+                }
+
+                // Добавляем нового пользователя в базу данных и сохраняем изменения
                 db.Users.Add(User);
                 db.SaveChanges();
             }
 
+            // Возвращаем успешный результат регистрации
             return new URegisterResp { Status = true };
         }
 
 
-        internal HttpCookie Cookie(string loginCredential)
+
+        internal HttpCookie Cookie(string loginCredential, bool rememberMe)
         {
             var apiCookie = new HttpCookie("X-KEY")
             {
@@ -239,7 +241,8 @@ namespace Aroma.BussinesLogic.Core.Levels
                 if (curent != null)
                 {
                     curent.CookieString = apiCookie.Value;
-                    curent.ExpireTime = DateTime.Now.AddMinutes(60);
+                    // Установка срока действия куки в зависимости от выбора пользователя
+                    curent.ExpireTime = rememberMe ? DateTime.Now.AddDays(30) : DateTime.Now.AddMinutes(60);
                     using (var todo = new SessionContext())
                     {
                         todo.Entry(curent).State = EntityState.Modified;
@@ -252,7 +255,8 @@ namespace Aroma.BussinesLogic.Core.Levels
                     {
                         Username = loginCredential,
                         CookieString = apiCookie.Value,
-                        ExpireTime = DateTime.Now.AddMinutes(160)
+                        // Установка срока действия куки в зависимости от выбора пользователя
+                        ExpireTime = rememberMe ? DateTime.Now.AddDays(30) : DateTime.Now.AddMinutes(60)
                     });
                     db.SaveChanges();
                 }
@@ -260,6 +264,7 @@ namespace Aroma.BussinesLogic.Core.Levels
 
             return apiCookie;
         }
+
 
         internal UserMinimal UserCookie(string cookie)
         {
@@ -352,7 +357,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                     else
                     {
                         // Create a new order
-                        int totalPrice = product.Price * quantity;
+                        decimal totalPrice = product.Price * quantity;
                         var order = new Order
                         {
                             UserId = userId,

@@ -109,6 +109,7 @@ namespace Lab_TW.Controllers
 
         }
 
+      
         [HttpPost]
         public ActionResult ChangePassword(LoginData user,string newPassword, string confirmPassword)
         {
@@ -185,53 +186,44 @@ namespace Lab_TW.Controllers
             if (ModelState.IsValid)
             {
                 Mapper.Initialize(cfg => cfg.CreateMap<LoginData, ULoginData>());
-               
+
                 var Data = Mapper.Map<ULoginData>(data); // Исправлено здесь
                 {
                     Data.IP = Request.UserHostAddress;
                     Data.FirstLoginTime = DateTime.Now;
                     Data.credential = data.Username;
-                    Data.Balance =  1000;
-                    
-                    
                 };
 
                 RResponseData response = _session.UserLoginAction(Data);
 
                 if (response != null && response.Status)
-                { 
-                    HttpCookie cookie = _session.GenCookie(Data.credential);
+                {
+                    HttpCookie cookie = _session.GenCookie(Data.credential, data.RememberMe);
                     ControllerContext.HttpContext.Response.Cookies.Add(cookie);
-          
                     ViewBag.UserName = Data.credential;
-
-        
                     Session["IsUserLoggedIn"] = System.Web.HttpContext.Current.Session["LoginStatus"];
 
                     if (response.AdminMod || response.ModeratorMod)
                     {
                         ViewBag.UserName = Data.credential;
-
-                      
-                    
-
-
                         return RedirectToAction("ProductsAdminPanel", "Product");
                     }
                     return RedirectToAction("Index", "Home");
-
-                    
-
-
-
                 }
-                return RedirectToAction("login", "Account");
+                if (response.ResponseMessage != null)
+                {
+                    ViewBag.ErrorMessage = response.ResponseMessage;
+                }
+                // Возврат на страницу входа с сообщением об ошибке
+                return View("~/Views/Account/Login.cshtml");
             }
+            // Возврат на страницу входа, если модель не валидна
             return View();
         }
 
-            // GET: Register
-            public ActionResult Register()
+
+        // GET: Register
+        public ActionResult Register()
             {
 
 
@@ -251,7 +243,6 @@ namespace Lab_TW.Controllers
                     RegDate = DateTime.Now,
                     AcceptPassword = RegData.AcceptPassword
 
-
                 };
 
                 URegisterResp uRegisterResp = _session.UserRegisterAction(uRegData);
@@ -260,20 +251,16 @@ namespace Lab_TW.Controllers
 
                     return RedirectToAction("Login", "Account");
 
-
-
-
-
                 }
                 if (uRegisterResp.ResponseMessage != null)
                 {
                     ViewBag.ErrorPassword = uRegisterResp.ResponseMessage;
                 }
 
-                return View("~/Views/Register/Account.cshtml");
+            return View("~/Views/Account/Register.cshtml");
 
 
-            }
+        }
         }
 }
 
