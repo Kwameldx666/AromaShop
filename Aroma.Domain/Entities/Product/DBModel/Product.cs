@@ -25,8 +25,12 @@ namespace Aroma.Domain.Entities.Product.DBModel
 
         public int Reting { get; set; }
 
-        public decimal AverageRating { get;set; }
+        public double AverageRating { get;set; }
 
         public int Discount { get; set; }
+
+        public int View { get; set; }
+
+        public decimal PriceWithDiscount { get; set; }
     }
 }

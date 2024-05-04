@@ -17,11 +17,32 @@ using Aroma.Domain.Entities.Product.DBModel;
 using Aroma.BussinesLogic.mainBL;
 using Aroma.Domain.Enums.OrdersStatus;
 using Microsoft.Ajax.Utilities;
+using Aroma.BussinesLogic.Interface;
+using Aroma.Domain.Entities.Rating;
+using System.Web.Mvc;
 
 namespace Aroma.BussinesLogic.Core.Levels
 {
     public class UserAPI
     {
+        public int CountRating { get; private set; }
+
+        internal  ResponseCheckCode CheckEmailAction(URegisterData updateCode)
+        {
+            using(var db = new UserContext())
+            {
+                var Code = db.Users.FirstOrDefault(c => c.Code == updateCode.Code);
+                if (Code == null)
+                {
+                    return new ResponseCheckCode { Status = false };
+                }
+                else 
+
+                        return new ResponseCheckCode { Status = true };
+            }
+     
+
+        }
         internal ResponseViewProfile ViewProfileAction(int userId)
         {
             try
@@ -46,7 +67,7 @@ namespace Aroma.BussinesLogic.Core.Levels
 
                     return userProfile;
 
-
+                    
                 }
             }
             catch (Exception ex)
@@ -77,7 +98,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                     string password = LoginHelper.HashGen(newPassword);
                     existingProduct.Password = password;
 
-
+                    
 
 
                     // Сохранение изменений
@@ -187,8 +208,8 @@ namespace Aroma.BussinesLogic.Core.Levels
             {
                 string errorPassword = "Пароли не совпадают";
                 return new URegisterResp { Status = false, ResponseMessage = errorPassword };
-             
             }
+
             if (User.Email == null || User.Username == null)
             {
                 return new URegisterResp { Status = false, ResponseMessage = "Заполните все поля" };
@@ -208,21 +229,31 @@ namespace Aroma.BussinesLogic.Core.Levels
                 }
 
                 // Добавляем нового пользователя в базу данных и сохраняем изменения
-                db.Users.Add(User);
-                db.SaveChanges();
+                string code = GenerateRandomPasswords.GenerateCode();
+
+                bool emailSent = USendPasswordResetEmail.SendConfirmationEmail(User.Email, code);
+                if (emailSent)
+                {
+                    // Если письмо успешно отправлено, сохраняем код подтверждения в базе данных и создаем пользователя
+                    User.Code = code;
+                    db.Users.Add(User);
+                    db.SaveChanges();
+                    return new URegisterResp { Status = true, ResponseMessage = "Письмо с кодом подтверждения отправлено на ваш почтовый адрес" };
+                }
+                else
+                {
+                    return new URegisterResp { Status = false, ResponseMessage = "Ошибка при отправке письма на ваш почтовый адрес. Пожалуйста, попробуйте позже." };
+                }
             }
-
-            // Возвращаем успешный результат регистрации
-            return new URegisterResp { Status = true };
         }
-
-
 
         internal HttpCookie Cookie(string loginCredential, bool rememberMe)
         {
             var apiCookie = new HttpCookie("X-KEY")
             {
-                Value = CookieGenerator.Create(loginCredential)
+                Value = CookieGenerator.Create(loginCredential),
+                Expires = rememberMe ? DateTime.Now.AddDays(30) : DateTime.Now.AddMinutes(60)
+
             };
 
             using (var db = new SessionContext())
@@ -264,6 +295,12 @@ namespace Aroma.BussinesLogic.Core.Levels
 
             return apiCookie;
         }
+
+
+
+
+
+
 
 
         internal UserMinimal UserCookie(string cookie)
@@ -322,7 +359,35 @@ namespace Aroma.BussinesLogic.Core.Levels
             return response;
         }
 
+     
+        
+        public ResponseToEditProfile ForgotPasswordAction(ULoginData updatePassword)
+        {
+            string newPassword = GenerateRandomPasswords.GenerateRandomPassword(); // Генерация нового пароля
+            using (var db = new UserContext())
+            {
+                var Email = db.Users.FirstOrDefault(e => e.Email == updatePassword.Email);
+                if (Email == null)
+                {
        
+                    return new ResponseToEditProfile { Status = false, MessageError = "Ошибка при обновления пароля" };
+                }
+                else
+                {
+                    var password = LoginHelper.HashGen(newPassword);
+                    Email.Password = password;
+                    db.SaveChanges();
+                }
+            }
+
+            bool emailSent = USendPasswordResetEmail.SendPasswordResetEmail(updatePassword.Email, newPassword);
+            if (emailSent)
+            {
+                return new ResponseToEditProfile { Status = true };
+            }
+            else
+                return new ResponseToEditProfile { Status = false ,MessageError = "Ошибка при обновления пароля"};
+        }
 
         internal ResponseAddOrder purchaseProduct(int userId, int productId, int quantity)
         {
@@ -331,23 +396,20 @@ namespace Aroma.BussinesLogic.Core.Levels
                 using (var db = new UserContext())
                 {
                     var user = db.Users.FirstOrDefault(u => u.Id == userId);
-                    var product = db.Products.FirstOrDefault(p => p.Id == productId );
-                    var orders = db.Orders.FirstOrDefault(o => o.orderStatus != Domain.Enums.OrdersStatus.OrderStatus.Successful);
-                    if (user == null || product == null )
+                    var product = db.Products.FirstOrDefault(p => p.Id == productId);
+                    var existingOrder = db.Orders.FirstOrDefault(o => o.UserId == userId && o.ProductId == productId && o.orderStatus != Domain.Enums.OrdersStatus.OrderStatus.Successful);
+
+                    if (user == null || product == null)
                     {
                         return new ResponseAddOrder { Success = false, MessageError = "User or product not found" };
                     }
 
-                    // Проверяем, есть ли у пользователя уже заказ с этим товаром
-                    // Проверяем, есть ли у пользователя уже заказ с этим товаром
-                    var existingOrder = db.Orders.FirstOrDefault(o => o.UserId == userId && o.ProductId == productId);
-
-
                     if (existingOrder != null)
                     {
                         // Update existing order quantity
+                        existingOrder.Product.Quantity++;
                         existingOrder.QuantityOrder += quantity;
-                        existingOrder.TotalPrice = product.Price * existingOrder.QuantityOrder;
+                        existingOrder.TotalPrice = product.PriceWithDiscount * existingOrder.QuantityOrder;
                         db.Entry(existingOrder).State = EntityState.Modified;
                         existingOrder.orderStatus = Domain.Enums.OrdersStatus.OrderStatus.Pending;
                         db.SaveChanges();
@@ -357,7 +419,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                     else
                     {
                         // Create a new order
-                        decimal totalPrice = product.Price * quantity;
+                        decimal totalPrice = product.PriceWithDiscount * quantity;
                         var order = new Order
                         {
                             UserId = userId,
@@ -376,8 +438,6 @@ namespace Aroma.BussinesLogic.Core.Levels
 
                         return new ResponseAddOrder { Success = true, Order = order };
                     }
-
-
                 }
             }
             catch (Exception ex)
@@ -435,26 +495,71 @@ namespace Aroma.BussinesLogic.Core.Levels
             {
                 using (var db = new OrderContext())
                 {
-                    // Извлекаем информацию о продукте, а не заказе
+                    // Извлекаем информацию о продукте
                     var product = db.Products.FirstOrDefault(p => p.Id == productId);
                     if (product == null)
                     {
                         return new ResponseViewProduct { Status = false, Message = "Product not found" };
                     }
 
-                    // Создаем объект ResponseViewProduct с данными о продукте
-                    var productInfo = new ResponseViewProduct
-                    {
-                        ProductId = productId,
-                        Price = product.Price,
-                        Description = product.Description,
-                        Name = product.Name,
-                        Category = product.ProductType,
-                        Quantity = product.QuantityProd,
-                        ImageUrl = product.ImageUrl
-                    };
+                    // Увеличиваем счетчик просмотров продукта
+                    product.View++;
+                    db.SaveChanges(); // Сохраняем изменения в базе данных
 
-                    return productInfo;
+                    // Получаем среднюю оценку товара
+                    double averageRating = db.Rating
+     .Where(r => r.ProductId == productId) // Отфильтровываем оценки по идентификатору продукта
+     .Select(r => r.Rating) // Выбираем только оценки
+     .DefaultIfEmpty(0) // По умолчанию 0, если оценок нет
+     .Average(); // Вычисляем среднее значение
+                    product.AverageRating = averageRating;
+
+                    // Сохраняем изменения в базе данных
+                    db.SaveChanges();
+
+                    var IsPurchased_ = db.Products.Where(p => p.orderStatus == OrderStatus.Successful);
+                    if (IsPurchased_ != null)
+                    {
+                        var ProdStat = new ResponseViewProduct
+                        {
+                            IsPurchased = true,
+                             Status = true,
+                            ProductId = productId,
+                            Price = product.Price,
+                            Description = product.Description,
+                            Name = product.Name,
+                            Category = product.ProductType,
+                            Quantity = product.QuantityProd,
+                            ImageUrl = product.ImageUrl,
+                            View = product.View,
+                            PriceWidthDiscount = product.PriceWithDiscount,
+                            AverageRating = averageRating // Добавляем среднюю оценку в ответ
+                        };
+                        return ProdStat;
+
+                    }
+                    else
+                    {
+                        // Создаем объект ResponseViewProduct с данными о продукте
+                        var productInfo = new ResponseViewProduct
+                        {
+                            IsPurchased = false,
+                            Status = true,
+                            ProductId = productId,
+                            Price = product.Price,
+                            Description = product.Description,
+                            Name = product.Name,
+                            Category = product.ProductType,
+                            Quantity = product.QuantityProd,
+                            ImageUrl = product.ImageUrl,
+                            View = product.View,
+                            PriceWidthDiscount = product.PriceWithDiscount,
+                            AverageRating = averageRating // Добавляем среднюю оценку в ответ
+                        };
+                        return productInfo;
+                    }
+
+                  
                 }
             }
             catch (Exception ex)
@@ -463,6 +568,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                 return new ResponseViewProduct { Status = false, Message = "Error retrieving product information: " + ex.Message };
             }
         }
+
 
 
         internal ResponseUpdateQuantityOrders EditOrderQuantity(int userId, int productId, int quantityOrder)
@@ -479,7 +585,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                     {
                         // Обновляем количество товара и вычисляем новую суммарную стоимость заказа
                         order.QuantityOrder = quantityOrder;
-                        order.TotalPrice = order.Product.Price * quantityOrder;
+                        order.TotalPrice = order.Product.PriceWithDiscount * quantityOrder;
                         order.TotalAmount =  order.TotalPrice;
                        
                         // Сохраняем изменения в базе данных
@@ -506,7 +612,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                 {
                     // Находим все заказы пользователя с заданным userId
                     var userOrders = await db.Orders
-                                              .Where(o => o.UserId == userId)
+                                              .Where(o => o.UserId == userId && o.orderStatus == OrderStatus.Pending)
                                               .ToListAsync();
 
                     if (userOrders.Any())
@@ -536,6 +642,9 @@ namespace Aroma.BussinesLogic.Core.Levels
                                 var product = await db.Products.FirstOrDefaultAsync(p => p.Id == orderItem.ProductId);
                                 if (product != null)
                                 {
+                             
+
+                                  
                                     product.QuantityProd -= orderItem.QuantityOrder;
                                 }
                             }
@@ -648,15 +757,13 @@ namespace Aroma.BussinesLogic.Core.Levels
                 {
                     var orders = db.Orders.Where(o => o.UserId == userId && o.orderStatus == OrderStatus.Successful).ToList();
 
-
-                    if (orders  != null)
+                    // Проверяем, есть ли заказы
+                    if (orders.Any())
                     {
                         return new ResponseGetOrders
                         {
                             Status = true,
-
                             Orders = orders.Select(p => new Order
-
                             {
                                 OrderId = p.OrderId,
                                 Product = p.Product,
@@ -669,17 +776,15 @@ namespace Aroma.BussinesLogic.Core.Levels
                                 UserId = p.UserId,
                                 ProductType = p.ProductType,
                                 Feedback = p.Feedback,
-                                AverageRating = p.AverageRating,
+                                AverageRating = p.Product.AverageRating,
                                 Reting = p.Reting,
-                                
-
-
-
-
                             }).ToList()
                         };
                     }
-                    return new ResponseGetOrders { Status = false };
+                    else
+                    {
+                        return new ResponseGetOrders { Status = false };
+                    }
                 }
             }
             catch (Exception ex)
@@ -690,101 +795,75 @@ namespace Aroma.BussinesLogic.Core.Levels
         }
 
 
-        internal ResponseGetOrders GetOrders(int userId, int productId, int rating, string review)
+
+        internal ResponseGetRating GetRating(int userId, int productId, int rating, string review)
         {
-            try
+            using (var db = new OrderContext())
             {
-                using (var db = new OrderContext())
+                // Проверяем, переданы ли рейтинг и отзыв
+                if (rating == 0 && review == null)
                 {
-                    var product = db.Orders.FirstOrDefault(o => o.ProductId == productId && o.UserId == userId && o.orderStatus == OrderStatus.Successful);
+                    // Получаем первый отзыв для каждого пользователя для данного товара
+                    var firstReviewsForUsers = db.Rating
+                        .Where(o => o.ProductId == productId && o.Rating != 0)
+                        .ToList();
 
-                    if (product != null)
+                    // Проверяем, есть ли отзывы для товара
+                    bool good = firstReviewsForUsers.Any();
+
+                    return new ResponseGetRating
                     {
-                        // Обновляем свойства продукта
-                        product.Feedback = review;
-                        product.Reting = rating;
-                    }
-
-                    var orders = db.Orders
-      .Where(o => o.ProductId == productId &&
-                  o.orderStatus == OrderStatus.Successful &&
-                  o.Reting != null) // Учитываем только заказы с оценкой, не равной null
-      .ToList();
-
-                    // Создаем список оценок из успешных заказов
-                    var ratings = orders.Where(o => o.ProductId == productId).Select(o => o.Reting).ToList();
-
-                    // Проверяем, была ли данная оценка ранее выбрана для данного продукта
-                    var existingOrder = orders.FirstOrDefault(o => o.Reting == rating);
-                    if (existingOrder != null)
-                    {
-                        // Если оценка была выбрана ранее, удаляем ее из списка оценок
-                        ratings.Remove(rating);
-                    }
-
-                    // Добавляем новую оценку к списку
-                    ratings.Add(rating);
-
-                    // Рассчитываем среднюю оценку
-                    var averageRating = ratings.Sum() / ratings.Count;
-
-                    // Обновляем среднюю оценку продукта
-                    var productsToUpdate = db.Orders.Where(p => p.ProductId == productId).ToList();
-                    if (productsToUpdate != null)
-                    {
-                        foreach (var productToUpdate in productsToUpdate)
+                        Good = good,
+                        Status = true,
+                        View = firstReviewsForUsers.Select(p => new RatingUdbTable
                         {
-                            productToUpdate.AverageRating = averageRating;
-                        }
+                            ProductId = p.ProductId,
+                            Product = p.Product,
+                            Rating = p.Rating,
+                            User = p.User,
+                            Feedback = p.Feedback
+                        }).ToList()
+                    };
+                }
+                else
+                {
+                    // Получаем все заказы с соответствующим productId
+                    var orders = db.Orders.Where(o => o.ProductId == productId).ToList();
+                    foreach (var order in orders)
+                    {
+                        order.Reting = rating;
+                    }
 
+                    // Проверяем, есть ли уже оценка от данного пользователя для данного товара
+                    var existingRating = db.Rating.FirstOrDefault(r => r.ProductId == productId && r.UserId == userId);
+
+                    if (existingRating != null)
+                    {
+                        // Если оценка уже есть, обновляем её значение
+                        existingRating.Rating = rating;
+                        existingRating.Feedback = review;
                     }
                     else
                     {
-                        // Если это первая оценка продукта, устанавливаем среднюю оценку как первую полученную оценку
-                        var productToUpdates = db.Orders.FirstOrDefault(p => p.ProductId == productId);
-                        if (productToUpdates != null)
+                        // Иначе добавляем новую оценку
+                        var newRating = new RatingUdbTable
                         {
-                            productToUpdates.AverageRating = rating;
-
-                        }
-                    }
-
-                    db.SaveChanges();
-
-                    var Orders = db.Orders.Where(o => o.UserId == userId && o.orderStatus == OrderStatus.Successful).ToList();
-
-                    if (Orders != null)
-                    {
-                        return new ResponseGetOrders
-                        {
-                            Status = true,
-                            Orders = Orders.Select(p => new Order
-                            {
-                                OrderId = p.OrderId,
-                                Product = p.Product,
-                                ProductId = p.ProductId,
-                                TotalPrice = p.TotalPrice,
-                                OrderDate = p.OrderDate,
-                                UDbTable = p.UDbTable,
-                                QuantityOrder = p.QuantityOrder,
-                                TotalAmount = p.TotalAmount,
-                                UserId = p.UserId,
-                                ProductType = p.ProductType,
-                                Feedback = p.Feedback,
-                                Reting = p.Reting,
-                                orderStatus = p.orderStatus,
-                                AverageRating = p.AverageRating // Используем среднюю оценку продукта
-
-                        }).ToList()
+                            ProductId = productId,
+                            Rating = rating,
+                            Feedback = review,
+                            UserId = userId,
                         };
+
+                        db.Rating.Add(newRating);
                     }
-                    return new ResponseGetOrders { Status = false };
+
+                    db.SaveChanges(); // Сохраняем изменения в базе данных
+
+                    return new ResponseGetRating
+                    {
+                        Status = true
+                    };
                 }
-            }
-            catch (Exception ex)
-            {
-                // В случае ошибки возвращаем статус false и сообщение об ошибке
-                return new ResponseGetOrders { Status = false, Message = ex.Message };
             }
         }
 

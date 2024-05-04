@@ -14,7 +14,7 @@ using Lab_TW.Atributes;
 
 namespace Lab_TW.Controllers
 {
-    public class SupportController:BaseController
+    public class SupportController : BaseController
     {
         private readonly ISupport _support;
         // GET: Home
@@ -61,7 +61,7 @@ namespace Lab_TW.Controllers
 
         public ActionResult ViewPort()
         {
-            
+
             ResponseSupport responseSupport = _support.GetViewPort();
 
             if (responseSupport.Status)
@@ -74,6 +74,17 @@ namespace Lab_TW.Controllers
                 // Если возникла ошибка, возвращаем представление с сообщением об ошибке
                 return View("Error");
             }
+        }
+        [AdminMode]
+        public ActionResult AdminPanelAboutUsers()
+        {
+
+            ResponseSupport responseSupport = _support.GetAdminPanelUsers();
+            if (responseSupport.Status) 
+            {
+                return View(responseSupport.TotalUsers);
+            }
+            return View();
         }
     }
 }

@@ -96,10 +96,12 @@
     <Compile Include="Class1.cs" />
     <Compile Include="Entities\GeneralResponse\ResponseAddOrder.cs" />
     <Compile Include="Entities\GeneralResponse\ResponseAddProduct.cs" />
+    <Compile Include="Entities\GeneralResponse\ResponseCheckCode.cs" />
     <Compile Include="Entities\GeneralResponse\ResponseEditPassword.cs" />
     <Compile Include="Entities\GeneralResponse\ResponseFilterProducts.cs" />
     <Compile Include="Entities\GeneralResponse\ResponseGetOrders.cs" />
     <Compile Include="Entities\GeneralResponse\ResponseGetProducts.cs" />
+    <Compile Include="Entities\GeneralResponse\ResponseGetRating.cs" />
     <Compile Include="Entities\GeneralResponse\ResponseLogout.cs" />
     <Compile Include="Entities\GeneralResponse\ResponseSupport.cs" />
     <Compile Include="Entities\GeneralResponse\ResponseToDeleteProduct.cs" />
@@ -114,6 +116,7 @@
     <Compile Include="Entities\Product\DBModel\Product.cs" />
     <Compile Include="Entities\Product\DBModel\ProductDbTable.cs" />
     <Compile Include="Entities\Orders\Order.cs" />
+    <Compile Include="Entities\Rating\RatingUdbTable.cs" />
     <Compile Include="Entities\Support\USupportForm.cs" />
     <Compile Include="Entities\User\Session.cs" />
     <Compile Include="Entities\User\UDbTable.cs" />

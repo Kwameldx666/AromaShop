@@ -16,7 +16,7 @@ namespace Aroma.BussinesLogic.Interface
         ResponseUpdateQuantityOrders EditQuntity(int userId, int productId, int quantityOrder);
         ResponseAddOrder PurchaseProduct(int userId, int productId, int quantity);
         Task<ResponseGetProducts> SearchProducts(string searchTerm);
-        ResponseGetOrders ViewOrdersAction(int userId, int productId, int rating, string review);
+        ResponseGetRating ViewOrdersAction(int userId, int productId, int rating, string review);
         ResponseGetOrders ViewOrdersAction(int userId);
         ResponseGetOrders ViewOrdersUserAction(int userId);
         ResponseViewProduct ViewProductInfo(int userId, int productId);

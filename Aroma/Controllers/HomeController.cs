@@ -29,7 +29,13 @@ namespace Lab_TW.Controllers
 
         public ActionResult Index()
         {
-            StatusSessionCheck();
+            GetUserId();
+            SessionStatus(); 
+          /*  if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
+            {
+                return RedirectToAction("Login", "Account");
+            }*/
+
             ViewBag.IsUserLoggedIn = true;
             var user = System.Web.HttpContext.Current.GetMySessionObject();
 
@@ -39,17 +45,36 @@ namespace Lab_TW.Controllers
             {
                 Id = p.Id,
                 Name = p.Name,
-                Price = p.Price,
+                Price = p.PriceWithDiscount,
+                Category = p.Category,
+                ProductType = p.ProductType,
+                Description = p.Description,
+                ImageUrl = p.ImageUrl,
+                Quantity = p.Quantity,
+                AverageReting = p.AverageRating,
+            }).ToList();
+
+            var bestSellingProducts = response.BestSellers.Select(p => new Lab_TW.Models.Product
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.PriceWithDiscount,
                 Category = p.Category,
                 ProductType = p.ProductType,
                 Description = p.Description,
                 ImageUrl = p.ImageUrl,
                 Quantity = p.Quantity,
             }).ToList();
+
+            var viewModel = new IndexViewModel
+            {
+                Products = viewModelProducts,
+                BestSellingProducts = bestSellingProducts
+            };
             if (response.Status)
             {
                 // Если запрос прошёл успешно, отображаем список продуктов
-                return View(viewModelProducts);
+                return View(viewModel);
             }
             else
             {
@@ -57,6 +82,7 @@ namespace Lab_TW.Controllers
                 ViewBag.ErrorMessage = response.Message;
                 return View("Error");
             }
+
 
  
 

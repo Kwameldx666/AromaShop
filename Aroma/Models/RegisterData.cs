@@ -11,6 +11,7 @@ namespace Lab_TW.Models
         public string Password { get; set; }
         public string Email { get; set; }
         
+        public string Code { get; set; }
         public string AcceptPassword { get; set; }
     }
 }

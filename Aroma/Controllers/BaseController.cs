@@ -46,8 +46,8 @@ namespace Lab_TW.Controllers
                 {
                     System.Web.HttpContext.Current.SetMySessionObject(profile);
                     System.Web.HttpContext.Current.Session["LoginStatus"] = "login";
-                    string permissions = profile.Level.ToString(); 
-          
+                    string permissions = profile.Level.ToString();
+
 
                     System.Web.HttpContext.Current.Session["Permission"] = permissions;
                 }

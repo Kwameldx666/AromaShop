@@ -19,5 +19,9 @@ namespace Aroma.Domain.Entities.GeneralResponse
         public int Quantity { get; set; }
         public IEnumerable<object> Orders { get; set; }
         public string ImageUrl { get; set; }
+        public int View { get; set; }
+        public decimal PriceWidthDiscount { get; set; }
+        public double AverageRating { get; set; }
+        public bool IsPurchased { get; set; }
     }
 }

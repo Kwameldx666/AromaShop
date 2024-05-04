@@ -43,6 +43,7 @@
 
         th {
             background-color: #f2f2f2;
+            width:auto;
         }
 
         .action-btn {
@@ -58,6 +59,9 @@
 
         .delete-btn {
             background-color: #f44336;
+        }
+        input{
+            width:auto
         }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -90,7 +94,11 @@
                         Price: parseFloat(updatedValues[2]), // Преобразуем цену в число
                         ProductType: updatedValues[3],
                         Category: updatedValues[4],
-                        Quantity: parseInt(updatedValues[5]) // Преобразуем количество в число
+                        Quantity: parseInt(updatedValues[5]) ,// Преобразуем количество в число,
+                        Discount: parseInt(updatedValues[6]),
+                        PriceWithDiscount: parseFloat(updatedValues[7]),
+                        
+
                     };
 
                     $.ajax({
@@ -130,6 +138,8 @@
                     <th>Brtand</th>
                     <th>Category</th>
                     <th>Quantity</th>
+                    <th>Discount</th>
+                    <th>PriceWithDiscount</th>
                     <th>Actions</th>
 
                 </tr>
@@ -145,6 +155,8 @@
                         <td>@product.ProductType</td>
                         <td>@product.Category</td>
                         <td>@product.Quantity</td>
+                        <td>@product.Discount</td>
+                        <td>@product.PriceWithDiscount</td>
                         <td>
                             <button type="button" class="action-btn edit-btn">Edit</button>
                             @using (Html.BeginForm("DeleteProduct", "Product", new { id = product.Id }, FormMethod.Post))

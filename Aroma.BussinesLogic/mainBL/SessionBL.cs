@@ -14,6 +14,16 @@ namespace Aroma.BussinesLogic.mainBL
 {
     public class SessionBL : UserAPI, ISession
     {
+
+
+        public ResponseCheckCode CheckEmail(URegisterData updatePassword)
+        {
+            return  CheckEmailAction(updatePassword);
+        }
+        public ResponseToEditProfile ForgotPassword(ULoginData updatePassword)
+        {
+            return ForgotPasswordAction(updatePassword);
+        }
         public RResponseData UserLoginAction(ULoginData data)
         {
 

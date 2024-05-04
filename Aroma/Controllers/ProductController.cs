@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using Lab_TW.Extension;
 using System.Web.Helpers;
 using Tensorflow;
+using Aroma.BussinesLogic.mainBL;
 
 namespace Lab_TW.Controllers
 {
@@ -48,7 +49,11 @@ namespace Lab_TW.Controllers
                 ProductType = p.ProductType,
                 Description = p.Description,
                 ImageUrl = p.ImageUrl,
-                Quantity = p.Quantity
+                Quantity = p.Quantity,
+                Discount = p.Discount,
+                PriceWithDiscount = p.PriceWithDiscount,
+                
+                
             }).ToList();
             if (response.Status)
             {
@@ -200,6 +205,61 @@ namespace Lab_TW.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult SingleProduct(int? productId, int rating, string textarea)
+        {
+
+            Console.WriteLine($"Received POST request for productId: {productId}, rating: {rating}, review: {textarea}");
+            int userId = (int)Convert.ToUInt32(Session["UserId"]);
+            if (userId == 0)
+            {
+                GetUserId();
+                userId = (int)Convert.ToUInt32(Session["UserId"]);
+            }
+            if (productId == null)
+            {
+                // Получаем productId из маршрута
+                string idFromRoute = RouteData.Values["id"] as string;
+
+                if (string.IsNullOrEmpty(idFromRoute) || !int.TryParse(idFromRoute, out int parsedId))
+                {
+                    // Если idFromRoute пустой или не удается преобразовать его в int, возвращаем ошибку 404
+                    return HttpNotFound();
+                }
+
+                productId = parsedId; // Присваиваем значение из маршрута productId
+            }
+            {
+                // Вызов метода из бизнес-логики для получения всех продуктов
+                ResponseGetRating response = _orderService.ViewOrdersAction(userId, productId.Value, rating, textarea);
+
+               
+                    Session["RATING"] = response.Good;
+                
+                var viewModelOrders = response.View.Select(p => new Lab_TW.Models.RatingData
+                {
+                   Product = p.Product,
+                   Rating = p.Rating,
+                   User = p.User,
+
+                }).ToList();
+                var productik = new Models.SingleProduct
+                {
+                    View = viewModelOrders
+                };
+                if (response.Status)
+                {
+                    // Если запрос прошёл успешно, отображаем список продуктов
+                    return RedirectToAction("SingleProduct");
+                }
+                else
+                {
+                    // Если при запросе возникла ошибка, отображаем сообщение об ошибке
+                    ViewBag.ErrorMessage = response.Message;
+                    return View("Error");
+                }
+            }
+        }
         [HttpGet]
         public ActionResult SingleProduct(int? productId)
         {
@@ -233,22 +293,50 @@ namespace Lab_TW.Controllers
 
                 // Логика добавления товара в корзину
                 ResponseViewProduct response = _orderService.ViewProductInfo(userId, productId.Value);
-
-                Models.Product product = new Models.Product
+                ResponseGetRating response1 = null; // Объявляем здесь, чтобы использовать вне блока условия
+                if (response.IsPurchased)
                 {
-                    Price = response.Price,
+                    response1 = _orderService.ViewOrdersAction(userId, productId.Value, 0, null);
+                  
+                }
+                Session["RATING"] = response.IsPurchased;
+                var product = new Models.Product
+                {
+                    Price = response.PriceWidthDiscount,
                     Category = response.Category,
                     Description = response.Description,
                     Name = response.Name,
                     ImageUrl = response.ImageUrl,
                     Quantity = response.Quantity,
                     Id = response.ProductId,
+                    View = response.View,
+                    AverageReting = response.AverageRating
                 };
 
-                if (response.Status != true)
+                // Инициализация viewModelOrders вне условия для доступа к ней позже
+                List<Lab_TW.Models.RatingData> viewModelOrders = new List<Lab_TW.Models.RatingData>();
+
+                if (response1 != null && response1.Status)
+                {
+                    viewModelOrders = response1.View.Select(p => new Lab_TW.Models.RatingData
+                    {
+                        Product = p.Product,
+                        Rating = p.Rating,
+                        User = p.User,
+                        Feedback = p.Feedback
+                    }).ToList();
+                }
+
+                var productik = new Models.SingleProduct
+                {
+                    Products = product,
+                    View = viewModelOrders
+                };
+
+                if (response.Status)
                 {
                     // Возвращаем представление с данными о продукте
-                    return View(product);
+                    return View(productik);
                 }
                 else
                 {
@@ -266,13 +354,15 @@ namespace Lab_TW.Controllers
         }
 
 
- 
-                [HttpPost]
+
+
+        [HttpPost]
         public JsonResult AddProductToCart(int productId ,int quantity)
         {
             StatusSessionCheck();
             try
             {
+
                 int UserId = (int)Convert.ToUInt32(Session["UserId"]);
                 if (UserId == 0)
                 {
@@ -452,7 +542,8 @@ namespace Lab_TW.Controllers
                 QuantityOrder = p.QuantityOrder,
                 TotalAmount = p.TotalAmount,
                 UserId = p.UserId,
-                ProductType = p.ProductType
+                ProductType = p.ProductType,
+                ImageUrl = p.ImageUrl
 
             }).ToList();
 
@@ -469,7 +560,7 @@ namespace Lab_TW.Controllers
             }
             {
                 // Вызов метода из бизнес-логики для получения всех продуктов
-                ResponseGetOrders response = _orderService.ViewOrdersAction(userId,productId,rating,review);
+                ResponseGetOrders response = _orderService.ViewOrdersAction(userId);
                 var viewModelOrders = response.Orders.Select(p => new Lab_TW.Models.OrderPr
                 {
                     OrderId = p.OrderId,
@@ -583,9 +674,9 @@ namespace Lab_TW.Controllers
         {
 
 
-            Mapper.Initialize(cfg => cfg.CreateMap<Models.Product, Aroma.Domain.Entities.Product.DBModel.Product>());
+            Mapper.Initialize(cfg => cfg.CreateMap<Models.Product, Aroma.Domain.Entities.Product.DBModel.ProductDbTable>());
 
-            var updateProduct = Mapper.Map<Aroma.Domain.Entities.Product.DBModel.Product>(product); // Исправлено здесь
+            var updateProduct = Mapper.Map<Aroma.Domain.Entities.Product.DBModel.ProductDbTable>(product); // Исправлено здесь
 
          
                 // Вызов метода бизнес-логики для обновления продукта

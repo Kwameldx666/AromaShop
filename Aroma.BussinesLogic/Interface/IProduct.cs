@@ -15,7 +15,7 @@ namespace Aroma.BussinesLogic.Interface
 
         ResponseGetProducts AdminGetAction();
         ResponseAddProduct AdminAddAction(Product product);
-        ResponseToEditProduct AdminUpdateAction(Product updateProduct);
+        ResponseToEditProduct AdminUpdateAction(ProductDbTable updateProduct);
 
         ResponseToDeleteProduct  AdminDeleteAction(Product productDelete);
         ResponseFilterProducts GetFilteredProducts(string category, string brand, decimal lowerPrice, decimal upperPrice, string sorting);

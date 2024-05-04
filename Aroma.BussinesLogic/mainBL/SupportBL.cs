@@ -21,5 +21,10 @@ namespace Aroma.BussinesLogic.mainBL
         {
             return GetViewPortAction();
         }
+
+        public ResponseSupport GetAdminPanelUsers()
+        {
+            return GetAdminPanelUsersAction();
+        }
     }
 }

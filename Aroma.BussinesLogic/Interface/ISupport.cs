@@ -11,6 +11,7 @@ namespace Aroma.BussinesLogic.Interface
 {
     public interface ISupport
     {
+        ResponseSupport GetAdminPanelUsers();
         ResponseSupport GetViewPort();
         ResponseSupport SendMessageToSupport(int userId,USupportForm supportForm);
     }

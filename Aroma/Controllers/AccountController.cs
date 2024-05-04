@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Tensorflow.Keras.Engine;
 using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 using static Tensorflow.SummaryMetadata.Types;
 
@@ -198,11 +199,12 @@ namespace Lab_TW.Controllers
 
                 if (response != null && response.Status)
                 {
+                    
                     HttpCookie cookie = _session.GenCookie(Data.credential, data.RememberMe);
                     ControllerContext.HttpContext.Response.Cookies.Add(cookie);
                     ViewBag.UserName = Data.credential;
                     Session["IsUserLoggedIn"] = System.Web.HttpContext.Current.Session["LoginStatus"];
-
+                    string f = (string)Session["IsUserLoggedIn"];
                     if (response.AdminMod || response.ModeratorMod)
                     {
                         ViewBag.UserName = Data.credential;
@@ -221,7 +223,68 @@ namespace Lab_TW.Controllers
             return View();
         }
 
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ForgotPassword(LoginData model)
+        {
+            if (ModelState.IsValid)
+            {
+
+                Mapper.Initialize(cfg => cfg.CreateMap<LoginData, ULoginData>());
+
+                var updatePassword = Mapper.Map<ULoginData>(model);
+                ResponseToEditProfile forgotPassword = _session.ForgotPassword(updatePassword);
+                if (forgotPassword.Status)
+                {
+                    // После успешной отправки перенаправьте пользователя на страницу с сообщением об успешной отправке нового пароля
+                    return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                }
+                else
+                {
+                    // Если возникла ошибка при отправке email, верните представление с сообщением об ошибке
+                    ViewBag.ErrorMessage = "Failed to send password reset email. Please try again later.";
+                    return View(model);
+                }
+            }
+
+            // Если модель не валидна, верните представление с сообщениями об ошибках
+            return View(model);
+        }
+
+        public ActionResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
+
+        [HttpGet]
+
+        public ActionResult ConfirmRegistrationCode()
+        {
+            return View();
+
+        }
+
+        [HttpPost]
+
+        public ActionResult ConfirmRegistrationCode(RegisterData code)
+        {
+            Mapper.Initialize(cfg => cfg.CreateMap<RegisterData, URegisterData>());
+
+            var updatePassword = Mapper.Map<URegisterData>(code);
+
+            ResponseCheckCode response = _session.CheckEmail(updatePassword);
+            if (response.Status)
+            {
+                return RedirectToAction("Login");
+            }
+                
+            return View();
+        }
         // GET: Register
         public ActionResult Register()
             {
@@ -249,7 +312,7 @@ namespace Lab_TW.Controllers
                 if (uRegisterResp != null && uRegisterResp.Status)
                 {
 
-                    return RedirectToAction("Login", "Account");
+                    return RedirectToAction("ConfirmRegistrationCode");
 
                 }
                 if (uRegisterResp.ResponseMessage != null)

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
+using Aroma.Domain.Entities.Product.DBModel;
+using Aroma.Domain.Entities.Rating;
 using Aroma.Domain.Entities.Support;
 using Newtonsoft.Json;
 
@@ -26,7 +25,6 @@ namespace Aroma.Domain.Entities.User
         [StringLength(50, MinimumLength = 8, ErrorMessage = "Password cannot be shorter than 8 characters.")]
         public string Password { get; set; }
 
-
         [Required]
         [Display(Name = "Email Address")]
         [StringLength(30)]
@@ -40,8 +38,17 @@ namespace Aroma.Domain.Entities.User
 
         public UserRole Level { get; set; }
         public decimal Balance { get; set; }
+
+        public string Code { get; set; }
+
         public ICollection<Order> Orders { get; set; }
-        [JsonIgnore] 
+
+        public ICollection<USupportForm> SupportMessages { get; set; }
+
+    
+
+        [JsonIgnore]
+        public ICollection<RatingUdbTable> Ratings { get; set; } // Добавлено свойство для связи с оценками
         public ICollection<USupportForm> SupportMesages { get; set; }
     }
 }

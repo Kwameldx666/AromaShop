@@ -1,4 +1,5 @@
-﻿using Aroma.BussinesLogic.DBModel.Seed;
+﻿using Antlr.Runtime.Misc;
+using Aroma.BussinesLogic.DBModel.Seed;
 using Aroma.BussinesLogic.mainBL;
 using Aroma.Domain.Entities.GeneralResponse;
 using Aroma.Domain.Entities.Product;
@@ -103,13 +104,21 @@ namespace Aroma.BussinesLogic.Core.Levels
                 return new ResponseAddProduct { Status = false, MessageError = Error };
             }
 
-            // Рассчитываем цену товара с учетом скидки
-            decimal priceWithDiscount = products.Price - (products.Price * products.Discount / 100);
+            if (products.Discount > 0)
+            {
+                decimal discountPercent = products.Discount / 100.0m; // Преобразование в десятичную дробь
+                    products.PriceWithDiscount = products.Price * (1 - discountPercent);
+            }
+            else
+            {
+                products.PriceWithDiscount = products.Price;
+            }
 
             var product = new ProductDbTable()
             {
                 Name = products.Name,
-                Price = priceWithDiscount, // Используем цену с учетом скидки
+                PriceWithDiscount = products.Price,
+                Price = products.Price, // Используем цену с учетом скидки
                 ProductType = products.ProductType,
                 Category = products.Category,
                 Description = products.Description,
@@ -117,6 +126,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                 ImageUrl = products.ImageUrl,
                 QuantityProd = products.Quantity,
                 Discount = products.Discount,
+                
             };
 
             using (var db = new ProductContext())
@@ -135,13 +145,18 @@ namespace Aroma.BussinesLogic.Core.Levels
             {
                 using (var db = new ProductContext())
                 {
-                    var products = db.Products.ToList(); // Получаем все продукты из БД
+                    var products = db.Products.OrderByDescending(p => p.View).ToList(); // Сортируем продукты по количеству просмотров
+                    var productSellers = db.Products.OrderByDescending(p => p.Quantity).ToList();
+
+                    // Фильтруем продукты, оставляя только те, у которых количество больше 0
+                    var availableProducts = products.Where(p => p.QuantityProd > 0).ToList();
+                    var availableProductSellers = productSellers.Where(p => p.QuantityProd > 0).ToList();
+
                     return new ResponseGetProducts
                     {
                         Status = true,
-                        Products = products.Select(p => new Product
+                        Products = availableProducts.Select(p => new Product
                         {
-                            // Здесь предполагается преобразование из ProductDbTable в Product
                             Id = p.Id,
                             Name = p.Name,
                             Price = p.Price,
@@ -151,7 +166,25 @@ namespace Aroma.BussinesLogic.Core.Levels
                             ImageUrl = p.ImageUrl,
                             Quantity = p.QuantityProd,
                             Discount = p.Discount,
-                        }).ToList()
+                            View = p.View,
+                            PriceWithDiscount = p.PriceWithDiscount,
+                        }).ToList(),
+
+                        BestSellers = availableProductSellers.Select(p => new Product
+                        {
+                            Id = p.Id,
+                            Name = p.Name,
+                            Price = p.Price,
+                            ProductType = p.ProductType,
+                            Category = p.Category,
+                            Description = p.Description,
+                            ImageUrl = p.ImageUrl,
+                            Quantity = p.QuantityProd,
+                            Discount = p.Discount,
+                            View = p.View, // Устанавливаем количество просмотров для каждого продукта
+                            PriceWithDiscount = p.PriceWithDiscount,
+                        }).ToList(),
+
                     };
                 }
             }
@@ -160,7 +193,40 @@ namespace Aroma.BussinesLogic.Core.Levels
                 // В случае ошибки возвращаем статус false и сообщение об ошибке
                 return new ResponseGetProducts { Status = false, Message = ex.Message };
             }
-           
+        }
+
+        public ResponseSupport GetAdminPanelUsersAction()
+        {
+            try
+            {
+                using (var db = new SupportContext())
+                {
+                    var totalUsers = db.Users.ToList();
+
+                    if (totalUsers != null)
+                    {
+                        return new ResponseSupport()
+                        {
+                            Status = true,
+                            TotalUsers = totalUsers, // Исправлено: передаем список пользователей
+                        };
+                    }
+                    else
+                    {
+                        return new ResponseSupport()
+                        {
+                            Status = false,
+                        StatusMessage = "Error"
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Обработка ошибок, если необходимо
+            }
+
+            return new ResponseSupport { Status = false };
         }
         public ResponseFilterProducts GetFilteredProductsAction(string category, string productType, decimal lowerPrice, decimal upperPrice, string sorting)
         {
@@ -260,7 +326,7 @@ namespace Aroma.BussinesLogic.Core.Levels
         }
 
 
-        internal ResponseToEditProduct EditAdminActionProduct(Product product)
+        internal ResponseToEditProduct EditAdminActionProduct(ProductDbTable product)
         {
             if (product == null )
             {
@@ -282,15 +348,26 @@ namespace Aroma.BussinesLogic.Core.Levels
                
                         return new ResponseToEditProduct { Status = false, MessageError = "Продукт не найден." };
                     }
+                    if (existingProduct.Discount > 0)
+                    {
+                        decimal discountPercent = existingProduct.Discount / 100.0m; // Преобразование в десятичную дробь
+                        existingProduct.PriceWithDiscount = existingProduct.Price * (1 - discountPercent);
+                    }
+                    else
+                    {
+                        existingProduct.PriceWithDiscount = existingProduct.Price;
+                    }
+
 
                     // Обновление полей продукта
                     existingProduct.Name = product.Name;
                     existingProduct.Price = product.Price;
                     existingProduct.ProductType = product.ProductType;
-                    existingProduct.ImageUrl = product.ImageUrl;
                     existingProduct.Category = product.Category;
                     existingProduct.Description = product.Description;
                     existingProduct.QuantityProd = product.Quantity;
+                    existingProduct.Discount = product.Discount;
+                  
 
                     // Сохранение изменений
                     db.SaveChanges();

@@ -20,9 +20,11 @@ namespace Lab_TW.Models
 
         public virtual UDbTable UDbTable { get; set; } // Свойство для связи с пользователем
         public string ProductType { get; set; }
-        public string Feedback { get; internal set; }
-        public int Rating { get; internal set; }
-        public decimal AverageRating { get; internal set; }
-        public decimal Price { get; internal set; }
+        public string Feedback { get;  set; }
+        public int Rating { get;  set; }
+        public double AverageRating { get; set; }
+
+        public decimal Price { get;  set; }
+        public string ImageUrl { get;  set; }
     }
 }

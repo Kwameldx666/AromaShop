@@ -23,7 +23,7 @@ namespace Aroma.BussinesLogic.mainBL
         {
             return AddAdminActionProduct(products);
         }
-        public ResponseToEditProduct AdminUpdateAction(Product updateProduct)
+        public ResponseToEditProduct AdminUpdateAction(ProductDbTable updateProduct)
         {
             return EditAdminActionProduct(updateProduct);
         }

@@ -9,6 +9,7 @@ namespace Aroma.Domain.Entities.GeneralResponse
 {
     public class ResponseGetOrders
     {
+        public Dictionary<int, int> RatingStatistics { get; set; }
         public bool Status { get; set; } // Успех операции
         public string Message { get; set; } // Сообщение, например, об ошибке
         public decimal Price { get; set; }
@@ -19,10 +20,10 @@ namespace Aroma.Domain.Entities.GeneralResponse
         public string Category { get; set; }
         public string ImageUrl { get; set; }
 
-        public List<Order> Orders;
-        public string Feedback { get; set; }
+        public List<Order> Orders { get;set; }
 
-        public int Reting { get; set; }
+        public bool Good { get; set; }
+
         public ResponseGetOrders()
         {
             Orders = new List<Order>(); // Инициализация списка для избежания NullReferenceException

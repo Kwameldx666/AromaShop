@@ -1,4 +1,5 @@
 ﻿using Aroma.Domain.Entities.Product.DBModel;
+using Aroma.Domain.Entities.Rating;
 using Aroma.Domain.Entities.User;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Aroma.BussinesLogic.DBModel.Seed
         public OrderContext() : base("name=Lab_TW")
         {
         }
-
+        public virtual DbSet<RatingUdbTable> Rating { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<UDbTable> Users { get; set; } // DbSet для пользователей
         public virtual DbSet<ProductDbTable> Products { get; set; } // DbSet для продуктов

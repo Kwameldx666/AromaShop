@@ -22,10 +22,15 @@ namespace Lab_TW.Models
         public string Brand {  get; set; }
         public int Rating { get;set; }
 
+        public double AverageReting { get; set; }
         public string Feedback { get; set; }
         
         public decimal Discount { get; set; }
 
+        public int View { get; set;}
 
+        public int Code { get; set; }
+
+        public decimal PriceWithDiscount { get; set; }
     }
 }

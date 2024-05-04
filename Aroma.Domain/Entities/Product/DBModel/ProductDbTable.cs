@@ -1,4 +1,5 @@
-﻿using Aroma.Domain.Enums.OrdersStatus;
+﻿using Aroma.Domain.Entities.Rating;
+using Aroma.Domain.Enums.OrdersStatus;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,10 +26,18 @@ namespace Aroma.Domain.Entities.Product.DBModel
 
         public int Reting { get; set; }
 
-        public decimal AverageRating { get; set; }
+        public double AverageRating { get; set; }
         public OrderStatus orderStatus { get; set; }
 
         public int Discount { get; set; }
+
+        public int View { get; set; }
+        public int Quantity { get; set; }
+
+        public decimal PriceWithDiscount { get; set; }
+
+        public virtual ICollection<RatingUdbTable> Ratings { get; set; }
     }    
+
 
 }

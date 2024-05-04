@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewBag.Title = "Email Confirmation";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <h2>Email Confirmation</h2>
+    <p>Please enter the confirmation code you received in your email:</p>
+
+    @using (Html.BeginForm("ConfirmRegistrationCode", "Account", FormMethod.Post))
+    {
+        <label for="confirmationCode">Confirmation Code:</label><br>
+        <input type="text" id="confirmationCode" name="Сode"><br><br>
+        <input type="submit" value="Confirm">
+    }
+</body>
+</html>

@@ -1,4 +1,5 @@
 ﻿@using System.Web.Optimization;
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,12 +20,8 @@
     <div class="product_image_area">
         @RenderBody()
     </div>
-    <section class="product_description_area">
-        @Html.Partial("_DescriptionArea")
-    </section>
-    <section class="related-product-area section-margin--small mt-0">
-        @Html.Partial("_RelatedProductArea")
-    </section>
+
+
     <div class="footer-area">
         @Html.Partial("_Footer")
     </div>

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Aroma.BussinesLogic.mainBL
 {
@@ -22,9 +23,9 @@ namespace Aroma.BussinesLogic.mainBL
             return GetOrders(userId);
         }
 
-        public ResponseGetOrders ViewOrdersAction(int userId, int productId, int rating, string review)
+        public ResponseGetRating ViewOrdersAction(int userId, int productId, int rating, string review)
         {
-            return GetOrders(userId, productId, rating, review );
+            return GetRating(userId, productId, rating, review );
         }
 
         public ResponseGetOrders ViewOrdersUserAction(int userId)
@@ -54,6 +55,7 @@ namespace Aroma.BussinesLogic.mainBL
             return ViewProductInfoAction(userId, productId);
         }
 
+ 
         public ResponseGetOrders AddFeedback(int productId,int userId)
         {
             return AddFeedbackAction(productId,userId);

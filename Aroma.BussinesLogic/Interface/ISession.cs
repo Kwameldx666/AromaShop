@@ -22,5 +22,8 @@ namespace Aroma.BussinesLogic.Interface
         ResponseViewProfile ViewProfile(int userId);
         ResponseToEditProfile ProfileUpdateAction(ULoginData updateProfile);
         ResponseEditPassword EditUserPass(ULoginData user,string newPassword);
+        ResponseToEditProfile ForgotPassword(ULoginData updatePassword);
+
+        ResponseCheckCode CheckEmail(URegisterData updatePassword);
     }
 }

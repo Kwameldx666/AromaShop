@@ -21,6 +21,9 @@ namespace Aroma.Domain.Entities.GeneralResponse
 
         public List<ProductDbTable> ProductsV2;
 
+        public List<Product.DBModel.Product> BestSellers;
+
+
 
     }
 

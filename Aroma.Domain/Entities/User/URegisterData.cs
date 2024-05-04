@@ -15,5 +15,7 @@ namespace Aroma.Domain.Entities.User
         public string IP {  get; set; }
         public string AcceptPassword { get; set; }
         public int Balance { get; set; }
+
+        public string Code { get; set; }
     }
 }
