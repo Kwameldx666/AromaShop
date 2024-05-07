@@ -23,5 +23,6 @@ namespace Aroma.Domain.Entities.GeneralResponse
         public decimal PriceWidthDiscount { get; set; }
         public double AverageRating { get; set; }
         public bool IsPurchased { get; set; }
+        public bool IsRating { get; set; }
     }
 }

@@ -20,6 +20,7 @@ using Microsoft.Ajax.Utilities;
 using Aroma.BussinesLogic.Interface;
 using Aroma.Domain.Entities.Rating;
 using System.Web.Mvc;
+using System.Reflection;
 
 namespace Aroma.BussinesLogic.Core.Levels
 {
@@ -466,13 +467,17 @@ namespace Aroma.BussinesLogic.Core.Levels
                 {
                     // Выполняем поиск продуктов, у которых имя начинается с указанного поискового запроса (без учета регистра)
                     var searchResults = await db.Products
-                                                .Where(p => p.Name.ToLower().StartsWith(lowerSearchTerm))
-                                                .ToListAsync();
+                        .Where(p => p.Name.ToLower().StartsWith(lowerSearchTerm))
+                        .ToListAsync();
+
+                    Mapper.Initialize(cfg => cfg.CreateMap<ProductDbTable, Product>());
+
+                    var updateProduct = searchResults.Select(p => Mapper.Map<Aroma.Domain.Entities.Product.DBModel.Product>(p)).ToList(); // Преобразование каждого элемента списка
 
                     // Проверяем, что найдены какие-либо продукты
                     if (searchResults != null && searchResults.Any())
                     {
-                        return new ResponseGetProducts() { Status = true, ProductsV2 = searchResults };
+                        return new ResponseGetProducts() { Status = true, ProductsV2 = updateProduct };
                     }
                     else
                     {
@@ -480,6 +485,8 @@ namespace Aroma.BussinesLogic.Core.Levels
                         return new ResponseGetProducts() { Status = true };
                     }
                 }
+
+            
             }
             catch (Exception ex)
             {
@@ -488,6 +495,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                 return new ResponseGetProducts() { Status = false };
             }
         }
+
 
         internal ResponseViewProduct ViewProductInfoAction(int userId, int productId)
         {
@@ -517,11 +525,17 @@ namespace Aroma.BussinesLogic.Core.Levels
                     // Сохраняем изменения в базе данных
                     db.SaveChanges();
 
-                    var IsPurchased_ = db.Products.Where(p => p.orderStatus == OrderStatus.Successful);
-                    if (IsPurchased_ != null)
+                    var IsPurchased_ = db.Orders.Where(p => p.orderStatus == OrderStatus.Successful && p.ProductId == productId ).ToList();
+                    var IsRating_ = db.Rating.Where(p => p.Rating != 0 && p.ProductId == productId && p.UserId == userId).ToList();
+                    
+               
+                    if (IsPurchased_.Count != 0 )
                     {
+                       
+
                         var ProdStat = new ResponseViewProduct
                         {
+                           
                             IsPurchased = true,
                              Status = true,
                             ProductId = productId,
@@ -535,11 +549,16 @@ namespace Aroma.BussinesLogic.Core.Levels
                             PriceWidthDiscount = product.PriceWithDiscount,
                             AverageRating = averageRating // Добавляем среднюю оценку в ответ
                         };
+                        if (IsRating_.Count != 0)
+                            ProdStat.IsRating = true;
+                        else
+                            ProdStat.IsRating = false;
                         return ProdStat;
 
                     }
                     else
                     {
+                        
                         // Создаем объект ResponseViewProduct с данными о продукте
                         var productInfo = new ResponseViewProduct
                         {
@@ -556,6 +575,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                             PriceWidthDiscount = product.PriceWithDiscount,
                             AverageRating = averageRating // Добавляем среднюю оценку в ответ
                         };
+                        
                         return productInfo;
                     }
 
@@ -801,7 +821,7 @@ namespace Aroma.BussinesLogic.Core.Levels
             using (var db = new OrderContext())
             {
                 // Проверяем, переданы ли рейтинг и отзыв
-                if (rating == 0 && review == null)
+                if (rating == 0 && string.IsNullOrEmpty(review))
                 {
                     // Получаем первый отзыв для каждого пользователя для данного товара
                     var firstReviewsForUsers = db.Rating
@@ -810,6 +830,23 @@ namespace Aroma.BussinesLogic.Core.Levels
 
                     // Проверяем, есть ли отзывы для товара
                     bool good = firstReviewsForUsers.Any();
+
+                    // Вычисляем среднюю оценку
+                    double averageRating = db.Rating
+                        .Where(r => r.ProductId == productId) // Отфильтровываем оценки по идентификатору продукта
+                        .Select(r => r.Rating) // Выбираем только оценки
+                        .DefaultIfEmpty(0) // По умолчанию 0, если оценок нет
+                        .Average(); // Вычисляем среднее значение
+
+                    // Получаем продукт по его идентификатору
+                    var product = db.Products.FirstOrDefault(p => p.Id == productId);
+                    if (product != null)
+                    {
+                        product.AverageRating = averageRating;
+                    }
+
+                    // Сохраняем изменения в базе данных
+                    db.SaveChanges();
 
                     return new ResponseGetRating
                     {
@@ -859,6 +896,22 @@ namespace Aroma.BussinesLogic.Core.Levels
 
                     db.SaveChanges(); // Сохраняем изменения в базе данных
 
+                    // Пересчитываем среднюю оценку для продукта
+                    double averageRating = db.Rating
+                        .Where(r => r.ProductId == productId) // Отфильтровываем оценки по идентификатору продукта
+                        .Select(r => r.Rating) // Выбираем только оценки
+                        .DefaultIfEmpty(0) // По умолчанию 0, если оценок нет
+                        .Average(); // Вычисляем среднее значение
+
+                    // Получаем продукт по его идентификатору
+                    var product = db.Products.FirstOrDefault(p => p.Id == productId);
+                    if (product != null)
+                    {
+                        product.AverageRating = averageRating;
+                    }
+
+                    db.SaveChanges(); // Сохраняем изменения в базе данных после пересчета средней оценки
+
                     return new ResponseGetRating
                     {
                         Status = true
@@ -866,6 +919,8 @@ namespace Aroma.BussinesLogic.Core.Levels
                 }
             }
         }
+
+
 
         internal ResponseGetOrders GetUserOrders(int userId)
         {

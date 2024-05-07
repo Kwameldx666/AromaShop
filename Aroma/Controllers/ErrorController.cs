@@ -6,12 +6,11 @@ using System.Web.Mvc;
 
 namespace Lab_TW.Controllers
 {
-    public class Error:BaseController
+    public class ErrorController : Controller
     {
+        // GET: Error
         public ActionResult Error404()
         {
-
-
             return View();
         }
     }

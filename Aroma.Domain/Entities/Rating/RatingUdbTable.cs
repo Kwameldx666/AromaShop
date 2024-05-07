@@ -24,10 +24,10 @@ namespace Aroma.Domain.Entities.Rating
         public int UserId { get; set; }
 
         // Навигационное свойство к таблице продуктов
-        [ForeignKey("ProductId")]
+        /*[ForeignKey("ProductId")]*/
         public virtual ProductDbTable Product { get; set; }
 
-        [ForeignKey("UserId")]
+/*        [ForeignKey("UserId")]*/
         public virtual UDbTable User { get; set; }
     }
 }

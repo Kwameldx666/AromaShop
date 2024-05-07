@@ -11,6 +11,7 @@ using Lab_TW.Models;
 using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 using System.Web.Mvc;
 using Lab_TW.Atributes;
+using System.Threading.Tasks;
 
 namespace Lab_TW.Controllers
 {
@@ -75,16 +76,50 @@ namespace Lab_TW.Controllers
                 return View("Error");
             }
         }
-        [AdminMode]
-        public ActionResult AdminPanelAboutUsers()
-        {
 
-            ResponseSupport responseSupport = _support.GetAdminPanelUsers();
+        [HttpPost]
+        public async Task<ActionResult> DeleteUser(int userId)
+        {
+            try
+            {
+                // Ваш код здесь для удаления пользователя
+                // Например, вы можете использовать сервис или репозиторий для выполнения этой операции
+                ResponseSupport response = await _support.DeleteUserAction(userId);
+
+                if (response.Status)
+                {
+                    return Json(new { success = true }); // Возвращаем успешный результат в формате JSON
+                }
+                else
+                {
+                    return Json(new { success = false, errorMessage = response.StatusMessage }); // Возвращаем ошибку в формате JSON
+                }
+            }
+            catch (Exception ex)
+            {
+                // Обработка ошибок, если необходимо
+                // Здесь можно добавить логику для записи информации об ошибке
+                return Json(new { success = false, errorMessage = ex.Message }); // Возвращаем ошибку в формате JSON
+            }
+        }
+
+        [AdminMode]
+        public async Task<ActionResult> AdminPanelAboutUsers()
+        {
+            int currentUserId = GetUserId();
+            ResponseSupport responseSupport = await _support.GetAdminPanelUsers( currentUserId);
             if (responseSupport.Status) 
             {
                 return View(responseSupport.TotalUsers);
             }
             return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ChangeUserRoleAction(int userId, string newRole)
+        {
+            ResponseSupport response = await _support.ChangeUserRole(userId, newRole);
+            return Json(new { success = true }); // Возвращаем результат в формате JSON
         }
     }
 }

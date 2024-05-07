@@ -42,7 +42,7 @@
                         <ul class="dropdown-menu">
                             @{
 
-                                bool permission = ((string)Session["Permission"] == "Admin");
+                                bool permission = ((string)Session["Permission"] == "Admin" || (string)Session["Permission"] == "Moderator");
                                 bool isUserLoggedIn = ((string)Session["LoginStatus"] == "login");
                             }
 
@@ -50,10 +50,10 @@
                             {
                                 <li class="nav-item"><a class="nav-link" href="@Url.Action("UProfile", "Account")">Profile</a></li>
                                 <li class="nav-item"><a class="nav-link" href="@Url.Action("Logout", "Account")">Logout</a></li>
-                                <li class="nav-item"><a class="nav-link" href="@Url.Action("Cart", "Product")">Купленные продукты</a></li>
                                 if (permission)
                                 {
-                                    <li class="nav-item"><a class="nav-link" href="@Url.Action("ProductsAdminPanel", "Product")">Admin Panel</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="@Url.Action("ProductsAdminPanel", "Product")">Admin Panel Products</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="@Url.Action("AdminPanelAboutUsers", "Support")">Admin Panel Users</a></li>
                                     <li class="nav-item"><a class="nav-link" href="@Url.Action("ViewPort", "Support")">ViewPorts</a></li>
                                 }
                             }
@@ -71,9 +71,9 @@
                 <ul class="nav-shop">
                     <li class="nav-item">
                         <!-- Контейнер для поля ввода текста и иконки поиска -->
-                        <div class="search-input-container">
+                        <div class="form-group search-container">
                             <input type="text" class="form-control searchInput" placeholder="Enter search term...">
-                            <i id="searchButton" class="ti-search"></i>
+                            <span class="ti-search search-icon"></span>
                         </div>
                     </li>
                     <li class="nav-item">
@@ -105,7 +105,6 @@
                         </div>
                     </div>
                 </div>
-
                 <script>
                     $(document).ready(function () {
                         $('.searchInput').on('input', function () {
@@ -141,35 +140,39 @@
                                     var $itemContainer = $('<div class="product-container"></div>');
                                     var $productLink = $('<a href="#" class="product-link"></a>');
                                     $productLink.attr('data-id', product.Id); // Assign product ID to data-id attribute
-                                    $itemContainer.append($productLink);
 
                                     // Add product image to the link
+                                    var $imgContainer = $('<div class="img-container"></div>');
                                     var $img = $('<img class="product-image">');
                                     $img.attr('src', product.ImageUrl);
-                                    $productLink.append($img);
+                                    $imgContainer.append($img);
 
-                                    // Create block for product name and price
-                                    var $infoContainer = $('<div class="product-info"></div>');
+                                    // Add product info to the link
+                                    var $infoContainer = $('<div class="info-container"></div>');
                                     var $name = $('<p class="product-name"></p>').text(product.Name);
-                                    var $price = $('<p class="product-price"></p>').text('Price: ' + product.Price);
+                                    var $price = $('<p class="product-price"></p>').text('$' + product.Price.toFixed(2));
 
                                     // Append name and price to info container
                                     $infoContainer.append($name, $price);
 
-                                    // Append info container to product link
-                                    $productLink.append($infoContainer);
+                                    // Append img container and info container to product link
+                                    $productLink.append($imgContainer, $infoContainer);
+
+                                    // Append product link to item container
+                                    $itemContainer.append($productLink);
 
                                     // Append product container to search results list
                                     $list.append($itemContainer);
                                 });
                             } else {
                                 // If no results found
-                                $list.append('<li>No results found</li>');
+                                $list.append('<li class="no-results">No results found</li>');
                             }
 
                             // Show modal with search results
                             $('#searchResultsModal').modal('show');
                         }
+
 
                         // Redirect to product details page when clicking on a product link
                         $(document).on('click', '.product-link', function (e) {
@@ -191,61 +194,46 @@
                     });
                 </script>
 
-
-
                 <style>
-                    #searchResultsModal .modal-dialog {
-                        max-width: 200px; /* Измените эту ширину на желаемую */
-                    }
-                    /* Стили для контейнера с полем ввода */
-                    .search-input-container {
-                        position: relative;
-                        display: inline-block;
-                    }
-
-                    /* Стили для поля ввода */
-                    #searchInput {
-                        width: 200px; /* Ширина поля ввода */
-                        padding: 8px 30px 8px 10px; /* Отступы внутри поля ввода */
-                        border: 1px solid #ccc;
-                        border-radius: 4px;
-                        outline: none;
-                        transition: border-color 0.3s ease;
-                    }
-
-                    /* Стили для иконки поиска */
-                    #searchButton {
-                        position: absolute;
-                        top: 50%;
-                        right: 10px;
-                        transform: translateY(-50%);
-                        color: #aaa;
-                        cursor: pointer;
-                    }
-
                     .product-container {
-                        display: flex;
-                        align-items: center;
-                        margin-bottom: 20px;
+                        display: inline-block;
+                        margin: 10px;
+                        position: relative;
                     }
 
                     .product-image {
-                        width: 130px; /* Ширина изображения */
-                        height: auto; /* Автоматическая высота для сохранения пропорций */
-                        margin-right: 20px; /* Отступ справа от изображения */
+                        width: 200px;
+                        height: auto;
                     }
 
-                    .product-info {
-                        flex-grow: 1; /* Растягиваем блок с информацией о товаре */
+                    .img-container {
+                        position: relative;
+                        overflow: hidden;
                     }
 
-                    .product-name {
-                        font-size: 15px; /* Размер шрифта для названия товара */
-                        font-weight: bold; /* Жирное начертание для названия товара */
+                    .info-container {
+                        display: none;
+                        position: absolute;
+                        bottom: 0;
+                        left: 0;
+                        right: 0;
+                        background-color: rgba(0, 0, 0, 0.8);
+                        color: #fff;
+                        padding: 5px;
+                        transition: all 0.3s ease;
                     }
 
+                    .product-link:hover .info-container {
+                        display: block;
+                    }
+
+                    .product-name,
                     .product-price {
-                        font-size: 15px; /* Размер шрифта для цены */
-                        color: #888; /* Цвет текста для цены (серый) */
+                        margin: 0;
+                        padding: 0;
                     }
                 </style>
+
+
+
+

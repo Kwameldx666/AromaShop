@@ -149,6 +149,7 @@
                 e.preventDefault(); // Предотвратить стандартное действие кнопки
 
                 var productId = $(this).data('product-id'); // Получаем ID товара из атрибута data-product-id
+                var rowToDelete = $(this).closest('tr'); // Получаем строку с товаром для удаления
 
                 // Отправляем AJAX запрос на сервер для удаления товара
                 $.ajax({
@@ -157,7 +158,8 @@
                     data: { productId: productId }, // Передаем параметр productId
                     success: function (response) {
                         if (response.success) {
-                            // Успешно удалено, выполните дополнительные действия по необходимости
+                            // Успешно удалено, удаляем строку с товаром из таблицы
+                            rowToDelete.remove();
                             alert('Order removed successfully!');
                         } else {
                             // Возникла ошибка при удалении
@@ -171,6 +173,7 @@
                 });
             });
         });
+
     </script>
 
 

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Lab_TW.Extension;
+using Aroma.Domain.Entities.User;
 namespace Lab_TW.Controllers
 {
     public class BaseController : Controller
@@ -46,10 +47,11 @@ namespace Lab_TW.Controllers
                 {
                     System.Web.HttpContext.Current.SetMySessionObject(profile);
                     System.Web.HttpContext.Current.Session["LoginStatus"] = "login";
-                    string permissions = profile.Level.ToString();
+                    string 
+                        s = profile.Level.ToString();
 
 
-                    System.Web.HttpContext.Current.Session["Permission"] = permissions;
+                    System.Web.HttpContext.Current.Session["Permission"] = s;
                 }
                 else
                 {

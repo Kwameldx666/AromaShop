@@ -47,10 +47,10 @@
                         <div class="value-wrapper d-flex">
                             <div class="price">Price:</div>
                             <span>$</span>
-                            <div id="lower-value"></div>
+                            <div id="lower-value" name = "lower-value"> </div>
                             <div class="to">to</div>
                             <span>$</span>
-                            <div id="upper-value"></div>
+                            <div id="upper-value" name = "upper-value"></div>
                         </div>
                     </div>
                 </div>
@@ -108,6 +108,8 @@
     </div>
 </div>
 <script>
+
+
     $(document).ready(function () {
         // Обработчик изменения категории
         $('input[name="category"]').change(filterProducts);
@@ -116,7 +118,10 @@
         $('input[name="brand"]').change(filterProducts);
 
         // Обработчик изменения цены
+        $('input[name="lower-value"]').change(filterProducts);
+        $('input[name="upper-value"]').change(filterProducts);
         $('#lower-value, #upper-value').on('input', filterProducts);
+
 
         // Обработчик изменения сортировки
         $('#sortingSelect').change(filterProducts);
@@ -125,8 +130,8 @@
         function filterProducts() {
             var category = $('input[name="category"]:checked').next('label').text();
             var brand = $('input[name="brand"]:checked').next('label').text();
-            var lowerPrice = parseFloat($('#lower-value').text());
-            var upperPrice = parseFloat($('#upper-value').text());
+            var lowerPrice = parseFloat($('#lower-value').text()); // Используем text() для получения текстового содержимого
+            var upperPrice = parseFloat($('#upper-value').text()); // Используем text() для получения текстового содержимого
             var sorting = $('#sortingSelect').val();
 
             $.ajax({

@@ -69,11 +69,19 @@ namespace Lab_TW.Controllers
 
         }
         [HttpPost]
-        public  JsonResult  FilterProducts(string category, string brand, decimal lowerPrice, decimal upperPrice, string sorting)
+        public async Task<JsonResult> FilterProducts(string category, string brand, decimal lowerPrice, decimal upperPrice, string sorting)
         {
             // Получаем все продукты из базы данных или другого источника данных
-            ResponseFilterProducts response = _product.GetFilteredProducts(category, brand,lowerPrice,upperPrice,sorting);
+            ResponseFilterProducts response = await _product.GetFilteredProducts(category, brand, lowerPrice, upperPrice, sorting);
 
+            if (!response.Success)
+            {
+                // Если произошла ошибка при получении продуктов
+                ViewBag.ErrorMessage = response.ErrorMessage;
+                return Json(new { success = false, errorMessage = response.ErrorMessage });
+            }
+
+            // Создаем viewModelProducts, содержащий только необходимые свойства
             var viewModelProducts = response.FilteredProducts.Select(p => new Lab_TW.Models.Product
             {
                 Id = p.Id,
@@ -82,23 +90,14 @@ namespace Lab_TW.Controllers
                 Category = p.Category,
                 ProductType = p.ProductType,
                 Description = p.Description,
-                ImageUrl = p.ImageUrl,
-
+                ImageUrl = p.ImageUrl
             }).ToList();
-            if (!response.Success)
-            {
-                // Если произошла ошибка при получении продуктов
-                ViewBag.ErrorMessage = response.ErrorMessage;
-                return Json(new { success = false, errorMessage = response.ErrorMessage });
-            }
-
-
 
             // Возвращаем отфильтрованные продукты в виде JSON
-            return Json(new { success = true, filteredProducts = response.FilteredProducts });
+            return Json(new { success = true, filteredProducts = viewModelProducts });
         }
-    
-    public ProductController()
+
+        public ProductController()
         {
             var bl = new BussinesLogic();
             _product = bl.AddProductBL();
@@ -278,7 +277,7 @@ namespace Lab_TW.Controllers
 
                 productId = parsedId; // Присваиваем значение из маршрута productId
             }
-
+            
             try
             {
                 // Логика обработки запроса для конкретного productId
@@ -300,6 +299,8 @@ namespace Lab_TW.Controllers
                   
                 }
                 Session["RATING"] = response.IsPurchased;
+                Session["IsRatingMy"] = response.IsRating;
+
                 var product = new Models.Product
                 {
                     Price = response.PriceWidthDiscount,
@@ -560,6 +561,7 @@ namespace Lab_TW.Controllers
             }
             {
                 // Вызов метода из бизнес-логики для получения всех продуктов
+                ResponseGetRating response2 = _orderService.ViewOrdersAction(userId,productId,rating,review);
                 ResponseGetOrders response = _orderService.ViewOrdersAction(userId);
                 var viewModelOrders = response.Orders.Select(p => new Lab_TW.Models.OrderPr
                 {
@@ -638,11 +640,22 @@ namespace Lab_TW.Controllers
 
 
         }
-        public ActionResult AddReview()
+  /*      [HttpPost]
+        public ActionResult AddReview(int productId, int rating, string textarea)
         {
+            int userId = (int)Convert.ToUInt32(Session["UserId"]);
+            if (userId == 0)
+            {
+                GetUserId();
+                userId = (int)Convert.ToUInt32(Session["UserId"]);
+            }
 
-            return View();
-        }
+
+            ResponseGetRating response = _orderService.ViewOrdersAction(userId, productId, rating, textarea);
+
+
+            return RedirectToAction("Cart", "Product");
+        }*/
 
         [HttpPost]
         public ActionResult AddReview(int productId)

@@ -19,7 +19,7 @@ namespace Aroma.Domain.Entities.GeneralResponse
 
         private List<ProductDbTable> searchResults;
 
-        public List<ProductDbTable> ProductsV2;
+        public List<Product.DBModel.Product> ProductsV2;
 
         public List<Product.DBModel.Product> BestSellers;
 

@@ -11,7 +11,9 @@ namespace Aroma.BussinesLogic.Interface
 {
     public interface ISupport
     {
-        ResponseSupport GetAdminPanelUsers();
+        Task<ResponseSupport> ChangeUserRole(int userId, string newRole);
+        Task<ResponseSupport> DeleteUserAction(int userId);
+        Task<ResponseSupport> GetAdminPanelUsers(int currentUserId);
         ResponseSupport GetViewPort();
         ResponseSupport SendMessageToSupport(int userId,USupportForm supportForm);
     }

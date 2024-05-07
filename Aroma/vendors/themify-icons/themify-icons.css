@@ -22,6 +22,43 @@
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
+.search-container {
+	position: relative;
+	display: inline-block;
+	margin-top: 30px; /* Добавляем отступ сверху */
+}
+
+.searchInput {
+	width: 100%; /* Занимает 100% ширины контейнера */
+	padding: .375rem .75rem; /* Задаем отступы */
+	font-size: 1rem;
+	line-height: 1.5;
+	color: #495057;
+	background-color: #fff;
+	background-clip: padding-box;
+	border: 1px solid #ced4da;
+	border-radius: .25rem;
+	transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.search-icon {
+	position: absolute;
+	right: 10px; /* Отступ справа */
+	top: 50%; /* Выравнивание по вертикали */
+	transform: translateY(-50%); /* Корректировка вертикального положения иконки */
+	font-family: 'themify';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	color: #495057; /* Цвет иконки */
+	cursor: pointer; /* Изменение формы курсора при наведении */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
 
 .ti-wand:before {
 	content: "\e600";

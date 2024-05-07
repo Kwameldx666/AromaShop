@@ -195,28 +195,28 @@ namespace Aroma.BussinesLogic.Core.Levels
             }
         }
 
-        public ResponseSupport GetAdminPanelUsersAction()
+        public async Task<ResponseSupport> GetAdminPanelUsersAction(int currentUserId)
         {
             try
             {
                 using (var db = new SupportContext())
                 {
-                    var totalUsers = db.Users.ToList();
+                    var totalUsers = await db.Users.Where(u => u.Id != currentUserId).ToListAsync(); // Фильтруем пользователей, исключая текущего пользователя
 
                     if (totalUsers != null)
                     {
-                        return new ResponseSupport()
+                        return new ResponseSupport // Создаем объект ResponseSupport
                         {
                             Status = true,
-                            TotalUsers = totalUsers, // Исправлено: передаем список пользователей
+                            TotalUsers = totalUsers, // Передаем список пользователей
                         };
                     }
                     else
                     {
-                        return new ResponseSupport()
+                        return new ResponseSupport // Создаем объект ResponseSupport
                         {
                             Status = false,
-                        StatusMessage = "Error"
+                            StatusMessage = "Error"
                         };
                     }
                 }
@@ -224,24 +224,134 @@ namespace Aroma.BussinesLogic.Core.Levels
             catch (Exception ex)
             {
                 // Обработка ошибок, если необходимо
+                // Здесь можно добавить логику для записи информации об ошибке
+                return new ResponseSupport // Создаем объект ResponseSupport
+                {
+                    Status = false,
+                    StatusMessage = ex.Message // Используем сообщение об ошибке как статусное сообщение
+                };
             }
-
-            return new ResponseSupport { Status = false };
         }
-        public ResponseFilterProducts GetFilteredProductsAction(string category, string productType, decimal lowerPrice, decimal upperPrice, string sorting)
+
+        public async Task<ResponseSupport> DeleteUserAccountAction(int userId)
         {
             try
             {
-                List<ProductDbTable> filteredProductsList = new List<ProductDbTable>(); // Создаем список для сохранения отфильтрованных продуктов
+                using (var db = new SupportContext())
+                {
+                    var userToDelete = await db.Users.FindAsync(userId);
+                    if (userToDelete != null)
+                    {
+                        db.Users.Remove(userToDelete);
+                        await db.SaveChangesAsync();
+                        return new ResponseSupport
+                        {
+                            Status = true
+                        };
+                    }
+                    else
+                    {
+                        return new ResponseSupport
+                        {
+                            Status = false,
+                            StatusMessage = "User not found"
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Обработка ошибок, если необходимо
+                // Здесь можно добавить логику для записи информации об ошибке
+                return new ResponseSupport
+                {
+                    Status = false,
+                    StatusMessage = ex.Message // Используем сообщение об ошибке как статусное сообщение
+                };
+            }
+        }
+
+
+        public async Task<ResponseSupport> ChangeUserRoleAction(int userId, string newRole)
+        {
+            try
+            {
+                using (var db = new SupportContext())
+                {
+                    var user = await db.Users.FindAsync(userId); // Находим пользователя по его идентификатору
+
+                    if (user != null)
+                    {
+                        UserRole role = (UserRole)Enum.Parse(typeof(UserRole), newRole);
+                        if (role == UserRole.Admin)
+                        {
+                            user.Level = UserRole.Admin;
+                        }
+                        if (role == UserRole.Moderator)
+                        {
+                            user.Level = UserRole.Moderator;
+                        }
+                        if (role == UserRole.User)
+                        {
+                            user.Level = UserRole.User;
+                        }
+                        if (role == UserRole.None)
+                        {
+                            user.Level = UserRole.None;
+                        }
+
+
+
+                        // Сохраняем изменения в базе данных
+                        await db.SaveChangesAsync();
+
+                        // Возвращаем успешный результат
+                        return new ResponseSupport
+                        {
+                            Status = true,
+                            StatusMessage = "User role successfully changed."
+                        };
+                    }
+                    else
+                    {
+                        // Если пользователь не найден, возвращаем сообщение об ошибке
+                        return new ResponseSupport
+                        {
+                            Status = false,
+                            StatusMessage = "User not found."
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Обработка ошибок, если необходимо
+                // Здесь можно добавить логику для записи информации об ошибке
+                return new ResponseSupport
+                {
+                    Status = false,
+                    StatusMessage = "An error occurred while changing user role: " + ex.Message
+                };
+            }
+        }
+
+        public async Task<ResponseFilterProducts> GetFilteredProductsAction(string category, string productType, decimal lowerPrice, decimal upperPrice, string sorting)
+        {
+            try
+            {
+                List<ProductDbTable> filteredProductsList; // Создаем список для сохранения отфильтрованных продуктов
 
                 using (var db = new ProductContext())
                 {
-                    var filteredProducts = db.Products.Where(p =>
-                        (string.IsNullOrEmpty(category) || p.Category.ToLower() == category.ToLower()) &&
-                        (string.IsNullOrEmpty(productType) || p.ProductType.ToLower() == productType.ToLower()) &&
-                        (lowerPrice <= p.Price && p.Price <= upperPrice)).ToList(); // Добавляем фильтрацию по цене
+                    // Выбираем отфильтрованные продукты с учетом заданных критериев
+                    var filteredProducts = await db.Products
+                        .Where(p =>
+                            ((string.IsNullOrEmpty(category) || p.Category.ToLower() == category.ToLower()) || string.IsNullOrEmpty(category)) &&
+                            (string.IsNullOrEmpty(productType) || p.ProductType.ToLower() == productType.ToLower()) &&
+                            (lowerPrice <= p.Price && p.Price <= upperPrice))
+                        .ToListAsync(); // Добавляем фильтрацию по цене и преобразуем результат в список
 
-                    filteredProductsList.AddRange(filteredProducts); // Добавляем отфильтрованные продукты в список
+                    filteredProductsList = filteredProducts; // Присваиваем отфильтрованные продукты списку
 
                     // Применяем сортировку
                     switch (sorting)
@@ -264,6 +374,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                             break;
                     }
 
+                    // Проверяем, найдены ли отфильтрованные продукты
                     if (filteredProductsList.Any())
                     {
                         // Если найдены отфильтрованные продукты, возвращаем успешный результат
@@ -294,6 +405,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                 };
             }
         }
+
 
 
         internal ResponseToDeleteProduct DeleteProductAction(Product productToDelete)

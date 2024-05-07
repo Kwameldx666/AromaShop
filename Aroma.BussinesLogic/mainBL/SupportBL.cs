@@ -22,9 +22,17 @@ namespace Aroma.BussinesLogic.mainBL
             return GetViewPortAction();
         }
 
-        public ResponseSupport GetAdminPanelUsers()
+        public async Task<ResponseSupport> DeleteUserAction(int userId)
         {
-            return GetAdminPanelUsersAction();
+            return await DeleteUserAccountAction(userId);
+        }
+        public Task<ResponseSupport> GetAdminPanelUsers(int currentUserId)
+        {
+            return GetAdminPanelUsersAction(currentUserId);
+        }
+        public Task<ResponseSupport> ChangeUserRole(int userId, string newRole)
+        {
+            return ChangeUserRoleAction(userId, newRole);
         }
     }
 }

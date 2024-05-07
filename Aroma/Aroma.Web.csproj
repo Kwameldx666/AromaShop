@@ -235,6 +235,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\css\styles.css" />
+    <Content Include="assets\img\ghost-img.png" />
+    <Content Include="assets\js\main.js" />
+    <Content Include="assets\js\scrollreveal.min.js" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -471,6 +475,13 @@
     <Content Include="Content\bootstrap-grid.css.map" />
     <Content Include="ApplicationInsights.config" />
     <Content Include="libman.json" />
+    <Content Include="assets\scss\base\_base.scss" />
+    <Content Include="assets\scss\components\_breakpoints.scss" />
+    <Content Include="assets\scss\components\_header.scss" />
+    <Content Include="assets\scss\components\_home.scss" />
+    <Content Include="assets\scss\config\_variables.scss" />
+    <Content Include="assets\scss\layout\_layout.scss" />
+    <Content Include="assets\scss\styles.scss" />
     <None Include="Scripts\jquery-3.7.1.intellisense.js" />
     <Content Include="Scripts\JavaScript.js" />
     <Content Include="Scripts\jquery-3.7.1.js" />
@@ -872,7 +883,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BlogController.cs" />
-    <Compile Include="Controllers\Error.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
@@ -943,7 +954,6 @@
     <Content Include="vendors\themify-icons\Themify IconFonts 5-23-2014.json" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\UProfile.cshtml" />
-    <Content Include="Views\Error\Error404.cshtml" />
     <Content Include="Views\Home\Blog.cshtml" />
     <Content Include="Views\Home\Checkout.cshtml" />
     <Content Include="Views\Home\confirmation.cshtml" />
@@ -999,6 +1009,7 @@
     <Content Include="Views\Account\ForgotPasswordConfirmation.cshtml" />
     <Content Include="Views\Account\ConfirmRegistrationCode.cshtml" />
     <Content Include="Views\Support\AdminPanelAboutUsers.cshtml" />
+    <Content Include="Views\Error\Error404.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
