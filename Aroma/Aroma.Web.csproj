@@ -445,6 +445,7 @@
     <Content Include="img\blog\.DS_Store" />
     <Content Include="img\gallery\.DS_Store" />
     <Content Include="img\Thumbs.db" />
+    <Content Include="img\user.png" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />

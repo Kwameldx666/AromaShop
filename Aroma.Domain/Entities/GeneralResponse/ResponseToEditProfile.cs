@@ -10,6 +10,9 @@ namespace Aroma.Domain.Entities.GeneralResponse
     {
         public bool Status { get; set; }
 
+        public bool ChangeEmail { get; set; }
         public string MessageError {  get; set; }
+
+        public string Email { get; set; }
     }
 }

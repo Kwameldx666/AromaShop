@@ -28,19 +28,43 @@ namespace Aroma.BussinesLogic.Core.Levels
     {
         public int CountRating { get; private set; }
 
-        internal  ResponseCheckCode CheckEmailAction(URegisterData updateCode)
+        internal  ResponseCheckCode CheckEmailAction(string updateCode,bool editProfile, string email)
         {
             using(var db = new UserContext())
             {
-                var Code = db.Users.FirstOrDefault(c => c.Code == updateCode.Code);
+                var Code = db.Users.FirstOrDefault(c => c.Code == updateCode);
+
+
                 if (Code == null)
                 {
+
+                    
                     return new ResponseCheckCode { Status = false };
                 }
-                else 
+               if (Code != null)
+                {
+                    if (editProfile)
+                    {
+                        if (email != null)
+                        {
+                            Code.Email = email;
+                        }
+                        Code.EmailAccess = true;
 
-                        return new ResponseCheckCode { Status = true };
+                        db.SaveChanges();
+                        return new ResponseCheckCode
+                        {
+                            Status = true
+                        };
+                    }
+
+                    Code.EmailAccess = true;
+
+                    db.SaveChanges();
+                    return new ResponseCheckCode { Status = true, Regiser = true };
+                }
             }
+            return new ResponseCheckCode { Status = false };    
      
 
         }
@@ -167,17 +191,34 @@ namespace Aroma.BussinesLogic.Core.Levels
 
                         return new ResponseToEditProfile { Status = false, MessageError = "Продукт не найден." };
                     }
+                    
 
 
                     // Обновление полей продукта
                     existingProduct.Username = updateProfile.credential;
-                    existingProduct.Email = updateProfile.Email;
+                    var email = db.Users.FirstOrDefault(e => existingProduct.Email == updateProfile.Email);
+                    if (email == null)
+                    {
+                        string code = GenerateRandomPasswords.GenerateCode();
+
+                        bool emailSent = USendPasswordResetEmail.SendConfirmationEmail(updateProfile.Email, code);
+                        if (emailSent)
+                        {
+                            // Если письмо успешно отправлено, сохраняем код подтверждения в базе данных и создаем пользователя
+                            existingProduct.Code = code;
+                       
+                            db.SaveChanges();
+                            return new ResponseToEditProfile {Email = updateProfile.Email, ChangeEmail = true , Status = true, MessageError = "Письмо с кодом подтверждения отправлено на ваш почтовый адрес" };
+                        }
+                     
+                    }
+                  /*  existingProduct.Email = updateProfile.Email;*/
 
 
                     // Сохранение изменений
                     db.SaveChanges();
 
-                    return new ResponseToEditProfile { Status = true, MessageError = "Продукт успешно обновлен." };
+                    return new ResponseToEditProfile { Status = true, MessageError = "Данные успешно обновлены." };
                 }
             }
 
@@ -223,10 +264,15 @@ namespace Aroma.BussinesLogic.Core.Levels
             {
                 // Проверяем, существует ли пользователь с таким же именем
                 var UserName = db.Users.FirstOrDefault(u => u.Username == data.Name);
-                if (UserName != null)
+                var Email = db.Users.FirstOrDefault(u => u.Email == data.Email);
+                if (UserName != null )
                 {
                     // Если пользователь существует, возвращаем сообщение об ошибке
                     return new URegisterResp { Status = false, ResponseMessage = "Пользователь с таким именем уже существует" };
+                }
+                if(Email != null)
+                {
+                    return new URegisterResp { Status = false, ResponseMessage = "Пользователь с такой почтой уже зарегестрирован.Пожалуйста зарегестрируйтесь при помощи другой почты." };
                 }
 
                 // Добавляем нового пользователя в базу данных и сохраняем изменения
@@ -237,6 +283,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                 {
                     // Если письмо успешно отправлено, сохраняем код подтверждения в базе данных и создаем пользователя
                     User.Code = code;
+                   
                     db.Users.Add(User);
                     db.SaveChanges();
                     return new URegisterResp { Status = true, ResponseMessage = "Письмо с кодом подтверждения отправлено на ваш почтовый адрес" };
@@ -272,14 +319,17 @@ namespace Aroma.BussinesLogic.Core.Levels
 
                 if (curent != null)
                 {
-                    curent.CookieString = apiCookie.Value;
-                    // Установка срока действия куки в зависимости от выбора пользователя
-                    curent.ExpireTime = rememberMe ? DateTime.Now.AddDays(30) : DateTime.Now.AddMinutes(60);
-                    using (var todo = new SessionContext())
-                    {
-                        todo.Entry(curent).State = EntityState.Modified;
-                        todo.SaveChanges();
-                    }
+                    
+                        curent.CookieString = apiCookie.Value;
+                        // Установка срока действия куки в зависимости от выбора пользователя
+                        curent.ExpireTime = rememberMe ? DateTime.Now.AddDays(30) : DateTime.Now.AddMinutes(60);
+                        using (var todo = new SessionContext())
+                        {
+                            todo.Entry(curent).State = EntityState.Modified;
+                            todo.SaveChanges();
+                        }
+                    
+                    
                 }
                 else
                 {
@@ -467,7 +517,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                 {
                     // Выполняем поиск продуктов, у которых имя начинается с указанного поискового запроса (без учета регистра)
                     var searchResults = await db.Products
-                        .Where(p => p.Name.ToLower().StartsWith(lowerSearchTerm))
+                        .Where(p => p.Name.ToLower().StartsWith(lowerSearchTerm) || p.Category.ToLower().StartsWith(lowerSearchTerm) || p.ProductType.ToLower().StartsWith(lowerSearchTerm) )
                         .ToListAsync();
 
                     Mapper.Initialize(cfg => cfg.CreateMap<ProductDbTable, Product>());
@@ -526,7 +576,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                     db.SaveChanges();
 
                     var IsPurchased_ = db.Orders.Where(p => p.orderStatus == OrderStatus.Successful && p.ProductId == productId ).ToList();
-                    var IsRating_ = db.Rating.Where(p => p.Rating != 0 && p.ProductId == productId && p.UserId == userId).ToList();
+                    var IsRating_ = db.Rating.Where(p => p.Rating != 0 && p.ProductId == productId).ToList();
                     
                
                     if (IsPurchased_.Count != 0 )
@@ -662,9 +712,9 @@ namespace Aroma.BussinesLogic.Core.Levels
                                 var product = await db.Products.FirstOrDefaultAsync(p => p.Id == orderItem.ProductId);
                                 if (product != null)
                                 {
-                             
 
-                                  
+
+                                    product.Quantity += order.QuantityOrder;
                                     product.QuantityProd -= orderItem.QuantityOrder;
                                 }
                             }
@@ -795,9 +845,9 @@ namespace Aroma.BussinesLogic.Core.Levels
                                 TotalAmount = p.TotalAmount,
                                 UserId = p.UserId,
                                 ProductType = p.ProductType,
-                                Feedback = p.Feedback,
+                                Rating = p.Rating,
                                 AverageRating = p.Product.AverageRating,
-                                Reting = p.Reting,
+                             
                             }).ToList()
                         };
                     }
@@ -868,7 +918,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                     var orders = db.Orders.Where(o => o.ProductId == productId).ToList();
                     foreach (var order in orders)
                     {
-                        order.Reting = rating;
+                        order.Rating = rating;
                     }
 
                     // Проверяем, есть ли уже оценка от данного пользователя для данного товара

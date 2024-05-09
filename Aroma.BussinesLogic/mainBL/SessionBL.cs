@@ -16,9 +16,9 @@ namespace Aroma.BussinesLogic.mainBL
     {
 
 
-        public ResponseCheckCode CheckEmail(URegisterData updatePassword)
+        public ResponseCheckCode CheckEmail(string updatePassword,bool editProfile, string email)
         {
-            return  CheckEmailAction(updatePassword);
+            return  CheckEmailAction(updatePassword, editProfile, email);
         }
         public ResponseToEditProfile ForgotPassword(ULoginData updatePassword)
         {
@@ -66,6 +66,6 @@ namespace Aroma.BussinesLogic.mainBL
             return EditPassword(user,newPassword);
         }
 
-
+       
     }
 }

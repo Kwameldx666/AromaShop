@@ -29,12 +29,10 @@ namespace Lab_TW.Controllers
 
         public ActionResult Index()
         {
+
             GetUserId();
-            SessionStatus(); 
-          /*  if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
-            {
-                return RedirectToAction("Login", "Account");
-            }*/
+            SessionStatus();
+           
 
             ViewBag.IsUserLoggedIn = true;
             var user = System.Web.HttpContext.Current.GetMySessionObject();
@@ -93,30 +91,40 @@ namespace Lab_TW.Controllers
 
         public ActionResult Blog()
         {
-            StatusSessionCheck();
+            GetUserId();
+            SessionStatus();
+            if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
+            {
+                return RedirectToAction("Login", "Account");
+            }
             return View();
         }
 
 
         public ActionResult cart()
         {
-            StatusSessionCheck();
+            GetUserId();
+            SessionStatus();
+            if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
+            {
+                return RedirectToAction("Login", "Account");
+            }
             return View();
         }
 
         public ActionResult category()
         {
-            StatusSessionCheck();
+          
             return View();
         }
         public ActionResult checkout()
         {
-            StatusSessionCheck();
+          
             return View();
         }
         public ActionResult confirmation()
         {
-            StatusSessionCheck();
+     
             return View();
         }
  
@@ -124,17 +132,24 @@ namespace Lab_TW.Controllers
 
         public ActionResult SingleBlog()
         {
-            StatusSessionCheck();
+     
             return View();
         }
         public ActionResult SingleProduct()
         {
-            StatusSessionCheck();
+            GetUserId();
+            SessionStatus();
+        
             return View();
         }
         public ActionResult TrackingOrder()
         {
-            StatusSessionCheck();
+            GetUserId();
+            SessionStatus();
+            if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
+            {
+                return RedirectToAction("Login", "Account");
+            }
             return View();
         }
 

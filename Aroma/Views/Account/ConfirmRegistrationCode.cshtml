@@ -18,8 +18,9 @@
     @using (Html.BeginForm("ConfirmRegistrationCode", "Account", FormMethod.Post))
     {
         <label for="confirmationCode">Confirmation Code:</label><br>
-        <input type="text" id="confirmationCode" name="Сode"><br><br>
+        <input type="text" id="confirmationCode" name="Code"><br><br> <!-- Corrected name attribute -->
         <input type="submit" value="Confirm">
     }
+
 </body>
 </html>

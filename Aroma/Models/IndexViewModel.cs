@@ -10,6 +10,8 @@ namespace Lab_TW.Models
         public List<Product> Products { get; set; }
         public List<Product> BestSellingProducts { get; set; }
 
+        
+
     }
 
 }

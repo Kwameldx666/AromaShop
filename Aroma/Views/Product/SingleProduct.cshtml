@@ -34,10 +34,10 @@
                 <p>
                     @Model.Products.Description
                 </p>
-                <div class="product_count">
 
-
-
+                <div class="card_area d-flex align-items-center">
+@*                    <a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
+                    <a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>*@
                     <form class="add-to-cart-form">
                         <input type="hidden" name="productId" value="@Model.Products.Id" />
                         <button type="button" class="add-to-cart-btn">
@@ -45,9 +45,11 @@
                         </button>
                     </form>
                 </div>
-                <div class="card_area d-flex align-items-center">
-                    <a class="icon_btn" href="#"><i class="lnr lnr lnr-diamond"></i></a>
-                    <a class="icon_btn" href="#"><i class="lnr lnr lnr-heart"></i></a>
+                <div class="product_count">
+
+
+
+                    
                 </div>
             </div>
         </div>
@@ -99,7 +101,7 @@
 
                     }
 
-                    @if (permission)
+                    @if (isRating)
                     {
                         <div class="review_list">
                             @foreach (var review in Model.View)
@@ -107,7 +109,7 @@
                                 <div class="review_item">
                                     <div class="media">
                                         <div class="d-flex">
-                                            <img src="~/img/cart/cart2.png" alt="@review.Product.Name">
+                                            <img src="~/img/user.png" alt="@review.Product.Name">
                                         </div>
                                         <div class="media-body">
                                             <h4>@review.User.Username</h4>
@@ -128,7 +130,7 @@
                     }
 
                 </div>
-                @if (isRating)
+                @if (permission)
                 {
                     <div class="col-lg-6">
                         <div class="review_box">

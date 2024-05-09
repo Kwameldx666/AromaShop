@@ -24,6 +24,6 @@ namespace Aroma.BussinesLogic.Interface
         ResponseEditPassword EditUserPass(ULoginData user,string newPassword);
         ResponseToEditProfile ForgotPassword(ULoginData updatePassword);
 
-        ResponseCheckCode CheckEmail(URegisterData updatePassword);
+        ResponseCheckCode CheckEmail(string updatePassword, bool editProfile,string email);
     }
 }

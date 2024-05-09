@@ -3,111 +3,140 @@
     ViewBag.Title = "cart";
     Layout = "~/Views/Shared/_LayoutCategory.cshtml";
 }
-<div class="container">
-    <div class="row">
-        <div class="col-xl-3 col-lg-4 col-md-5">
-            <div class="sidebar-categories">
-                <div class="head">Browse Categories</div>
-                <ul class="main-categories">
-                    <li class="common-filter">
-                        <form action="#">
-                            <ul>
-                                <li class="filter-list"><input class="pixel-radio" type="radio" id="laptops" name="category"><label for="laptops">Ноутбуки</label></li>
-                                <li class="filter-list"><input class="pixel-radio" type="radio" id="smartphones" name="category"><label for="smartphones">Смартфоны</label></li>
-                                <li class="filter-list"><input class="pixel-radio" type="radio" id="tablets" name="category"><label for="tablets">Планшеты</label></li>
-                                <li class="filter-list"><input class="pixel-radio" type="radio" id="cameras" name="category"><label for="cameras">Фотокамеры</label></li>
-                                <li class="filter-list"><input class="pixel-radio" type="radio" id="televisions" name="category"><label for="televisions">Телевизоры</label></li>
-                                <li class="filter-list"><input class="pixel-radio" type="radio" id="headphones" name="category"><label for="headphones">Наушники</label></li>
-                                <li class="filter-list"><input class="pixel-radio" type="radio" id="gamingConsoles" name="category"><label for="gamingConsoles">Игровые приставки</label></li>
-
-                            </ul>
-                        </form>
-                    </li>
-                </ul>
-            </div>
-            <div class="sidebar-filter">
-                <div class="top-filter-head">Product Filters</div>
-                <div class="common-filter">
-                    <div class="head">Brands</div>
-                    <form action="#">
-                        <ul>
-                            <li class="filter-list"><input class="pixel-radio" type="radio" id="apple" name="brand"><label for="apple">Apple</label></li>
-                            <li class="filter-list"><input class="pixel-radio" type="radio" id="asus" name="brand"><label for="asus">Asus</label></li>
-                            <li class="filter-list"><input class="pixel-radio" type="radio" id="gionee" name="brand"><label for="gionee">Gionee</label></li>
-                            <li class="filter-list"><input class="pixel-radio" type="radio" id="micromax" name="brand"><label for="micromax">Micromax</label></li>
-                            <li class="filter-list"><input class="pixel-radio" type="radio" id="samsung" name="brand"><label for="samsung">Samsung</label></li>
-                        </ul>
-                    </form>
-                </div>
-
-                <div class="common-filter">
-                    <div class="head">Price</div>
-                    <div class="price-range-area">
-                        <div id="price-range"></div>
-                        <div class="value-wrapper d-flex">
-                            <div class="price">Price:</div>
-                            <span>$</span>
-                            <div id="lower-value" name = "lower-value"> </div>
-                            <div class="to">to</div>
-                            <span>$</span>
-                            <div id="upper-value" name = "upper-value"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-9 col-lg-8 col-md-7">
-            <!-- Start Filter Bar -->
-            <div class="filter-bar d-flex flex-wrap align-items-center">
-                <div class="sorting">
-                    <select id="sortingSelect">
-                        <option value="default">Сортировка по умолчанию</option>
-                        <option value="priceAsc">Цена (по возрастанию)</option>
-                        <option value="priceDesc">Цена (по убыванию)</option>
-                        <option value="nameAsc">Название (A-Z)</option>
-                        <option value="nameDesc">Название (Z-A)</option>
-                    </select>
-                </div>
-       
-            </div>
-            <!-- End Filter Bar -->
-            <!-- Start Best Seller -->
-            <section class="lattest-product-area pb-40 category-list">
-                <div class="row">
-                    @foreach (var product in Model)
-                    {
-                        <div class="col-md-6 col-lg-4 col-xl-3">
-                            <div class="card text-center card-product">
-                                <div class="card-product__img">
-                                    <img class="card-img" src="@Url.Content(product.ImageUrl)" alt="@product.Name">
-                                    <ul class="card-product__imgOverlay">
-                                        <li>
-                                            <form class="add-to-cart-form">
-                                                <input type="hidden" name="productId" value="@product.Id" />
-                                                <button type="button" class="add-to-cart-btn">
-                                                    <i class="ti-shopping-cart"></i> Добавить в корзину
-                                                </button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="card-body">
-                                    <p>@product.Category</p>
-                                    <h4 class="card-product__title">
-                                        <a href="@Url.Action("SingleProduct", "Product", new { productId = product.Id })">@product.Name</a>
-                                    </h4>
-                                    <p class="card-product__price">$@product.Price.ToString("F2")</p>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </section>
-            <!-- End Best Seller -->
+<div class="container h-100">
+    <div class="blog-banner">
+        <div class="text-center">
+            <h1>Our Blog</h1>
+            <nav aria-label="breadcrumb" class="banner-breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Product</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Category</li>
+                </ol>
+            </nav>
         </div>
     </div>
-</div>
-<script>
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-3 col-lg-4 col-md-5">
+                <div class="sidebar-categories">
+                    <div class="head">Browse Categories</div>
+                    <ul class="main-categories">
+                        <li class="common-filter">
+                            <form action="#">
+                                <ul>
+                                    <li class="filter-list"><input class="pixel-radio" type="radio" id="laptops" name="category"><label for="laptops">Ноутбуки</label></li>
+                                    <li class="filter-list"><input class="pixel-radio" type="radio" id="smartphones" name="category"><label for="smartphones">Смартфоны</label></li>
+                                    <li class="filter-list"><input class="pixel-radio" type="radio" id="tablets" name="category"><label for="tablets">Планшеты</label></li>
+                                    <li class="filter-list"><input class="pixel-radio" type="radio" id="cameras" name="category"><label for="cameras">Фотокамеры</label></li>
+                                    <li class="filter-list"><input class="pixel-radio" type="radio" id="televisions" name="category"><label for="televisions">Телевизоры</label></li>
+                                    <li class="filter-list"><input class="pixel-radio" type="radio" id="headphones" name="category"><label for="headphones">Наушники</label></li>
+                                    <li class="filter-list"><input class="pixel-radio" type="radio" id="gamingConsoles" name="category"><label for="gamingConsoles">Игровые приставки</label></li>
+
+                                </ul>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+                <div class="sidebar-filter">
+                    <div class="top-filter-head">Product Filters</div>
+                    <div class="common-filter">
+                        <div class="head">Brands</div>
+                        <form action="#">
+                            <ul>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="apple" name="brand"><label for="apple">Apple</label></li>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="asus" name="brand"><label for="asus">Asus</label></li>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="gionee" name="brand"><label for="gionee">Gionee</label></li>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="micromax" name="brand"><label for="micromax">Micromax</label></li>
+                                <li class="filter-list"><input class="pixel-radio" type="radio" id="samsung" name="brand"><label for="samsung">Samsung</label></li>
+                            </ul>
+                        </form>
+                    </div>
+
+                    <div class="common-filter">
+                        <div class="head">Price</div>
+                        <div class="price-range-area">
+                            <div class="value-wrapper d-flex">
+                                <div class="price">Min:</div>
+                                <span>$</span>
+                                <input type="text" id="lower-value" name="lower-value" class="price-input" placeholder="Min Price">
+                            </div>
+                            <div class="value-wrapper d-flex">
+                                <div class="price">Max:</div>
+                                <span>$</span>
+                                <input type="text" id="upper-value" name="upper-value" class="price-input" placeholder="Max Price">
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+            <div class="col-xl-9 col-lg-8 col-md-7">
+                <!-- Start Filter Bar -->
+                <div class="filter-bar d-flex flex-wrap align-items-center">
+                    <div class="sorting">
+                        <select id="sortingSelect">
+                            <option value="default">Сортировка по умолчанию</option>
+                            <option value="priceAsc">Цена (по возрастанию)</option>
+                            <option value="priceDesc">Цена (по убыванию)</option>
+                            <option value="nameAsc">Название (A-Z)</option>
+                            <option value="nameDesc">Название (Z-A)</option>
+                        </select>
+                    </div>
+
+                </div>
+                <!-- End Filter Bar -->
+                <!-- Start Best Seller -->
+                <section class="lattest-product-area pb-40 category-list">
+                    <div class="row">
+                        @foreach (var product in Model)
+                        {
+                            <div class="col-md-6 col-lg-4 col-xl-3">
+                                <div class="card text-center card-product">
+                                    <div class="card-product__img">
+                                        <img class="card-img" src="@Url.Content(product.ImageUrl)" alt="@product.Name">
+                                        <ul class="card-product__imgOverlay">
+                                            <li>
+                                                <form class="add-to-cart-form">
+                                                    <input type="hidden" name="productId" value="@product.Id" />
+                                                    <button type="button" class="add-to-cart-btn">
+                                                        <i class="ti-shopping-cart"></i> Добавить в корзину
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>@product.Category</p>
+                                        <h4 class="card-product__title">
+                                            <a href="@Url.Action("SingleProduct", "Product", new { productId = product.Id })">@product.Name</a>
+                                        </h4>
+                                        <p class="card-product__price">$@product.Price.ToString("F2")</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </section>
+                <!-- End Best Seller -->
+            </div>
+        </div>
+    </div>
+    <style>
+        .price-range-area {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price-input {
+            width: 100px; 
+        }
+
+    </style>
+    <script>
 
 
     $(document).ready(function () {
@@ -118,10 +147,7 @@
         $('input[name="brand"]').change(filterProducts);
 
         // Обработчик изменения цены
-        $('input[name="lower-value"]').change(filterProducts);
-        $('input[name="upper-value"]').change(filterProducts);
         $('#lower-value, #upper-value').on('input', filterProducts);
-
 
         // Обработчик изменения сортировки
         $('#sortingSelect').change(filterProducts);
@@ -130,8 +156,8 @@
         function filterProducts() {
             var category = $('input[name="category"]:checked').next('label').text();
             var brand = $('input[name="brand"]:checked').next('label').text();
-            var lowerPrice = parseFloat($('#lower-value').text()); // Используем text() для получения текстового содержимого
-            var upperPrice = parseFloat($('#upper-value').text()); // Используем text() для получения текстового содержимого
+            var lowerPrice = parseFloat($('#lower-value').val()) || 0;
+            var upperPrice = parseFloat($('#upper-value').val()) || Infinity;
             var sorting = $('#sortingSelect').val();
 
             $.ajax({
@@ -189,29 +215,29 @@
         }
 
     });
-</script>
-<script>
-    $(document).ready(function () {
-        // Делегирование событий для обработки клика на кнопке добавления в корзину
-        $('.category-list').on('click', '.add-to-cart-btn', function (e) {
-            e.preventDefault(); // Предотвращаем стандартное действие отправки формы
+    </script>
+    <script>
+        $(document).ready(function () {
+            // Делегирование событий для обработки клика на кнопке добавления в корзину
+            $('.category-list').on('click', '.add-to-cart-btn', function (e) {
+                e.preventDefault(); // Предотвращаем стандартное действие отправки формы
 
-            var productId = $(this).closest('.card-product').find('input[name="productId"]').val();
+                var productId = $(this).closest('.card-product').find('input[name="productId"]').val();
 
-            // Отправляем AJAX запрос на сервер
-            $.ajax({
-                url: '/Product/AddProductToCart', // Замените на URL вашего метода контроллера для добавления в корзину
-                method: 'POST',
-                data: { productId: productId, quantity: 1 },
-                success: function (response) {
-                    alert('Товар успешно добавлен в корзину!');
-                    // Можно выполнить дополнительные действия после успешного добавления
-                },
-                error: function () {
-                    alert('Ошибка при добавлении товара в корзину.');
-                }
+                // Отправляем AJAX запрос на сервер
+                $.ajax({
+                    url: '/Product/AddProductToCart', // Замените на URL вашего метода контроллера для добавления в корзину
+                    method: 'POST',
+                    data: { productId: productId, quantity: 1 },
+                    success: function (response) {
+                        alert('Товар успешно добавлен в корзину!');
+                        // Можно выполнить дополнительные действия после успешного добавления
+                    },
+                    error: function () {
+                        alert('Ошибка при добавлении товара в корзину.');
+                    }
+                });
             });
         });
-    });
 
-</script>
+    </script>

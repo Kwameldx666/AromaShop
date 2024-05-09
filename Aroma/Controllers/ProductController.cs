@@ -36,7 +36,12 @@ namespace Lab_TW.Controllers
         [AdminAndModerator]
         public ActionResult ProductsAdminPanel()
         {
-            StatusSessionCheck();
+            GetUserId();
+            SessionStatus();
+            if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
             // Вызов метода из бизнес-логики для получения всех продуктов;
             ResponseGetProducts response = _product.AdminGetAction();
@@ -135,7 +140,12 @@ namespace Lab_TW.Controllers
         [AdminAndModerator]
         public ActionResult AddProduct()
         {
-            StatusSessionCheck();
+            GetUserId();
+            SessionStatus();
+            if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
             return View(); // Передача списка в представление.
         }
@@ -183,7 +193,13 @@ namespace Lab_TW.Controllers
         private IOrderService _orderService;
 
         public ActionResult AddProductToCart()
-        {StatusSessionCheck();
+        {
+            GetUserId();
+            SessionStatus();
+            if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
+            {
+                return RedirectToAction("Login", "Account");
+            }
             return View();
         }
 
@@ -262,7 +278,9 @@ namespace Lab_TW.Controllers
         [HttpGet]
         public ActionResult SingleProduct(int? productId)
         {
-            StatusSessionCheck();
+            GetUserId();
+            SessionStatus();
+          
             // Если productId не был передан как параметр, попробуйте получить его из маршрута
             if (productId == null)
             {
@@ -360,7 +378,12 @@ namespace Lab_TW.Controllers
         [HttpPost]
         public JsonResult AddProductToCart(int productId ,int quantity)
         {
-            StatusSessionCheck();
+            GetUserId();
+            SessionStatus();
+            if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
+            {
+                return Json(new { success = false , errorMessage = "Вы не авторизированы"});       
+            }
             try
             {
 
@@ -368,10 +391,7 @@ namespace Lab_TW.Controllers
                 if (UserId == 0)
                 {
                     GetUserId();
-                  /*  if (UserId == -1)
-                    {
-                        return RedirectToAction("Login", "Account");
-                    }*/
+     
                     UserId = (int)Convert.ToUInt32(Session["UserId"]);
                 }
 
@@ -449,8 +469,14 @@ namespace Lab_TW.Controllers
         public ActionResult OrderConfirm()
         {
 
-            
-                int userId = (int)Convert.ToUInt32(Session["UserId"]);
+         
+            SessionStatus();
+            if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            int userId = (int)Convert.ToUInt32(Session["UserId"]);
                 if (userId == 0)
                 {
                     GetUserId();
@@ -491,7 +517,9 @@ namespace Lab_TW.Controllers
     
         public ActionResult Category()
         {
-            StatusSessionCheck();
+            GetUserId();
+            SessionStatus();
+           
             ViewBag.IsUserLoggedIn = true;
             var user = System.Web.HttpContext.Current.GetMySessionObject();
 
@@ -544,7 +572,7 @@ namespace Lab_TW.Controllers
                 TotalAmount = p.TotalAmount,
                 UserId = p.UserId,
                 ProductType = p.ProductType,
-                ImageUrl = p.ImageUrl
+       /*         ImageUrl = p.ImageUrl*/
 
             }).ToList();
 
@@ -553,6 +581,11 @@ namespace Lab_TW.Controllers
         [HttpPost]
         public ActionResult Cart(int productId,int rating,string review)
         {
+              SessionStatus();
+            if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
+            {
+                return RedirectToAction("Login", "Account");
+            }
             int userId = (int)Convert.ToUInt32(Session["UserId"]);
             if (userId == 0)
             {
@@ -575,8 +608,7 @@ namespace Lab_TW.Controllers
                     TotalAmount = p.TotalAmount,
                     UserId = p.UserId,
                     ProductType = p.ProductType,
-                    Feedback = p.Feedback,
-                    Rating = p.Reting,
+                  
                     AverageRating = p.AverageRating
 
                 }).ToList();
@@ -589,7 +621,7 @@ namespace Lab_TW.Controllers
                 {
                     // Если при запросе возникла ошибка, отображаем сообщение об ошибке
                     ViewBag.ErrorMessage = response.Message;
-                    return View("Error");
+                    return View("Error404","Error");
                 }
 
             }
@@ -598,6 +630,11 @@ namespace Lab_TW.Controllers
         }
         public ActionResult Cart()
         {
+            SessionStatus();
+            if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
+            {
+                return RedirectToAction("Login", "Account");
+            }
             int userId = (int)Convert.ToUInt32(Session["UserId"]);
             if (userId == 0)
             {
@@ -619,8 +656,7 @@ namespace Lab_TW.Controllers
                     TotalAmount = p.TotalAmount,
                     UserId = p.UserId,
                     ProductType = p.ProductType,
-                    Feedback = p.Feedback,
-                    Rating = p.Reting,
+                  Rating = p.Rating,
                     AverageRating = p.AverageRating,
                     Price = p.Product.Price
                 }).ToList();
@@ -633,7 +669,7 @@ namespace Lab_TW.Controllers
                 {
                     // Если при запросе возникла ошибка, отображаем сообщение об ошибке
                     ViewBag.ErrorMessage = response.Message;
-                    return View("Error");
+                    return View("Error404", "Error");
                 }
 
             }
@@ -660,7 +696,7 @@ namespace Lab_TW.Controllers
         [HttpPost]
         public ActionResult AddReview(int productId)
         {
-            int userId = (int)Convert.ToUInt32(Session["UserId"]);
+                int userId = (int)Convert.ToUInt32(Session["UserId"]);
             if (userId == 0)
             {
                 GetUserId();

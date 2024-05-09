@@ -68,46 +68,58 @@
         }
     </style>
 </head>
-<body>
-    <h1>Write a Review</h1>
-    <div class="product-info">
-        <h2>Product Information</h2>
-        <p><strong>Name:</strong> @Model.Name</p>
-        <p><strong>Description:</strong> @Model.Description</p>
-        <p><strong>Price:</strong> $@Model.Price</p>
-        <!-- Здесь может быть любая другая информация о товаре -->
+<div class="container h-100">
+    <div class="blog-banner">
+        <div class="text-center">
+            <h1>Our Blog</h1>
+            <nav aria-label="breadcrumb" class="banner-breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Product</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Review</li>
+                </ol>
+            </nav>
+        </div>
     </div>
-    <form action="@Url.Action("Cart", "Product")" method="post">
-        <input type="hidden" name="productId" value="@Model.Id" />
-        <!-- Форма для отправки отзыва на сервер -->
-        <label for="rating">Rating:</label>
-        <select id="rating" name="rating" required>
-            <option value="">Select Rating</option>
-            <option value="1">★</option>
-            <option value="2">★★</option>
-            <option value="3">★★★</option>
-            <option value="4">★★★★</option>
-            <option value="5">★★★★★</option>
-        </select>
+    <body>
+        <h1>Write a Review</h1>
+        <div class="product-info">
+            <h2>Product Information</h2>
+            <p><strong>Name:</strong> @Model.Name</p>
+            <p><strong>Description:</strong> @Model.Description</p>
+            <p><strong>Price:</strong> $@Model.Price</p>
+            <!-- Здесь может быть любая другая информация о товаре -->
+        </div>
+        <form action="@Url.Action("Cart", "Product")" method="post">
+            <input type="hidden" name="productId" value="@Model.Id" />
+            <!-- Форма для отправки отзыва на сервер -->
+            <label for="rating">Rating:</label>
+            <select id="rating" name="rating" required>
+                <option value="">Select Rating</option>
+                <option value="1">★</option>
+                <option value="2">★★</option>
+                <option value="3">★★★</option>
+                <option value="4">★★★★</option>
+                <option value="5">★★★★★</option>
+            </select>
 
-        <label for="review">Your Review:</label>
-        <textarea id="review" name="review" rows="4" cols="50" required></textarea>
+            <label for="review">Your Review:</label>
+            <textarea id="review" name="review" rows="4" cols="50" required></textarea>
 
-        <!-- Скрытое поле для передачи рейтинга -->
-        <input type="hidden" id="ratingValue" name="ratingValue" value="" />
+            <!-- Скрытое поле для передачи рейтинга -->
+            <input type="hidden" id="ratingValue" name="ratingValue" value="" />
 
-        <button type="submit" onclick="setRatingValue()">Submit review</button>
-    </form>
+            <button type="submit" onclick="setRatingValue()">Submit review</button>
+        </form>
 
-    <script>
-    // JavaScript функция для установки значения рейтинга в скрытое поле перед отправкой формы
-    function setRatingValue() {
-        var ratingSelect = document.getElementById("rating");
-        var ratingValueField = document.getElementById("ratingValue");
-        ratingValueField.value = ratingSelect.value;
-    }
-    </script>
+        <script>
+            // JavaScript функция для установки значения рейтинга в скрытое поле перед отправкой формы
+            function setRatingValue() {
+                var ratingSelect = document.getElementById("rating");
+                var ratingValueField = document.getElementById("ratingValue");
+                ratingValueField.value = ratingSelect.value;
+            }
+        </script>
 
-</body>
+    </body>
 </html>
 

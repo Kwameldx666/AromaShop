@@ -19,15 +19,15 @@ namespace Aroma.Domain.Entities.User
         public DateTime OrderDate { get; set; }
         public decimal TotalPrice { get; set; }
         public virtual ProductDbTable Product { get; set; } // Свойство для связи с продуктом
-        public string ImageUrl { get; set; }
+/*        public string ImageUrl { get; set; }*/
         public virtual UDbTable UDbTable { get; set; } // Свойство для связи с пользователем
 
-        public virtual RatingUdbTable RatingUdbTable { get; set; }
+/*        public virtual RatingUdbTable RatingUdbTable { get; set; }*/
         public string ProductType { get; set; }
         public OrderStatus orderStatus { get; set; }
-        public string Feedback { get; set; }
+/*        public string Feedback { get; set; }*/
 
-        public int Reting { get; set; }
+        public int Rating { get; set; }
         public double AverageRating { get; set; }
 
         // Другие свойства заказа

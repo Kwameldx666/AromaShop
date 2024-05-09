@@ -22,12 +22,12 @@ namespace Aroma.Domain.Entities.Product.DBModel
 
         public int QuantityProd { get; set; }
 
-        public string Feedback { get; set; }
 
-        public int Reting { get; set; }
+
+
 
         public double AverageRating { get; set; }
-        public OrderStatus orderStatus { get; set; }
+
 
         public int Discount { get; set; }
 

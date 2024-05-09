@@ -11,5 +11,6 @@ namespace Aroma.Domain.Entities.GeneralResponse
         public bool Status { get; set; }    
 
         public string ErrorMessage { get;set; }
+        public bool Regiser { get; set; }
     }
 }

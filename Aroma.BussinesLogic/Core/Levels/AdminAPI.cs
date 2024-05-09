@@ -149,8 +149,8 @@ namespace Aroma.BussinesLogic.Core.Levels
                     var productSellers = db.Products.OrderByDescending(p => p.Quantity).ToList();
 
                     // Фильтруем продукты, оставляя только те, у которых количество больше 0
-                    var availableProducts = products.Where(p => p.QuantityProd > 0).ToList();
-                    var availableProductSellers = productSellers.Where(p => p.QuantityProd > 0).ToList();
+                    var availableProducts = products.Where(p => p.QuantityProd > 0).Take(12).ToList(); // Выбираем только 12 продуктов
+                    var availableProductSellers = productSellers.Where(p => p.QuantityProd > 0).Take(12).ToList(); // Выбираем только 12 продуктов
 
                     return new ResponseGetProducts
                     {
@@ -181,7 +181,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                             ImageUrl = p.ImageUrl,
                             Quantity = p.QuantityProd,
                             Discount = p.Discount,
-                            View = p.View, // Устанавливаем количество просмотров для каждого продукта
+                            View = p.View,
                             PriceWithDiscount = p.PriceWithDiscount,
                         }).ToList(),
 
@@ -194,6 +194,8 @@ namespace Aroma.BussinesLogic.Core.Levels
                 return new ResponseGetProducts { Status = false, Message = ex.Message };
             }
         }
+
+
 
         public async Task<ResponseSupport> GetAdminPanelUsersAction(int currentUserId)
         {

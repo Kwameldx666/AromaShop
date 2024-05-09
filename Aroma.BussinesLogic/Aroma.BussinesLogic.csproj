@@ -126,89 +126,9 @@
     <Compile Include="mainBL\ProfileBL.cs" />
     <Compile Include="mainBL\SessionBL.cs" />
     <Compile Include="mainBL\SupportBL.cs" />
-    <Compile Include="Migrations\202404271531517_Newsso.cs" />
-    <Compile Include="Migrations\202404271531517_Newsso.Designer.cs">
-      <DependentUpon>202404271531517_Newsso.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202404271537456_Newssoo.cs" />
-    <Compile Include="Migrations\202404271537456_Newssoo.Designer.cs">
-      <DependentUpon>202404271537456_Newssoo.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202404271540496_Newssoos.cs" />
-    <Compile Include="Migrations\202404271540496_Newssoos.Designer.cs">
-      <DependentUpon>202404271540496_Newssoos.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202404271651010_Newssooq.cs" />
-    <Compile Include="Migrations\202404271651010_Newssooq.Designer.cs">
-      <DependentUpon>202404271651010_Newssooq.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202404271848576_Newssooq1.cs" />
-    <Compile Include="Migrations\202404271848576_Newssooq1.Designer.cs">
-      <DependentUpon>202404271848576_Newssooq1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202404271939415_Newssooqs.cs" />
-    <Compile Include="Migrations\202404271939415_Newssooqs.Designer.cs">
-      <DependentUpon>202404271939415_Newssooqs.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202404280854439_ReviewProduct.cs" />
-    <Compile Include="Migrations\202404280854439_ReviewProduct.Designer.cs">
-      <DependentUpon>202404280854439_ReviewProduct.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202404281004213_ReviewProducts.cs" />
-    <Compile Include="Migrations\202404281004213_ReviewProducts.Designer.cs">
-      <DependentUpon>202404281004213_ReviewProducts.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202404291027209_pls.cs" />
-    <Compile Include="Migrations\202404291027209_pls.Designer.cs">
-      <DependentUpon>202404291027209_pls.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202404291311356_AddView.cs" />
-    <Compile Include="Migrations\202404291311356_AddView.Designer.cs">
-      <DependentUpon>202404291311356_AddView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202404291322174_AddViews.cs" />
-    <Compile Include="Migrations\202404291322174_AddViews.Designer.cs">
-      <DependentUpon>202404291322174_AddViews.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202404292117234_AddViewsss.cs" />
-    <Compile Include="Migrations\202404292117234_AddViewsss.Designer.cs">
-      <DependentUpon>202404292117234_AddViewsss.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202404300737570_low.cs" />
-    <Compile Include="Migrations\202404300737570_low.Designer.cs">
-      <DependentUpon>202404300737570_low.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202404300741240_low1.cs" />
-    <Compile Include="Migrations\202404300741240_low1.Designer.cs">
-      <DependentUpon>202404300741240_low1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202404302006097_work.cs" />
-    <Compile Include="Migrations\202404302006097_work.Designer.cs">
-      <DependentUpon>202404302006097_work.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202405021324231_NewFix.cs" />
-    <Compile Include="Migrations\202405021324231_NewFix.Designer.cs">
-      <DependentUpon>202405021324231_NewFix.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202405021336405_NewFix1.cs" />
-    <Compile Include="Migrations\202405021336405_NewFix1.Designer.cs">
-      <DependentUpon>202405021336405_NewFix1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202405031806232_review.cs" />
-    <Compile Include="Migrations\202405031806232_review.Designer.cs">
-      <DependentUpon>202405031806232_review.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202405031940409_review1.cs" />
-    <Compile Include="Migrations\202405031940409_review1.Designer.cs">
-      <DependentUpon>202405031940409_review1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202405032022232_review2.cs" />
-    <Compile Include="Migrations\202405032022232_review2.Designer.cs">
-      <DependentUpon>202405032022232_review2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202405032040321_review3.cs" />
-    <Compile Include="Migrations\202405032040321_review3.Designer.cs">
-      <DependentUpon>202405032040321_review3.cs</DependentUpon>
+    <Compile Include="Migrations\202405090930567_new.cs" />
+    <Compile Include="Migrations\202405090930567_new.Designer.cs">
+      <DependentUpon>202405090930567_new.cs</DependentUpon>
     </Compile>
     <Compile Include="Scripts\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -293,70 +213,9 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202404271531517_Newsso.resx">
-      <DependentUpon>202404271531517_Newsso.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202404271537456_Newssoo.resx">
-      <DependentUpon>202404271537456_Newssoo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202404271540496_Newssoos.resx">
-      <DependentUpon>202404271540496_Newssoos.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202404271651010_Newssooq.resx">
-      <DependentUpon>202404271651010_Newssooq.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202404271848576_Newssooq1.resx">
-      <DependentUpon>202404271848576_Newssooq1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202404271939415_Newssooqs.resx">
-      <DependentUpon>202404271939415_Newssooqs.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202404280854439_ReviewProduct.resx">
-      <DependentUpon>202404280854439_ReviewProduct.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202404281004213_ReviewProducts.resx">
-      <DependentUpon>202404281004213_ReviewProducts.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202404291027209_pls.resx">
-      <DependentUpon>202404291027209_pls.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202404291311356_AddView.resx">
-      <DependentUpon>202404291311356_AddView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202404291322174_AddViews.resx">
-      <DependentUpon>202404291322174_AddViews.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202404292117234_AddViewsss.resx">
-      <DependentUpon>202404292117234_AddViewsss.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202404300737570_low.resx">
-      <DependentUpon>202404300737570_low.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202404300741240_low1.resx">
-      <DependentUpon>202404300741240_low1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202404302006097_work.resx">
-      <DependentUpon>202404302006097_work.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202405021324231_NewFix.resx">
-      <DependentUpon>202405021324231_NewFix.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202405021336405_NewFix1.resx">
-      <DependentUpon>202405021336405_NewFix1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202405031806232_review.resx">
-      <DependentUpon>202405031806232_review.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202405031940409_review1.resx">
-      <DependentUpon>202405031940409_review1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202405032022232_review2.resx">
-      <DependentUpon>202405032022232_review2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202405032040321_review3.resx">
-      <DependentUpon>202405032040321_review3.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202405090930567_new.resx">
+      <DependentUpon>202405090930567_new.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -33,7 +33,7 @@ namespace Lab_TW.Controllers
 
         public ActionResult Logout()
         {
-            StatusSessionCheck();
+          
             // Вызываем метод выхода из системы
             ResponseLogout logoutResponse = _session.UserLogout();
 
@@ -57,7 +57,7 @@ namespace Lab_TW.Controllers
                         Expires = DateTime.Now.AddDays(-1)
                     };
                     Response.Cookies.Add(cookie);
-                }
+                    }
 
                 // Перенаправляем пользователя на страницу входа
                 return RedirectToAction("Login", "Account");
@@ -71,12 +71,15 @@ namespace Lab_TW.Controllers
         // GET: login
         public ActionResult login()
         {
-            StatusSessionCheck();
+            GetUserId();
+            SessionStatus();
+           
             return View();
         }
         public ActionResult EditProfile(LoginData data)
         {
-            StatusSessionCheck();
+            GetUserId();
+           
 
             int UserId = (int)Convert.ToUInt32(Session["UserId"]);
             /*    GetUserId();*/
@@ -93,11 +96,20 @@ namespace Lab_TW.Controllers
             // Вызов метода бизнес-логики для обновления продукта
             ResponseToEditProfile response = _session.ProfileUpdateAction(updateProfile);
 
-                if (response.Status)
+            if (response.Status)
+            {
+                if (response.ChangeEmail == true)
                 {
-                return RedirectToAction("UProfile", "Account");
-                  
+                    TempData["Email"] = response.Email;
+
+                    return RedirectToAction("ConfirmRegistrationCode");
                 }
+                bool editProfile = true; // Или false в зависимости от условий вашего приложения
+               
+                TempData["EditProfile"] = editProfile;
+                return RedirectToAction("UProfile");
+
+            }
                 else
                 {
                     // Если при обновлении произошла ошибка, отображаем сообщение об ошибке
@@ -114,7 +126,7 @@ namespace Lab_TW.Controllers
         [HttpPost]
         public ActionResult ChangePassword(LoginData user,string newPassword, string confirmPassword)
         {
-            StatusSessionCheck();
+   
             // Логика обновления пароля
             int UserId = (int)Convert.ToUInt32(Session["UserId"]);
             if (newPassword == confirmPassword)
@@ -143,7 +155,12 @@ namespace Lab_TW.Controllers
         [HttpGet]
         public ActionResult UProfile()
         {
-            StatusSessionCheck();
+
+       
+            if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
 
             int UserId = (int)Convert.ToUInt32(Session["UserId"]);
@@ -205,6 +222,7 @@ namespace Lab_TW.Controllers
                     ViewBag.UserName = Data.credential;
                     Session["IsUserLoggedIn"] = System.Web.HttpContext.Current.Session["LoginStatus"];
                     string f = (string)Session["IsUserLoggedIn"];
+                    ChechEmail(Data.Email);
                     if (response.AdminMod || response.ModeratorMod)
                     {
                         ViewBag.UserName = Data.credential;
@@ -271,20 +289,34 @@ namespace Lab_TW.Controllers
 
         [HttpPost]
 
-        public ActionResult ConfirmRegistrationCode(RegisterData code)
-        {
+        public ActionResult ConfirmRegistrationCode(string code)
+        {/*
             Mapper.Initialize(cfg => cfg.CreateMap<RegisterData, URegisterData>());
 
-            var updatePassword = Mapper.Map<URegisterData>(code);
+            var updatePassword = Mapper.Map<URegisterData>(code);*/
+            bool editProfile = false; // Или false в зависимости от условий вашего приложения
+            TempData["EditProfile"] = editProfile;
+            string email = (string)TempData["Email"];
 
-            ResponseCheckCode response = _session.CheckEmail(updatePassword);
-            if (response.Status)
             {
-                return RedirectToAction("Login");
+                editProfile = true;
+                    };
+            ResponseCheckCode response = _session.CheckEmail(code,editProfile, email);
+            if (response.Status )
+            {
+                if (response.Regiser)
+                    return RedirectToAction("Login");
+                else
+                    return RedirectToAction("UProfile");
             }
-                
-            return View();
+
+            if (response.Regiser)
+                return RedirectToAction("Login");
+            else
+                return RedirectToAction("UProfile");
         }
+
+
         // GET: Register
         public ActionResult Register()
             {

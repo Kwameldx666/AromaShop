@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using Lab_TW.Extension;
 using Aroma.Domain.Entities.User;
+using Aroma.BussinesLogic.DBModel.Seed;
 namespace Lab_TW.Controllers
 {
     public class BaseController : Controller
@@ -19,6 +20,23 @@ namespace Lab_TW.Controllers
             _session = bl.GetSessionBL();
         }
 
+        public bool ChechEmail(string email)
+        {
+            using (var db = new UserContext()) 
+            {
+                
+                    var user = db.Users.FirstOrDefault(x => x.EmailAccess == true);
+                if (user != null)
+                {
+                    return true;
+
+                }
+                else
+                    db.Users.Remove(user);
+                db.SaveChanges();
+                return false;
+            }
+        }
 
         public int GetUserId()
         {
@@ -75,15 +93,6 @@ namespace Lab_TW.Controllers
             }
         }
 
-        public ActionResult StatusSessionCheck()
-        {
-            SessionStatus();
-            Session["IsUserLoggedIn"] = System.Web.HttpContext.Current.Session["LoginStatus"];
-            if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
-            {
-                return RedirectToAction("Login", "Account");
-            }
-            return null;
-        }
+      
     }
 }
