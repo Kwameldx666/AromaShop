@@ -15,7 +15,7 @@ namespace Aroma.Domain.Entities.User
         public DateTime RegDate { get; set; }
         public string IP {  get; set; }
         public string AcceptPassword { get; set; }
-        public int Balance { get; set; }
+        public decimal Balance { get; set; }
 
         public string Code { get; set; }
     }

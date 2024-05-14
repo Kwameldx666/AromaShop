@@ -14,6 +14,7 @@ namespace Aroma.BussinesLogic.Interface
     {
 
         ResponseGetProducts AdminGetAction();
+        ResponseGetProducts GetAction();
         ResponseAddProduct AdminAddAction(Product product);
         ResponseToEditProduct AdminUpdateAction(ProductDbTable updateProduct);
 

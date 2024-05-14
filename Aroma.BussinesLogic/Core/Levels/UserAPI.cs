@@ -263,8 +263,8 @@ namespace Aroma.BussinesLogic.Core.Levels
             using (var db = new UserContext())
             {
                 // Проверяем, существует ли пользователь с таким же именем
-                var UserName = db.Users.FirstOrDefault(u => u.Username == data.Name);
-                var Email = db.Users.FirstOrDefault(u => u.Email == data.Email);
+                var UserName = db.Users.FirstOrDefault(u => u.Username == data.Name && u.EmailAccess == true);
+                var Email = db.Users.FirstOrDefault(u => u.Email == data.Email && u.EmailAccess == true);
                 if (UserName != null )
                 {
                     // Если пользователь существует, возвращаем сообщение об ошибке

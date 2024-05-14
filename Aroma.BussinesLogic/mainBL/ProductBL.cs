@@ -16,6 +16,11 @@ namespace Aroma.BussinesLogic.mainBL
     {
         public ResponseGetProducts AdminGetAction()
         {
+            return GetAllProductsAdmin();
+        }
+
+        public ResponseGetProducts GetAction()
+        {
             return GetAllProducts();
         }
 

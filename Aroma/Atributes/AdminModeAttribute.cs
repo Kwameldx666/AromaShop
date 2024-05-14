@@ -21,6 +21,7 @@ namespace Lab_TW.Atributes
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            
             var apiCookie = HttpContext.Current.Request.Cookies["X-KEY"];
 
             if (apiCookie != null)
