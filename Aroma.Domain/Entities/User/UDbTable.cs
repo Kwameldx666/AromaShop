@@ -49,7 +49,8 @@ namespace Aroma.Domain.Entities.User
 
         [JsonIgnore]
         public ICollection<RatingUdbTable> Ratings { get; set; } // Добавлено свойство для связи с оценками
-        public ICollection<USupportForm> SupportMesages { get; set; }
+
         public bool EmailAccess { get; set; }
+        public ICollection<USupportForm> SupportMesages { get; set; }
     }
 }

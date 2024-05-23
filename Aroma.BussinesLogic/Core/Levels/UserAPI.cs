@@ -263,8 +263,8 @@ namespace Aroma.BussinesLogic.Core.Levels
             using (var db = new UserContext())
             {
                 // Проверяем, существует ли пользователь с таким же именем
-                var UserName = db.Users.FirstOrDefault(u => u.Username == data.Name);
-                var Email = db.Users.FirstOrDefault(u => u.Email == data.Email);
+                var UserName = db.Users.FirstOrDefault(u => u.Username == data.Name && u.EmailAccess == true);
+                var Email = db.Users.FirstOrDefault(u => u.Email == data.Email && u.EmailAccess == true);
                 if (UserName != null )
                 {
                     // Если пользователь существует, возвращаем сообщение об ошибке
@@ -651,6 +651,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                     var order = db.Orders
                                    .FirstOrDefault(o => o.UserId == userId && o.ProductId == productId && o.orderStatus == OrderStatus.Pending);
 
+                 
                     if (order != null)
                     {
                         // Обновляем количество товара и вычисляем новую суммарную стоимость заказа
@@ -660,8 +661,8 @@ namespace Aroma.BussinesLogic.Core.Levels
                        
                         // Сохраняем изменения в базе данных
                         db.SaveChanges();
-
-                        return new ResponseUpdateQuantityOrders { Status = true, Message = "Order quantity updated successfully." };
+                        var orders = db.Orders.Where(o => o.orderStatus == OrderStatus.Pending && o.UserId == userId).ToList();
+                        return new ResponseUpdateQuantityOrders { Status = true, Message = "Order quantity updated successfully.", OneOrder = order ,Orders = orders};
                     }
                     else
                     {
@@ -853,7 +854,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                     }
                     else
                     {
-                        return new ResponseGetOrders { Status = false };
+                        return new ResponseGetOrders { Status = false , Message = "Вы ещё не совершили покупку товаров.Попробуйте купить что-нибудь в нашем магазине!"};
                     }
                 }
             }

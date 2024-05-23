@@ -1,4 +1,4 @@
-﻿@model List<Lab_TW.Models.OrderPr>
+﻿﻿@model List<Lab_TW.Models.OrderPr>
 @{
     ViewBag.Title = "Order Confirm";
     Layout = "~/Views/Shared/_LayoutOrderConfirm.cshtml";
@@ -32,27 +32,21 @@
                 <tbody>
                     @foreach (var order in Model)
                     {
-                        <tr>
+                        <tr id="order-row-@order.ProductId">
                             <td>@order.Product.Name</td>
                             <td>
                                 <!-- Форма для изменения количества товара -->
                                 <form id="updateQuantityForm_@order.ProductId">
                                     <input type="hidden" name="productId" value="@order.ProductId" />
                                     <input type="number" name="quantity" value="@order.QuantityOrder" min="1" />
-                                    <button type="button" class="btn btn-primary update-quantity-btn" data-product-id="@order.ProductId">Update Quantity</button>
                                 </form>
                             </td>
-                            <td>@order.TotalPrice.ToString("C")</td>
+                            <td id="total-price-@order.ProductId">@order.TotalPrice.ToString("C")</td>
                             <td>@order.ProductType</td>
                             <td>
                                 <!-- Кнопка для удаления товара -->
-
                                 <input type="hidden" name="productId" value="@order.ProductId" />
-
-
                                 <button type="button" class="delete-btn" data-product-id="@order.ProductId">Remove</button>
-
-
                             </td>
                         </tr>
                     }
@@ -61,14 +55,13 @@
 
             <!-- Кнопка подтверждения заказа внизу страницы -->
             <form id="orderForm">
-                 <button type="submit" class="btn btn-primary float-right">Confirm Order</button>
+                <button type="submit" class="btn btn-primary float-right">Confirm Order</button>
             </form>
-
 
             <!-- Блок для подсчета общей суммы товаров -->
             <div class="mt-4">
                 <h4>Total Amount:</h4>
-                <p>@Model.Sum(o => o.TotalAmount).ToString("C")</p>
+                <p id="total-amount">@Model.Sum(o => o.TotalAmount).ToString("C")</p>
             </div>
         }
         else
@@ -79,20 +72,96 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
-            // Обработчик отправки формы
-            $(document).on('click', '.btn.btn-primary.float-right', function (e) {
-                e.preventDefault(); // Предотвратить стандартное действие кнопки
-                // Отправляем AJAX-запрос на сервер
+            // Обработчик изменения количества товара
+            $('input[name="quantity"]').on('change', function () {
+                var productId = $(this).closest('form').find('input[name="productId"]').val();
+                var quantity = $(this).val();
+
+                // Отправляем AJAX запрос на сервер для обновления количества товара
                 $.ajax({
-                    type: 'POST', // Метод HTTP-запроса
-                    url: '/Order/ConfirmPurchase', // URL для отправки запроса
-                    data: $(this).serialize(), // Сериализуем данные формы для отправки
+                    url: '/Order/UpdateQuantity',
+                    method: 'POST',
+                    data: {
+                        productId: productId,
+                        quantityOrder: quantity
+                    },
                     success: function (response) {
                         if (response.status) {
-                            // Очищаем контейнер с таблицей заказов
+                            console.log(response.message);
+
+                            if (response.orders && response.orders.length > 0) {
+                                response.orders.forEach(function (order) {
+                                    var row = $('#order-row-' + order.ProductId);
+                                    console.log(row);
+                                    if (row.length) {
+                                                row.find('#total-price-' + order.ProductId).text(order.TotalPrice.toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
+                                        console.log(row.find('#total-price-' + order.ProductId).text());
+                                    }
+                                });
+
+                                var totalAmount = response.orders.reduce(function (sum, order) {
+                                    return sum + order.TotalPrice;
+                                }, 0);
+                                console.log(totalAmount);
+                                $('#total-amount').text(totalAmount.toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
+                            } else {
+                                console.log('No orders in the response.');
+                            }
+                        } else {
+                            alert('Ошибка при обновлении количества товара');
+                        }
+                    },
+                    error: function () {
+                        alert('Произошла ошибка при обновлении количества товара.');
+                    }
+                });
+            });
+            // Обработчик события нажатия на кнопку удаления товара
+            $(document).on('click', '.delete-btn', function (e) {
+                e.preventDefault();
+
+                var productId = $(this).data('product-id');
+                var rowToDelete = $(this).closest('tr');
+                var totalPrice = parseFloat(rowToDelete.find('#total-price-' + productId).text().replace(/[^0-9.-]+/g, ""));
+
+                // Отправляем AJAX запрос на сервер для удаления товара
+                $.ajax({
+                    url: '/Order/DeleteOrder',
+                    type: 'POST',
+                    data: { productId: productId },
+                    success: function (response) {
+                        if (response.success) {
+                            rowToDelete.remove();
+
+                            // Вычитаем стоимость удаленного товара из общей суммы
+                            var totalAmount = parseFloat($('#total-amount').text().replace(/[^0-9.-]+/g, ""));
+                            totalAmount -= totalPrice;
+                            $('#total-amount').text(totalAmount.toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
+
+                            alert('Товар успешно удален');
+                        } else {
+                            alert('Ошибка при удалении товара');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Произошла ошибка при удалении товара: ' + error);
+                    }
+                });
+            });
+
+
+            // Обработчик отправки формы подтверждения заказа
+            $('#orderForm').submit(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: '/Order/ConfirmPurchase',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.status) {
                             $('.container').empty();
-                            // Выводим сообщение об успешной покупке
                             alert('Вы успешно купили товар!');
+                            window.location.href = '/product/cart';
                         } else {
                             alert('Недостаточно средств');
                         }
@@ -105,81 +174,35 @@
         });
     </script>
 
-    <!-- Подключаем jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            // Обработчик события нажатия на кнопку обновления количества товара
-            $('.update-quantity-btn').click(function () {
-                var productId = $(this).closest('form').find('input[name="productId"]').val();
-                var quantity = $(this).closest('form').find('input[name="quantity"]').val();
 
-                // Отправляем AJAX запрос на сервер для обновления количества товара
-                $.ajax({
-                    url: '/Order/UpdateQuantity',
-                    method: 'POST',
-                    data: {
-                        productId: productId,
-                        quantityOrder: quantity
-                    },
-                    success: function (response) {
-                        // Обновляем данные на странице после успешного обновления
-                        if (response.status) {
-                            alert('Успех');
-                            // Можно выполнить дополнительные действия после успешного обновления
-                        } else {
-                            alert('Ошибка');
-                        }
-                    },
-                    error: function () {
-                        alert('Error occurred while updating quantity.');
-                    }
-                });
-            });
-        });
-    </script>
-    <!-- Подключение jQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-    <!-- Подключение jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <script>
-        $(document).ready(function () {
-            // Обработчик события нажатия на кнопку удаления товара
-            $(document).on('click', '.delete-btn', function (e) {
-                e.preventDefault(); // Предотвратить стандартное действие кнопки
-
-                var productId = $(this).data('product-id'); // Получаем ID товара из атрибута data-product-id
-                var rowToDelete = $(this).closest('tr'); // Получаем строку с товаром для удаления
-
-                // Отправляем AJAX запрос на сервер для удаления товара
-                $.ajax({
-                    url: '/Order/DeleteOrder', // Укажите URL вашего метода контроллера для удаления заказа
-                    type: 'POST',
-                    data: { productId: productId }, // Передаем параметр productId
-                    success: function (response) {
-                        if (response.success) {
-                            // Успешно удалено, удаляем строку с товаром из таблицы
-                            rowToDelete.remove();
-                            alert('Order removed successfully!');
-                        } else {
-                            // Возникла ошибка при удалении
-                            alert('Failed to remove order.');
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        // Ошибка AJAX запроса
-                        alert('Error occurred while removing order: ' + error);
-                    }
-                });
-            });
-        });
-
-    </script>
 
 
     <!-- Подключаем Bootstrap JS (необходим для работы некоторых компонентов) -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+<style>
+    .container {
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    .mt-4 {
+        margin-top: 2rem;
+    }
+
+    .delete-btn {
+        border-radius: 5px; /* Радиус закругления углов */
+        background-color: #ff4c4c; /* Красный цвет фона */
+        color: white; /* Белый цвет текста */
+        padding: 10px 20px; /* Внутренние отступы */
+        border: none; /* Убрать границу */
+        cursor: pointer; /* Изменить курсор при наведении */
+        font-size: 16px; /* Размер шрифта */
+        transition: background-color 0.3s ease; /* Плавный переход цвета фона */
+    }
+
+        .delete-btn:hover {
+            background-color: #ff1a1a; /* Более тёмный красный при наведении */
+        }
+</style>

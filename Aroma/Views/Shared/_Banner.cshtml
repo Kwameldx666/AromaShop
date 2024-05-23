@@ -1,1 +1,26 @@
-﻿
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пример</title>
+    <link rel="stylesheet" href="~/cssNew/style.css"> <!-- Подключаем таблицу стилей -->
+</head>
+<body>
+    <!-- Здесь указывается путь к вашему изображению -->
+    <img src="~/img/home/parallax-bg.png" alt="Top" class="full-width-image"> <!-- Добавлено закрывающее кавычки и класс -->
+</body>
+</html>
+<style>
+    body {
+        margin: 0; /* Убираем внешние отступы у body */
+        padding: 0; /* Убираем внутренние отступы у body */
+    }
+
+    .full-width-image {
+        width: 100%; /* Устанавливаем ширину изображения на 100% */
+        height: auto; /* Устанавливаем высоту на автоматический расчет, чтобы сохранить пропорции */
+        display: block; /* Устанавливаем отображение как блочный элемент */
+        margin-top: 0; /* Убираем отступ сверху */
+    }
+</style>

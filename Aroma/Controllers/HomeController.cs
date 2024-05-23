@@ -37,7 +37,7 @@ namespace Lab_TW.Controllers
             ViewBag.IsUserLoggedIn = true;
             var user = System.Web.HttpContext.Current.GetMySessionObject();
 
-            ResponseGetProducts response = _product.AdminGetAction();
+            ResponseGetProducts response = _product.GetAction();
 
             var viewModelProducts = response.Products.Select(p => new Lab_TW.Models.Product
             {

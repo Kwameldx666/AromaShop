@@ -16,6 +16,11 @@ namespace Aroma.BussinesLogic.mainBL
     {
         public ResponseGetProducts AdminGetAction()
         {
+            return GetAllProductsAdmin();
+        }
+
+        public ResponseGetProducts GetAction()
+        {
             return GetAllProducts();
         }
 
@@ -34,7 +39,7 @@ namespace Aroma.BussinesLogic.mainBL
         }
 
 
-        public async Task<ResponseFilterProducts> GetFilteredProducts(string category, string brand, decimal lowerPrice, decimal upperPrice, string sorting)
+        public async Task<ResponseFilterProducts> GetFilteredProducts(string category, string brand, decimal? lowerPrice, decimal? upperPrice, string sorting)
         {
             return await GetFilteredProductsAction(category, brand , lowerPrice,upperPrice, sorting);
         }

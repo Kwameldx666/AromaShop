@@ -106,6 +106,7 @@ namespace Lab_TW.Controllers
         [AdminMode]
         public async Task<ActionResult> AdminPanelAboutUsers()
         {
+            SessionStatus();
             int currentUserId = GetUserId();
             ResponseSupport responseSupport = await _support.GetAdminPanelUsers( currentUserId);
             if (responseSupport.Status) 
@@ -114,12 +115,20 @@ namespace Lab_TW.Controllers
             }
             return View();
         }
-
         [HttpPost]
         public async Task<ActionResult> ChangeUserRoleAction(int userId, string newRole)
         {
             ResponseSupport response = await _support.ChangeUserRole(userId, newRole);
-            return Json(new { success = true }); // Возвращаем результат в формате JSON
+
+            if (response.Status)
+            {
+                return Json(new { success = true }); // Возвращаем результат в формате JSON
+            }
+            else
+            {
+                return Json(new { success = false, errorMessage = response.StatusMessage });
+            }
         }
+    
     }
 }

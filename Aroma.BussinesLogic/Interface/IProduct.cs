@@ -14,10 +14,11 @@ namespace Aroma.BussinesLogic.Interface
     {
 
         ResponseGetProducts AdminGetAction();
+        ResponseGetProducts GetAction();
         ResponseAddProduct AdminAddAction(Product product);
         ResponseToEditProduct AdminUpdateAction(ProductDbTable updateProduct);
 
         ResponseToDeleteProduct  AdminDeleteAction(Product productDelete);
-        Task<ResponseFilterProducts> GetFilteredProducts(string category, string brand, decimal lowerPrice, decimal upperPrice, string sorting);
+        Task<ResponseFilterProducts> GetFilteredProducts(string category, string brand, decimal? lowerPrice, decimal? upperPrice, string sorting);
     }
 }

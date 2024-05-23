@@ -1,53 +1,70 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 
+<head>
     <style>
-   /*     .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }*/
 
+
+        /* Styling for the support message */
         .support-message {
             background-color: #f9f9f9;
-            padding: 10px;
-            margin-bottom: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 10px;
         }
 
+        /* Styling for the message title */
         .message-title {
             font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 10px;
         }
 
+        /* Styling for the message information */
         .message-info {
             margin-bottom: 5px;
+            font-size: 16px;
         }
 
+        /* Styling for the message navigation */
         .message-navigation {
+            text-align: center;
             margin-top: 20px;
         }
 
+            /* Styling for the navigation buttons */
             .message-navigation button {
-                padding: 8px 16px;
+                padding: 10px 20px;
                 background-color: #007bff;
                 color: #fff;
                 border: none;
-                border-radius: 4px;
+                border-radius: 5px;
                 cursor: pointer;
-                margin-right: 10px;
+                margin: 0 5px;
+                font-size: 16px;
+                transition: background-color 0.3s ease;
             }
 
                 .message-navigation button:hover {
                     background-color: #0056b3;
                 }
+
+            /* Styling for the input field */
+            .message-navigation input[type="number"] {
+                padding: 10px;
+                font-size: 16px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                margin-right: 5px;
+                width: 100px;
+            }
     </style>
+</head>
 
 <body>
     <div class="container">
-        <!-- Отображение сообщения -->
+        <!-- Display the message -->
         @if (Model.Count > 0)
         {
             <div id="message-container">
@@ -60,13 +77,10 @@
                 </div>
             </div>
 
-            <!-- Навигация между сообщениями -->
+            <!-- Navigation between messages -->
             <div class="message-navigation">
-                @if (Model.Count > 1)
-                {
-                    <button id="previousBtn">Previous</button>
-                    <button id="nextBtn">Next</button>
-                }
+                <input type="number" id="messageNumber" min="1" max="@Model.Count" placeholder="Message number" />
+                <button id="showMessageBtn">Show Message</button>
             </div>
         }
         else
@@ -76,35 +90,30 @@
     </div>
 
     <script>
-    var currentMessageIndex = 0;
-    var escapedSerializedModel = '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(Newtonsoft.Json.JsonConvert.SerializeObject(Model)))';
-    var messages = JSON.parse(escapedSerializedModel);
+        var escapedSerializedModel = '@Html.Raw(System.Web.HttpUtility.JavaScriptStringEncode(Newtonsoft.Json.JsonConvert.SerializeObject(Model)))';
+        var messages = JSON.parse(escapedSerializedModel);
 
-    function showMessage(direction) {
-        currentMessageIndex += direction;
-        if (currentMessageIndex < 0) {
-            currentMessageIndex = 0;
+        function showMessage(messageNumber) {
+            var index = messageNumber - 1; // Convert to zero-based index
+            if (index >= 0 && index < messages.length) {
+                var currentMessage = messages[index];
+                document.getElementById("current-message").innerHTML =
+                    `<p class="message-title">Message: ${currentMessage.message}</p>
+                <p class="message-info">Name: ${currentMessage.name}</p>
+                <p class="message-info">Subject: ${currentMessage.subject}</p>
+                <p class="message-info">Email: ${currentMessage.email}</p>
+                <p class="message-info">Message Time: ${currentMessage.MessageTime}</p>`;
+            } else {
+                alert("Invalid message number.");
+            }
         }
-        if (currentMessageIndex >= messages.length) {
-            currentMessageIndex = messages.length - 1;
-        }
-        var currentMessage = messages[currentMessageIndex];
-        document.getElementById("current-message").innerHTML =
-            `<p class="message-title">Message: ${currentMessage.message}</p>
-            <p class="message-info">Name: ${currentMessage.name}</p>
-            <p class="message-info">Subject: ${currentMessage.subject}</p>
-            <p class="message-info">Email: ${currentMessage.email}</p>
-            <p class="message-info">Message Time: ${currentMessage.MessageTime}</p>`;
-    }
 
-    document.getElementById("previousBtn").onclick = function() {
-        showMessage(-1);
-    };
-
-    document.getElementById("nextBtn").onclick = function() {
-        showMessage(1);
-    };
+        document.getElementById("showMessageBtn").onclick = function() {
+            var messageNumber = document.getElementById("messageNumber").value;
+            showMessage(messageNumber);
+        };
     </script>
 
 </body>
+
 </html>

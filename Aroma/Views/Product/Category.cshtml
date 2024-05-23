@@ -112,7 +112,7 @@
                                         <h4 class="card-product__title">
                                             <a href="@Url.Action("SingleProduct", "Product", new { productId = product.Id })">@product.Name</a>
                                         </h4>
-                                        <p class="card-product__price">$@product.Price.ToString("F2")</p>
+                                        <p class="card-product__price">$@product.PriceWithDiscount.ToString("F2")</p>
                                     </div>
                                 </div>
                             </div>
@@ -138,27 +138,41 @@
     </style>
     <script>
 
+        $(document).ready(function () {
+            // Обработчик изменения категории
+            $('input[name="category"]').change(filterProducts);
 
-    $(document).ready(function () {
-        // Обработчик изменения категории
-        $('input[name="category"]').change(filterProducts);
+            // Обработчик изменения бренда
+            $('input[name="brand"]').change(filterProducts);
 
-        // Обработчик изменения бренда
-        $('input[name="brand"]').change(filterProducts);
+            // Обработчик изменения цены
+            $('#lower-value, #upper-value').on('input', filterProducts);
 
-        // Обработчик изменения цены
-        $('#lower-value, #upper-value').on('input', filterProducts);
+            // Обработчик изменения сортировки
+            $('#sortingSelect').change(filterProducts);
 
-        // Обработчик изменения сортировки
-        $('#sortingSelect').change(filterProducts);
+            // Функция для отправки AJAX-запроса на контроллер
+            function filterProducts() {
+                var category = $('input[name="category"]:checked').next('label').text();
+                var brand = $('input[name="brand"]:checked').next('label').text();
+                var lowerPrice = $('#lower-value').val();
+                var upperPrice = $('#upper-value').val();
+                var sorting = $('#sortingSelect').val();
 
-        // Функция для отправки AJAX-запроса на контроллер
-        function filterProducts() {
-            var category = $('input[name="category"]:checked').next('label').text();
-            var brand = $('input[name="brand"]:checked').next('label').text();
-            var lowerPrice = parseFloat($('#lower-value').val()) || 0;
-            var upperPrice = parseFloat($('#upper-value').val()) || Infinity;
-            var sorting = $('#sortingSelect').val();
+                var requestData = {
+                    category: category,
+                    brand: brand,
+                    sorting: sorting
+                };
+
+                // Добавляем значения цены, если они доступны
+                if (lowerPrice.trim() !== "") {
+                    requestData.lowerPrice = parseFloat(lowerPrice);
+                }
+                if (upperPrice.trim() !== "") {
+                    requestData.upperPrice = parseFloat(upperPrice);
+                }
+
 
             $.ajax({
                 url: '@Url.Action("FilterProducts", "Product")',
@@ -197,7 +211,7 @@
                             productHtml += '<h4 class="card-product__title">';
                             productHtml += '<a href="/Product/SingleProduct?productId=' + product.Id + '">' + product.Name + '</a>';
                             productHtml += '</h4>';
-                            productHtml += '<p class="card-product__price">$' + product.Price.toFixed(2) + '</p>';
+                            productHtml += '<p class="card-product__price">$' + product.PriceWithDiscount.toFixed(2) + '</p>';
                             productHtml += '</div>';
                             productHtml += '</div>';
                             productHtml += '</div>';
@@ -241,3 +255,4 @@
         });
 
     </script>
+</div>

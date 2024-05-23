@@ -74,10 +74,13 @@ namespace Lab_TW.Controllers
 
         }
         [HttpPost]
-        public async Task<JsonResult> FilterProducts(string category, string brand, decimal lowerPrice, decimal upperPrice, string sorting)
+        public async Task<JsonResult> FilterProducts(string category, string brand, decimal? lowerPrice, decimal? upperPrice, string sorting)
         {
-            // Получаем все продукты из базы данных или другого источника данных
+
+
+            // Получаем отфильтрованные продукты из базы данных или другого источника данных
             ResponseFilterProducts response = await _product.GetFilteredProducts(category, brand, lowerPrice, upperPrice, sorting);
+
 
             if (!response.Success)
             {
@@ -92,6 +95,7 @@ namespace Lab_TW.Controllers
                 Id = p.Id,
                 Name = p.Name,
                 Price = p.Price,
+                PriceWithDiscount = p.PriceWithDiscount,
                 Category = p.Category,
                 ProductType = p.ProductType,
                 Description = p.Description,
@@ -530,6 +534,7 @@ namespace Lab_TW.Controllers
                 Id = p.Id,
                 Name = p.Name,
                 Price = p.Price,
+                PriceWithDiscount = p.PriceWithDiscount,
                 Category = p.Category,
                 ProductType = p.ProductType,
                 Description = p.Description,
@@ -551,7 +556,6 @@ namespace Lab_TW.Controllers
         }
 
         public JsonResult UpdateQuantity(int productId, int quantityOrder)
-
         {
             int userId = (int)Convert.ToUInt32(Session["UserId"]);
             if (userId == 0)
@@ -559,6 +563,7 @@ namespace Lab_TW.Controllers
                 GetUserId();
                 userId = (int)Convert.ToUInt32(Session["UserId"]);
             }
+
             ResponseUpdateQuantityOrders response = _orderService.EditQuntity(userId, productId, quantityOrder);
             var viewModelOrders = response.Orders.Select(p => new Lab_TW.Models.OrderPr
             {
@@ -572,12 +577,24 @@ namespace Lab_TW.Controllers
                 TotalAmount = p.TotalAmount,
                 UserId = p.UserId,
                 ProductType = p.ProductType,
-       /*         ImageUrl = p.ImageUrl*/
-
+                // ImageUrl = p.ImageUrl
             }).ToList();
 
-            return Json(new { status = response.Status, message = response.Message });
+            var updatedOrder = viewModelOrders.FirstOrDefault(o => o.ProductId == productId);
+            var newTotalAmount = viewModelOrders.Sum(o => o.TotalPrice);
+
+            return Json(new
+            {
+                status = response.Status,
+                message = response.Message,
+                orders = viewModelOrders, // Включаем список заказов в ответ
+                updatedTotalPrice = updatedOrder?.TotalPrice.ToString("C"),
+                newTotalAmount = newTotalAmount.ToString("C")
+            });
         }
+
+
+
         [HttpPost]
         public ActionResult Cart(int productId,int rating,string review)
         {
@@ -608,8 +625,9 @@ namespace Lab_TW.Controllers
                     TotalAmount = p.TotalAmount,
                     UserId = p.UserId,
                     ProductType = p.ProductType,
-                  
-                    AverageRating = p.AverageRating
+                    Rating = p.Rating,
+                    AverageRating = p.AverageRating,
+                    Price = p.Product.Price
 
                 }).ToList();
                 if (response.Status)
@@ -621,12 +639,12 @@ namespace Lab_TW.Controllers
                 {
                     // Если при запросе возникла ошибка, отображаем сообщение об ошибке
                     ViewBag.ErrorMessage = response.Message;
-                    return View("Error404","Error");
+                    return RedirectToAction("Error404", "Error");
                 }
 
             }
 
-
+            
         }
         public ActionResult Cart()
         {
@@ -668,8 +686,8 @@ namespace Lab_TW.Controllers
                 else
                 {
                     // Если при запросе возникла ошибка, отображаем сообщение об ошибке
-                    ViewBag.ErrorMessage = response.Message;
-                    return View("Error404", "Error");
+                    TempData["ErrorMessage"] = response.Message;
+                    return View();
                 }
 
             }

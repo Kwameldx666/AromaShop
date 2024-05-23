@@ -46,6 +46,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                 return new ResponseSupport()
                 {
                     Status = false,
+                    StatusMessage = ex.Message, 
              
                 };
             }
@@ -117,7 +118,7 @@ namespace Aroma.BussinesLogic.Core.Levels
             var product = new ProductDbTable()
             {
                 Name = products.Name,
-                PriceWithDiscount = products.Price,
+                PriceWithDiscount = products.PriceWithDiscount,
                 Price = products.Price, // Используем цену с учетом скидки
                 ProductType = products.ProductType,
                 Category = products.Category,
@@ -138,6 +139,44 @@ namespace Aroma.BussinesLogic.Core.Levels
             return new ResponseAddProduct { Status = true };
         }
 
+        internal ResponseGetProducts GetAllProductsAdmin()
+        {
+            try
+            {
+                using (var db = new ProductContext())
+                {
+                    var products = db.Products.OrderByDescending(p => p.Name).ToList(); // Сортируем продукты по количеству просмотров
+             
+
+                    return new ResponseGetProducts
+                    {
+                        Status = true,
+                        Products = products.Select(p => new Product
+                        {
+                            Id = p.Id,
+                            Name = p.Name,
+                            Price = p.Price,
+                            ProductType = p.ProductType,
+                            Category = p.Category,
+                            Description = p.Description,
+                            ImageUrl = p.ImageUrl,
+                            Quantity = p.QuantityProd,
+                            Discount = p.Discount,
+                            View = p.View,
+                            PriceWithDiscount = p.PriceWithDiscount,
+                        }).ToList(),
+
+                 
+
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                // В случае ошибки возвращаем статус false и сообщение об ошибке
+                return new ResponseGetProducts { Status = false, Message = ex.Message };
+            }
+        }
 
         internal ResponseGetProducts GetAllProducts()
         {
@@ -241,7 +280,16 @@ namespace Aroma.BussinesLogic.Core.Levels
             {
                 using (var db = new SupportContext())
                 {
+                    
                     var userToDelete = await db.Users.FindAsync(userId);
+                    if(userToDelete.Level == UserRole.Admin)
+                    {
+                        return new ResponseSupport
+                        {
+                            Status = false,
+                            StatusMessage = "Error"
+                        };
+                    }
                     if (userToDelete != null)
                     {
                         db.Users.Remove(userToDelete);
@@ -284,20 +332,24 @@ namespace Aroma.BussinesLogic.Core.Levels
 
                     if (user != null)
                     {
-                        UserRole role = (UserRole)Enum.Parse(typeof(UserRole), newRole);
-                        if (role == UserRole.Admin)
+                        UserRole NewRole = (UserRole)Enum.Parse(typeof(UserRole), newRole);
+                        if (user.Level == UserRole.Admin)
+                        {
+                            return new ResponseSupport { Status = false, StatusMessage = "Admin role cannot be changed for other admins." };
+                        };
+                        if (NewRole == UserRole.Admin)
                         {
                             user.Level = UserRole.Admin;
                         }
-                        if (role == UserRole.Moderator)
+                        if (NewRole == UserRole.Moderator)
                         {
                             user.Level = UserRole.Moderator;
                         }
-                        if (role == UserRole.User)
+                        if (NewRole == UserRole.User)
                         {
                             user.Level = UserRole.User;
                         }
-                        if (role == UserRole.None)
+                        if (NewRole == UserRole.None)
                         {
                             user.Level = UserRole.None;
                         }
@@ -337,11 +389,23 @@ namespace Aroma.BussinesLogic.Core.Levels
             }
         }
 
-        public async Task<ResponseFilterProducts> GetFilteredProductsAction(string category, string productType, decimal lowerPrice, decimal upperPrice, string sorting)
+        public async Task<ResponseFilterProducts> GetFilteredProductsAction(string category, string productType, decimal? lowerPrice, decimal? upperPrice, string sorting)
         {
             try
             {
                 List<ProductDbTable> filteredProductsList; // Создаем список для сохранения отфильтрованных продуктов
+
+                // Проверяем, были ли переданы значения для цены
+                if (lowerPrice == null)
+                {
+                    // Если значения цены не были переданы, устанавливаем их на минимальное и максимальное возможные значения
+                    lowerPrice = 0;
+
+                }
+                if (upperPrice == null)
+                {
+                    upperPrice = 99999999;
+                }
 
                 using (var db = new ProductContext())
                 {
@@ -462,9 +526,9 @@ namespace Aroma.BussinesLogic.Core.Levels
                
                         return new ResponseToEditProduct { Status = false, MessageError = "Продукт не найден." };
                     }
-                    if (existingProduct.Discount > 0)
+                    if (product.Discount > 0)
                     {
-                        decimal discountPercent = existingProduct.Discount / 100.0m; // Преобразование в десятичную дробь
+                        decimal discountPercent = product.Discount / 100.0m; // Преобразование в десятичную дробь
                         existingProduct.PriceWithDiscount = existingProduct.Price * (1 - discountPercent);
                     }
                     else

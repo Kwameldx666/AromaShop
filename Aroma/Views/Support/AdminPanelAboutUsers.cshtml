@@ -87,30 +87,30 @@
     </html>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $('.change-role-btn').click(function () {
-                var userId = $(this).data('user-id');
-                var newRole = $(this).closest('tr').find('.role-select').val(); // Получаем выбранное значение роли из выпадающего списка
-                if (newRole !== null) {
-                    $.ajax({
-                        type: 'POST',
-                        url: '@Url.Action("ChangeUserRoleAction", "Support")', // Укажите путь к вашему методу контроллера
-                        data: { userId: userId, newRole: newRole },
-                        success: function (response) {
-                            if (response.success) {
-                                alert('User role successfully changed.');
-                                // Здесь можно обновить данные на странице, если это необходимо
-                            } else {
-                                alert('An error occurred while changing user role.');
-                            }
-                        },
-                        error: function () {
-                            alert('An error occurred while processing your request.');
-                        }
-                    });
+       $(document).ready(function () {
+    $('.change-role-btn').click(function () {
+        var userId = $(this).data('user-id');
+        var newRole = $(this).closest('tr').find('.role-select').val(); // Получаем выбранное значение роли из выпадающего списка
+        if (newRole !== null) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("ChangeUserRoleAction", "Support")', // Укажите путь к вашему методу контроллера
+                data: { userId: userId, newRole: newRole },
+                success: function (response) {
+                    if (response.success) {
+                        alert('User role successfully changed.');
+                        // Здесь можно обновить данные на странице, если это необходимо
+                    } else {
+                        alert('An error occurred while changing user role: ' + response.errorMessage);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
                 }
             });
-        });
+        }
+    });
+});
 
 
 $(document).ready(function () {

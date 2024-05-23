@@ -14,6 +14,7 @@ namespace Aroma.Domain.Entities.GeneralResponse
 
         public List<Order> Orders;
 
+        public Order OneOrder;
         public ResponseUpdateQuantityOrders()
         {
             Orders = new List<Order>(); // Инициализация списка для избежания NullReferenceException
