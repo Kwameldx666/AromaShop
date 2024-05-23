@@ -19,6 +19,6 @@ namespace Aroma.BussinesLogic.Interface
         ResponseToEditProduct AdminUpdateAction(ProductDbTable updateProduct);
 
         ResponseToDeleteProduct  AdminDeleteAction(Product productDelete);
-        Task<ResponseFilterProducts> GetFilteredProducts(string category, string brand, decimal lowerPrice, decimal upperPrice, string sorting);
+        Task<ResponseFilterProducts> GetFilteredProducts(string category, string brand, decimal? lowerPrice, decimal? upperPrice, string sorting);
     }
 }

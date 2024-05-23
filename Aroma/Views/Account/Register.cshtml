@@ -26,26 +26,26 @@
                     @Html.AntiForgeryToken()
 
                     <div class="col-md-12 form-group">
-                        @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Username" })
+                        @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Username", Id = "name" })
                         @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
                     </div>
                     <div class="col-md-12 form-group">
-                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Email Address" })
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Email Address ", Id = "email" })
                         @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                     </div>
                     <div class="col-md-12 form-group">
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Password" })
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Password", Id = "pass" })
                         @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
                     </div>
                     <div class="col-md-12 form-group">
-                        @Html.PasswordFor(m => m.AcceptPassword, new { @class = "form-control", placeholder = "Confirm Password" })
+                        @Html.PasswordFor(m => m.AcceptPassword, new { @class = "form-control", placeholder = "Confirm Password", Id = "pass2" })
                         @Html.ValidationMessageFor(m => m.AcceptPassword, "", new { @class = "text-danger" })
                     </div>
 
                     if (!string.IsNullOrEmpty(ViewBag.ErrorPassword))
                     {
                         <div class="col-md-12 form-group text-center">
-                            <span class="text-danger">@ViewBag.ErrorPassword</span>
+                            <span id ="error" class="text-danger">@ViewBag.ErrorPassword</span>
                         </div>
                     }
 
@@ -54,9 +54,76 @@
                     </div>
                 }
 
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="col-md-12 form-group">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<script>
+
+   document.getElementById("register_form").addEventListener("submit", function (event) {
+    var el = document.getElementById('register_form');
+    var name = el.name.value;
+    var email = el.email.value;
+    var password = el.pass.value;
+    var repass = el.pass2.value;
+    var errorMessage = "";
+
+       if (name.length == 0) {
+           errorMessage += "Пожалуйста заполните поле имени.<br>"
+       }
+       if (email.length == 0) {
+           errorMessage += "Пожалуйста заполните поле email!<br>"
+       }
+       if (password.length == 0) {
+           errorMessage += "Пожалуйста введите пароль.<br>"
+       }
+       if (repass.length == 0) {
+           errorMessage += "Ведите повторный пароль.<br>"
+       }
+       else {
+           if (name.length < 4) {
+               errorMessage += "Некорректная длина имени (минимум 4 символа).<br>";
+           }
+
+           if (name.length > 20) {
+               errorMessage += "Некорректная длина имени (максимум 20 символов).<br>";
+           }
+
+           if (password.length < 8) {
+               errorMessage += "Слишком короткий пароль (минимум 8 символов).<br>";
+           } else {
+
+                  var emailPattern = /^[^\s@@]+@@[^\s@@]+\.[^\s@@]+$/;
+               if (!emailPattern.test(email)) {
+                     errorMessage += "Некорректный формат email.<br>";
+               }
+
+               if (!/[A-Z]/.test(password)) {
+                   errorMessage += "Пароль должен содержать хотя бы одну заглавную букву.<br>";
+               }
+
+               if (!/[!#$%^@@&*]/.test(password)) {
+                   errorMessage += "Пароль должен содержать хотя бы один специальный символ (!#$%^&*).<br>";
+               }
+
+               if (!/[0-9]/.test(password)) {
+                   errorMessage += "Пароль должен содержать хотя бы одну цифру.<br>";
+               }
+           }
+
+           if (password !== repass) {
+               errorMessage += "Пароли не совпадают.<br>";
+           }
+       }
+
+    if (errorMessage !== "") {
+        document.getElementById("error").innerHTML = errorMessage;
+        event.preventDefault(); // Предотвращаем отправку формы
+    }
+});
+
+</script>

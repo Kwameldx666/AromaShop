@@ -23,7 +23,6 @@ namespace Lab_TW.Controllers
         }
         // GET: Order
         public JsonResult UpdateQuantity(int productId, int quantityOrder)
-
         {
             int userId = (int)Convert.ToUInt32(Session["UserId"]);
             if (userId == 0)
@@ -31,23 +30,35 @@ namespace Lab_TW.Controllers
                 GetUserId();
                 userId = (int)Convert.ToUInt32(Session["UserId"]);
             }
-            ResponseUpdateQuantityOrders response = _orderService.EditQuntity(userId,productId, quantityOrder);
+
+            ResponseUpdateQuantityOrders response = _orderService.EditQuntity(userId, productId, quantityOrder);
+                var resp = 0;
             var viewModelOrders = response.Orders.Select(p => new Lab_TW.Models.OrderPr
             {
                 OrderId = p.OrderId,
-                Product = p.Product,
+/*                Product = p.Product,*/
                 ProductId = p.ProductId,
                 TotalPrice = p.TotalPrice,
                 OrderDate = p.OrderDate,
-                UDbTable = p.UDbTable,
+/*                UDbTable = p.UDbTable,*/
                 QuantityOrder = p.QuantityOrder,
                 TotalAmount = p.TotalAmount,
                 UserId = p.UserId,
-                ProductType = p.ProductType
-
+                ProductType = p.ProductType,
+                // ImageUrl = p.ImageUrl
             }).ToList();
 
-            return Json(new { status = response.Status, message = response.Message });
+            var updatedOrder = viewModelOrders.FirstOrDefault(o => o.ProductId == productId);
+            var newTotalAmount = viewModelOrders.Sum(o => o.TotalPrice);
+
+            return Json(new
+            {
+                status = response.Status,
+                message = response.Message,
+                orders = viewModelOrders, // Включаем список заказов в ответ
+                updatedTotalPrice = updatedOrder?.TotalPrice.ToString("C"),
+                newTotalAmount = newTotalAmount.ToString("C")
+            });
         }
         [HttpPost]
        

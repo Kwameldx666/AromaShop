@@ -46,6 +46,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                 return new ResponseSupport()
                 {
                     Status = false,
+                    StatusMessage = ex.Message, 
              
                 };
             }
@@ -117,7 +118,7 @@ namespace Aroma.BussinesLogic.Core.Levels
             var product = new ProductDbTable()
             {
                 Name = products.Name,
-                PriceWithDiscount = products.Price,
+                PriceWithDiscount = products.PriceWithDiscount,
                 Price = products.Price, // Используем цену с учетом скидки
                 ProductType = products.ProductType,
                 Category = products.Category,
@@ -388,11 +389,23 @@ namespace Aroma.BussinesLogic.Core.Levels
             }
         }
 
-        public async Task<ResponseFilterProducts> GetFilteredProductsAction(string category, string productType, decimal lowerPrice, decimal upperPrice, string sorting)
+        public async Task<ResponseFilterProducts> GetFilteredProductsAction(string category, string productType, decimal? lowerPrice, decimal? upperPrice, string sorting)
         {
             try
             {
                 List<ProductDbTable> filteredProductsList; // Создаем список для сохранения отфильтрованных продуктов
+
+                // Проверяем, были ли переданы значения для цены
+                if (lowerPrice == null)
+                {
+                    // Если значения цены не были переданы, устанавливаем их на минимальное и максимальное возможные значения
+                    lowerPrice = 0;
+
+                }
+                if (upperPrice == null)
+                {
+                    upperPrice = 99999999;
+                }
 
                 using (var db = new ProductContext())
                 {
@@ -513,9 +526,9 @@ namespace Aroma.BussinesLogic.Core.Levels
                
                         return new ResponseToEditProduct { Status = false, MessageError = "Продукт не найден." };
                     }
-                    if (existingProduct.Discount > 0)
+                    if (product.Discount > 0)
                     {
-                        decimal discountPercent = existingProduct.Discount / 100.0m; // Преобразование в десятичную дробь
+                        decimal discountPercent = product.Discount / 100.0m; // Преобразование в десятичную дробь
                         existingProduct.PriceWithDiscount = existingProduct.Price * (1 - discountPercent);
                     }
                     else

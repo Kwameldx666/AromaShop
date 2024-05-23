@@ -1,7 +1,9 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Orders List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         /* Основные стили таблицы */
         table {
@@ -32,20 +34,20 @@
     <!-- Включение библиотеки Font Awesome для использования звёзд -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
-
-<div class="container h-100">
-    <div class="blog-banner">
-        <div class="text-center">
-            <h1>Our Blog</h1>
-            <nav aria-label="breadcrumb" class="banner-breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Product</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Cart</li>
-                </ol>
-            </nav>
+<body>
+    <div class="container h-100">
+        <div class="blog-banner">
+            <div class="text-center">
+                <h1>Our Blog</h1>
+                <nav aria-label="breadcrumb" class="banner-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Product</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Cart</li>
+                    </ol>
+                </nav>
+            </div>
         </div>
-    </div>
-    <body>
+
         <h2>Orders List</h2>
 
         @if (Model != null)
@@ -106,11 +108,49 @@
                     }
                 </tbody>
             </table>
-
         }
         else
         {
             <p class="no-orders">No orders available.</p>
         }
-    </body>
+        <!-- Модальное окно -->
+        <div class="modal fade" id="notPurchasedProductsModal" tabindex="-1" role="dialog" aria-labelledby="notPurchasedProductsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-dark">
+                        <h5 class="modal-title" id="notPurchasedProductsModalLabel">Предложение любимому пользователю ❤️</h5>
+                        <button type="button" class="close text-dark" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Вы не купили ни единного товара. <br >Хотите перейти на страницу с покупкой товаров? <br /></p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="category" class="btn btn-primary">Совершить первую покупку!</a>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Остаться на странице</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(document).ready(function () {
+                var errorMessage = '@TempData["ErrorMessage"]';
+
+                if (errorMessage) {
+                    $('#notPurchasedProductsModal').modal('show');
+                }
+            });
+        </script>
+        @* <script>
+         document.addEventListener("DOMContentLoaded", function () {
+             var errorMessage = '@TempData["ErrorMessage"]';
+             if (errorMessage) {
+                 sumbit(errorMessage);
+             }
+         });
+        </script>*@
+    </div>
+</body>
 </html>
