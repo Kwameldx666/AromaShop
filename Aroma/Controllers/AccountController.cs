@@ -306,9 +306,88 @@ namespace Lab_TW.Controllers
       <!--                    Забыли пароль                               -->
       <!-- ============================================================== -->*/
 
-        //Get View ForgotPassword
-        public ActionResult ForgotPassword()
+       
+            if ((string)System.Web.HttpContext.Current.Session["LoginStatus"] != "login")
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+
+            int UserId = (int)Convert.ToUInt32(Session["UserId"]);
+            if (UserId == 0)
+            {
+                GetUserId();
+                if (UserId == -1)
+                {
+                    return RedirectToAction("Login", "Account");
+                }
+                UserId = (int)Convert.ToUInt32(Session["UserId"]);
+            }
+
+
+            // Используем сервис для получения данных о пользователе по идентификатору
+            ResponseViewProfile userProfile = _session.ViewProfile(UserId);
+
+            LoginData data = new LoginData()
+            {
+                Username = userProfile.Username,
+                Email = userProfile.Email,
+                Balance = userProfile.Balance
+
+            };
+
+
+
+         
+                        // Возвращаем представление с информацией о пользователе
+                        return View(data);
+                
+                
+               
+            
+        }
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult login(LoginData data)
         {
+            if (ModelState.IsValid)
+            {
+                Mapper.Initialize(cfg => cfg.CreateMap<LoginData, ULoginData>());
+
+                var Data = Mapper.Map<ULoginData>(data); // Исправлено здесь
+                {
+                    Data.IP = Request.UserHostAddress;
+                    Data.FirstLoginTime = DateTime.Now;
+                    Data.credential = data.Username;
+                };
+
+                RResponseData response = _session.UserLoginAction(Data);
+
+                if (response != null && response.Status)
+                {
+                    
+                    HttpCookie cookie = _session.GenCookie(Data.credential, data.RememberMe);
+                    ControllerContext.HttpContext.Response.Cookies.Add(cookie);
+                    ViewBag.UserName = Data.credential;
+                    Session["IsUserLoggedIn"] = System.Web.HttpContext.Current.Session["LoginStatus"];
+                    string f = (string)Session["IsUserLoggedIn"];
+                    ChechEmail(Data.Email);
+                    if (response.AdminMod || response.ModeratorMod)
+                    {
+                        ViewBag.UserName = Data.credential;
+                        return RedirectToAction("ProductsAdminPanel", "Product");
+                    }
+                    return RedirectToAction("Index", "Home");
+                }
+                if (response.ResponseMessage != null)
+                {
+                    ViewBag.ErrorMessage = response.ResponseMessage;
+                }
+                // Возврат на страницу входа с сообщением об ошибке
+                return View("~/Views/Account/Login.cshtml");
+            }
+            // Возврат на страницу входа, если модель не валидна
             return View();
         }
 
