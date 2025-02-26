@@ -199,7 +199,7 @@ namespace Lab_TW.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult login(LoginData data)
+        public ActionResult Login(LoginData data)
         {
             if (ModelState.IsValid)
             {

@@ -53,9 +53,9 @@ namespace Aroma.Helpers
         {
             try
             {
-                var fromAddress = new MailAddress("artemios.sologan@mail.ru", "Aroma"); // Указываем отправителя (ваш адрес электронной почты и имя отправителя)
+                var fromAddress = new MailAddress("wonderful_by@bk.ru", "Aroma"); // Указываем отправителя (ваш адрес электронной почты и имя отправителя)
                 var toAddress = new MailAddress(emailAddress); // Указываем получателя (адрес электронной почты получателя)
-                const string fromPassword = "hUTMguJHqXvJr3UKn6hn\r\n"; // Укажите ваш пароль от электронной почты отправителя
+                const string fromPassword = "N1MtfqLZ4UPnM5eHUnqh\r\n"; // Укажите ваш пароль от электронной почты отправителя
                 const string subject = "Accept register"; // Укажите тему письма
                 string body = "Your code is: " + confirmationCode; // Укажите текст сообщения
 
