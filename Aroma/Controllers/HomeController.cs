@@ -1,5 +1,5 @@
-﻿using Aroma.BussinesLogic;
-using Aroma.BussinesLogic.Interface;
+﻿using Aroma.BusinessLogic;
+using Aroma.BusinessLogic.Interface;
 using Aroma.Domain.Entities.GeneralResponse;
 using Aroma.Domain.Entities.Support;
 using Aroma.Domain.Entities.User;
@@ -22,7 +22,7 @@ namespace Lab_TW.Controllers
         // GET: Home
         public HomeController()
         {
-            var bl = new BussinesLogic();
+            var bl = new BusinessLogic();
             _product = bl.AddProductBL();
 
         }

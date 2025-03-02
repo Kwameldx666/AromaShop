@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aroma.BussinesLogic.DBModel.Seed
+namespace Aroma.BusinessLogic.DBModel.Seed
 {
     using System.Data.Entity;
 

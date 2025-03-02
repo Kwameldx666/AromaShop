@@ -1,4 +1,4 @@
-﻿namespace Aroma.BussinesLogic.Migrations
+﻿namespace Aroma.BusinessLogic.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;

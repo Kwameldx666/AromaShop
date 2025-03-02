@@ -1,14 +1,14 @@
-﻿using Aroma.BussinesLogic.Interface;
-using Aroma.BussinesLogic.mainBL;
+﻿using Aroma.BusinessLogic.Interface;
+using Aroma.BusinessLogic.mainBL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aroma.BussinesLogic
+namespace Aroma.BusinessLogic
 {
-    public class BussinesLogic
+    public class BusinessLogic
     {
         public ISupport GetSupport()
         {

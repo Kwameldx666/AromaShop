@@ -1,5 +1,5 @@
-﻿using Aroma.BussinesLogic.Interface;
-using Aroma.BussinesLogic;
+﻿using Aroma.BusinessLogic.Interface;
+using Aroma.BusinessLogic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +12,11 @@ using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext
 using System.Web.Mvc;
 using Lab_TW.Atributes;
 using System.Threading.Tasks;
+using Aroma.BussinesLogic.Composite;
+using System.Web.Security;
+using Aroma.Domain.Entities.User;
+using Aroma.BussinesLogic.Adapter;
+using Aroma.BussinesLogic.Proxy;
 
 namespace Lab_TW.Controllers
 {
@@ -21,7 +26,7 @@ namespace Lab_TW.Controllers
         // GET: Home
         public SupportController()
         {
-            var bl = new BussinesLogic();
+            var bl = new BusinessLogic();
             _support = bl.GetSupport();
         }
         public ActionResult Contact()
@@ -108,6 +113,19 @@ namespace Lab_TW.Controllers
         {
             int currentUserId = GetUserId();
             ResponseSupport responseSupport = await _support.GetAdminPanelUsers( currentUserId);
+
+            var employee = new Users("Misha", UserRole.User); 
+            var employee2 = new Users("Misha2", UserRole.User);
+            var admin = new Administrator("Misha2");
+            admin.AddUsers(employee);
+            admin.AddUsers(employee2);
+            admin.ShowInfo();
+
+
+            Aroma.BussinesLogic.Proxy.IDatabase database = new AdminDb(UserRole.User);
+            Aroma.BussinesLogic.Proxy.IDatabase database1 = new AdminDb(UserRole.Admin);
+
+
             if (responseSupport.Status) 
             {
                 return View(responseSupport.TotalUsers);

@@ -1,5 +1,5 @@
-﻿using Aroma.BussinesLogic;
-using Aroma.BussinesLogic.Interface;
+﻿using Aroma.BusinessLogic;
+using Aroma.BusinessLogic.Interface;
 using Lab_TW.Extension;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace Lab_TW.Atributes
 
         public ModeratorModeAttribute()
         {
-            var businessLogic = new BussinesLogic();
+            var businessLogic = new BusinessLogic();
             _sessionBusinessLogic = businessLogic.GetSessionBL();
         }
 

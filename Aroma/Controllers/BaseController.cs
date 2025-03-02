@@ -1,5 +1,5 @@
-﻿using Aroma.BussinesLogic;
-using Aroma.BussinesLogic.Interface;
+﻿using Aroma.BusinessLogic;
+using Aroma.BusinessLogic.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using Lab_TW.Extension;
 using Aroma.Domain.Entities.User;
-using Aroma.BussinesLogic.DBModel.Seed;
+using Aroma.BusinessLogic.DBModel.Seed;
 namespace Lab_TW.Controllers
 {
     public class BaseController : Controller
@@ -16,7 +16,7 @@ namespace Lab_TW.Controllers
 
         public BaseController()
         {
-            var bl = new BussinesLogic();
+            var bl = new BusinessLogic();
             _session = bl.GetSessionBL();
         }
 

@@ -1,5 +1,5 @@
-﻿using Aroma.BussinesLogic.Interface;
-using Aroma.BussinesLogic;
+﻿using Aroma.BusinessLogic.Interface;
+using Aroma.BusinessLogic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using Aroma.Domain.Entities.GeneralResponse;
 using System.Threading.Tasks;
+using Aroma.BusinessLogic.Abstraction;
 
 namespace Lab_TW.Controllers
 {
@@ -17,7 +18,7 @@ namespace Lab_TW.Controllers
 
         public OrderController()
         {
-            var logicBL = new BussinesLogic();
+            var logicBL = new BusinessLogic();
             _orderService = logicBL.OrderServBL();
 
         }
@@ -62,6 +63,9 @@ namespace Lab_TW.Controllers
 
             // Вызов метода из бизнес-логики для получения всех продуктов
             ResponseGetOrders response = await _orderService.ConfirmPurchaseUserAction(userId);
+           
+         
+
             var viewModelOrders = response.Orders.Select(p => new Lab_TW.Models.OrderPr
             {
                 OrderId = p.OrderId,
@@ -76,6 +80,8 @@ namespace Lab_TW.Controllers
                 ProductType = p.ProductType
 
             }).ToList();
+            Notification notification = new MailNotif(new PaymentMessager());
+            notification.SendNotification(response.Orders.Count.ToString());
             if (response.Status)
             {
                 return Json(new { status = true });

@@ -1,5 +1,5 @@
-﻿using Aroma.BussinesLogic.Core.Levels;
-using Aroma.BussinesLogic.Interface;
+﻿using Aroma.BusinessLogic.Core.Levels;
+using Aroma.BusinessLogic.Interface;
 using Aroma.Domain.Entities.GeneralResponse;
 using Aroma.Domain.Entities.User;
 using System;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace Aroma.BussinesLogic.mainBL
+namespace Aroma.BusinessLogic.mainBL
 {
     public class OrderBL:UserAPI,IOrderService
     {

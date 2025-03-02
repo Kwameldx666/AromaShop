@@ -1,18 +1,18 @@
-﻿namespace Aroma.BussinesLogic.Migrations
+﻿namespace Aroma.BusinessLogic.Migrations
 {
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<Aroma.BussinesLogic.DBModel.Seed.UserContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<Aroma.BusinessLogic.DBModel.Seed.UserContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(Aroma.BussinesLogic.DBModel.Seed.UserContext context)
+        protected override void Seed(Aroma.BusinessLogic.DBModel.Seed.UserContext context)
         {
             //  This method will be called after migrating to the latest version.
 

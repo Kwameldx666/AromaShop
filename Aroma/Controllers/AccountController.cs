@@ -1,11 +1,13 @@
-﻿using Aroma.BussinesLogic;
-using Aroma.BussinesLogic.Core.Levels;
-using Aroma.BussinesLogic.DBModel.Seed;
-using Aroma.BussinesLogic.Interface;
+﻿using Aroma.BusinessLogic;
+using Aroma.BusinessLogic.Core.Levels;
+using Aroma.BusinessLogic.DBModel.Seed;
+using Aroma.BusinessLogic.Interface;
+using Aroma.BussinesLogic.Adapter;
 using Aroma.Domain.Entities.GeneralResponce;
 using Aroma.Domain.Entities.GeneralResponse;
 using Aroma.Domain.Entities.Product.DBModel;
 using Aroma.Domain.Entities.User;
+using AromaShop.Facade;
 using AutoMapper;
 using Lab_TW.Models;
 using System;
@@ -26,7 +28,7 @@ namespace Lab_TW.Controllers
 
         public AccountController() 
         {
-            var logicBL = new BussinesLogic();
+            var logicBL = new BusinessLogic();
             _session = logicBL.GetSessionBL();
 
         }
@@ -201,6 +203,41 @@ namespace Lab_TW.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Login(LoginData data)
         {
+            var shop = new ShopFacade();
+
+            // Авторизация
+            if (shop.Login("john@example.com", "password123"))
+            {
+                Console.WriteLine($"Welcome, {shop.GetCurrentUser().Username}");
+
+                // Просмотр товаров
+                var products = shop.BrowseProducts();
+                Console.WriteLine("Available products:");
+                foreach (var product in products)
+                {
+                    Console.WriteLine($"{product.Name} - ${product.Price}");
+                }
+
+                // Добавление в корзину
+                shop.AddProductToCart(1, 2); // 2 единицы Lavender Essence
+                shop.AddProductToCart(2, 1); // 1 единица Rose Bliss
+
+                // Проверка корзины
+                Console.WriteLine($"Cart total: ${shop.GetCartTotal()}");
+
+                // Оформление заказа
+                var orders = shop.Checkout();
+                if (orders != null)
+                {
+                    Console.WriteLine("Order created successfully:");
+                    foreach (var order in orders)
+                    {
+                        Console.WriteLine($"Order #{order.OrderId}: {order.Product.Name} - " +
+                            $"Qty: {order.QuantityOrder} - Total: ${order.TotalPrice}");
+                    }
+                    Console.WriteLine($"Remaining balance: ${shop.GetCurrentUser().Balance}");
+                }
+            }
             if (ModelState.IsValid)
             {
                 Mapper.Initialize(cfg => cfg.CreateMap<LoginData, ULoginData>());
@@ -340,8 +377,19 @@ namespace Lab_TW.Controllers
 
                 };
 
+              var data = new UDbTable
+              {
+                 LastIP = RegData.Code
+              };
+
+
+
                 URegisterResp uRegisterResp = _session.UserRegisterAction(uRegData);
-                if (uRegisterResp != null && uRegisterResp.Status)
+                IDatabase db = new PostgreAdapter(new PostgreSQL());
+                   IDatabase dbsql = new SqlDatabase();
+                 dbsql.AddUser(data);
+                db.AddUser(data);
+            if (uRegisterResp != null && uRegisterResp.Status)
                 {
 
                     return RedirectToAction("ConfirmRegistrationCode");

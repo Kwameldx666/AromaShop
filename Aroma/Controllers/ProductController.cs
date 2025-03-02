@@ -1,7 +1,7 @@
-﻿using Aroma.BussinesLogic;
-using Aroma.BussinesLogic.Core.Levels;
-using Aroma.BussinesLogic.DBModel.Seed;
-using Aroma.BussinesLogic.Interface;
+﻿using Aroma.BusinessLogic;
+using Aroma.BusinessLogic.Core.Levels;
+using Aroma.BusinessLogic.DBModel.Seed;
+using Aroma.BusinessLogic.Interface;
 using Aroma.Domain.Entities.GeneralResponse;
 using Aroma.Domain.Entities.Product;
 using Aroma.Domain.Entities.Product.DBModel;
@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 using Lab_TW.Extension;
 using System.Web.Helpers;
 using Tensorflow;
-using Aroma.BussinesLogic.mainBL;
+using Aroma.BusinessLogic.mainBL;
 
 namespace Lab_TW.Controllers
 {
@@ -104,7 +104,7 @@ namespace Lab_TW.Controllers
 
         public ProductController()
         {
-            var bl = new BussinesLogic();
+            var bl = new BusinessLogic();
             _product = bl.AddProductBL();
             _orderService = bl.OrderServBL();
 

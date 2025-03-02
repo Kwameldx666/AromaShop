@@ -1,6 +1,6 @@
 ﻿using Antlr.Runtime.Misc;
-using Aroma.BussinesLogic.DBModel.Seed;
-using Aroma.BussinesLogic.mainBL;
+using Aroma.BusinessLogic.DBModel.Seed;
+using Aroma.BusinessLogic.mainBL;
 using Aroma.Domain.Entities.GeneralResponse;
 using Aroma.Domain.Entities.Product;
 using Aroma.Domain.Entities.Product.DBModel;
@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aroma.BussinesLogic.Core.Levels
+namespace Aroma.BusinessLogic.Core.Levels
 {
     public class AdminAPI
     {

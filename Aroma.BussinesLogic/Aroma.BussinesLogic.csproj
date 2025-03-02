@@ -107,7 +107,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstraction\DiscountMessager.cs" />
+    <Compile Include="Abstraction\MailNotif.cs" />
+    <Compile Include="Abstraction\Notification.cs" />
+    <Compile Include="Abstraction\PushNotification.cs" />
+    <Compile Include="Adapter\IDatabase.cs" />
+    <Compile Include="Adapter\PostgreAdapter.cs" />
+    <Compile Include="Adapter\PostgreSQL.cs" />
+    <Compile Include="Adapter\SqlDatabase.cs" />
     <Compile Include="BussinesLogic.cs" />
+    <Compile Include="Composite\Administrator.cs" />
+    <Compile Include="Composite\IEmployee.cs" />
+    <Compile Include="Composite\Users.cs" />
     <Compile Include="Core\Levels\AdminAPI.cs" />
     <Compile Include="Core\Levels\UserAPI.cs" />
     <Compile Include="DBModel\Seed\OrderContext.cs" />
@@ -116,6 +127,8 @@
     <Compile Include="DBModel\Seed\SessionContext.cs" />
     <Compile Include="DBModel\Seed\SupportContext.cs" />
     <Compile Include="DBModel\Seed\UserContext.cs" />
+    <Compile Include="Abstraction\IMessagerBuilder.cs" />
+    <Compile Include="Facade\Facade.cs" />
     <Compile Include="Interface\IOrderService.cs" />
     <Compile Include="Interface\IProduct.cs" />
     <Compile Include="Interface\IProfile.cs" />
@@ -130,6 +143,9 @@
     <Compile Include="Migrations\202405090930567_new.Designer.cs">
       <DependentUpon>202405090930567_new.cs</DependentUpon>
     </Compile>
+    <Compile Include="Abstraction\PaymentMessager.cs" />
+    <Compile Include="Proxy\IDatabase.cs" />
+    <Compile Include="Proxy\StandartDb.cs" />
     <Compile Include="Scripts\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

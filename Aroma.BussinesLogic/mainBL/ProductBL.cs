@@ -1,5 +1,5 @@
-﻿using Aroma.BussinesLogic.Core.Levels;
-using Aroma.BussinesLogic.Interface;
+﻿using Aroma.BusinessLogic.Core.Levels;
+using Aroma.BusinessLogic.Interface;
 using Aroma.Domain.Entities.GeneralResponse;
 using Aroma.Domain.Entities.Product;
 using Aroma.Domain.Entities.Product.DBModel;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace Aroma.BussinesLogic.mainBL
+namespace Aroma.BusinessLogic.mainBL
 {
     public class ProductBL : AdminAPI, IProduct
     {

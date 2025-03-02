@@ -1,4 +1,4 @@
-﻿using Aroma.BussinesLogic.DBModel.Seed;
+﻿using Aroma.BusinessLogic.DBModel.Seed;
 using Aroma.Domain.Entities.GeneralResponce;
 using Aroma.Domain.Entities.GeneralResponse;
 using Aroma.Domain.Entities.User;
@@ -14,15 +14,15 @@ using Aroma.Helpers;
 using AutoMapper;
 
 using Aroma.Domain.Entities.Product.DBModel;
-using Aroma.BussinesLogic.mainBL;
+using Aroma.BusinessLogic.mainBL;
 using Aroma.Domain.Enums.OrdersStatus;
 using Microsoft.Ajax.Utilities;
-using Aroma.BussinesLogic.Interface;
+using Aroma.BusinessLogic.Interface;
 using Aroma.Domain.Entities.Rating;
 using System.Web.Mvc;
 using System.Reflection;
 
-namespace Aroma.BussinesLogic.Core.Levels
+namespace Aroma.BusinessLogic.Core.Levels
 {
     public class UserAPI
     {
@@ -730,7 +730,7 @@ namespace Aroma.BussinesLogic.Core.Levels
                         // Сохраняем изменения в базе данных
                         await db.SaveChangesAsync();
 
-                        return new ResponseGetOrders { Status = true };
+                        return new ResponseGetOrders { Status = true ,Orders = userOrders};
                     }
                     else
                     {

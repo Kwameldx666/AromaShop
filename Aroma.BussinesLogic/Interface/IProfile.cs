@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Aroma.BussinesLogic.Interface
+namespace Aroma.BusinessLogic.Interface
 {
     public interface IProfile
     {

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace Aroma.BussinesLogic.Interface
+namespace Aroma.BusinessLogic.Interface
 {
     public interface ISupport
     {
